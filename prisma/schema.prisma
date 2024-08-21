@@ -14,16 +14,46 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+enum AccessRole {
+    ADMIN
+    ARTIST
+}
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+enum ProfilePrivacy {
+    PUBLIC
+    PRIVATE
+}
 
-    @@index([name])
+model Access {
+    id                      String     @id @default(cuid())
+    provider                String
+    providerAccountId       String
+    providerAccountUsername String
+    role                    AccessRole
+    note                    String?
+}
+
+model Profile {
+    id          String         @id @default(cuid())
+    user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId      String         @unique
+    username    String         @unique
+    name        String
+    bio         String?
+    firstName   String? /// @encrypted
+    lastName    String? /// @encrypted
+    country     String? /// @encrypted
+    ascapNumber String? /// @encrypted
+    links       ProfileLink[]
+    privacy     ProfilePrivacy
+}
+
+model ProfileLink {
+    id        String  @id @default(cuid())
+    profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profileId String
+    type      String
+    url       String
 }
 
 // Necessary for Next auth
@@ -62,7 +92,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    profile       Profile?
 }
 
 model VerificationToken {

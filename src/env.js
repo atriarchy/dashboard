@@ -4,7 +4,7 @@ import { z } from "zod";
 const optionalBoolSchema = z
   .enum(["true", "false"])
   .optional()
-  .transform((val) => val === "true");
+  .transform(val => val === "true");
 
 export const env = createEnv({
   /**
@@ -24,12 +24,13 @@ export const env = createEnv({
     NEXTAUTH_URL: z.preprocess(
       // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
       // Since NextAuth.js automatically uses the VERCEL_URL if present.
-      (str) => process.env.VERCEL_URL ?? str,
+      str => process.env.VERCEL_URL ?? str,
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-      process.env.VERCEL ? z.string() : z.string().url(),
+      process.env.VERCEL ? z.string() : z.string().url()
     ),
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
+    DISCORD_TOKEN: z.string(),
     FILE_STORAGE_CDN_URL: z.string().optional(),
     FILE_STORAGE_ENDPOINT: z.string(),
     FILE_STORAGE_KEY: z.string(),
@@ -60,6 +61,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
+    DISCORD_TOKEN: process.env.DISCORD_TOKEN,
     FILE_STORAGE_CDN_URL: process.env.FILE_STORAGE_CDN_URL,
     FILE_STORAGE_ENDPOINT: process.env.FILE_STORAGE_ENDPOINT,
     FILE_STORAGE_KEY: process.env.FILE_STORAGE_KEY,
