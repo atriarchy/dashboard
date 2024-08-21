@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: dashboard
+      POSTGRES_USER: atriarchy
+      POSTGRES_PASSWORD: atriarchy_secret
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  s3:
+    image: bitnami/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: atriarchy_key
+      MINIO_ROOT_PASSWORD: atriarchy_secret
+      MINIO_DEFAULT_BUCKETS: atriarchy:download
+    volumes:
+      - s3:/bitnami/minio/data
+
+volumes:
+  db:
+  s3:
