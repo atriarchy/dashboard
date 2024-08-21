@@ -11,7 +11,8 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "prettier . --check",
+    "format": "prettier . --write",
     "start": "next start",
     "prepare": "husky",
     "lint-staged": "lint-staged --relative"
