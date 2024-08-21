@@ -34,9 +34,12 @@ export const profileRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const username = await ctx.db.profile.findUnique({
+      const username = await ctx.db.profile.findFirst({
         where: {
-          username: input.username,
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
         },
       });
 
