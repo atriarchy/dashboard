@@ -80,7 +80,7 @@ export const profileRouter = createTRPCRouter({
         create: {
           userId: ctx.session.user.id,
           username: input.username!,
-          name: input.name,
+          name: input.name!,
           bio: input.bio,
           firstName: input.firstName,
           lastName: input.lastName,
