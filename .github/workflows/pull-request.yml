@@ -76,4 +76,5 @@ jobs:
       - name: Build project
         env:
           SKIP_ENV_VALIDATION: true
+          PRISMA_FIELD_ENCRYPTION_KEY: ${{ secrets.PRISMA_FIELD_ENCRYPTION_KEY }}
         run: pnpm run build
