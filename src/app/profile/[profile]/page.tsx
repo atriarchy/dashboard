@@ -30,7 +30,7 @@ export async function generateMetadata({
 
   return {
     title: `${profile.name} (@${profile.username}) - Atriarchy Studios`,
-    description: `${profile.bio || `${profile.name}'s artist profile on the Atriarchy Release Dashboard.`}`,
+    description: `${profile.bio ?? `${profile.name}'s artist profile on the Atriarchy Release Dashboard.`}`,
     icons: [{ rel: "icon", url: "/favicon.ico" }],
   };
 }
