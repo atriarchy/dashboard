@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import TextInput from "./primitives/text-input";
 
 export type ProfileType = {
   id: string;
@@ -223,58 +224,24 @@ export function Profile({
       >
         <h2 className="w-full text-xl font-semibold">Profile</h2>
         <div className="flex w-full items-center justify-start gap-2">
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="username" className="text-md w-full font-semibold">
-              Username
-            </label>
-            <div className="relative w-full">
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                placeholder="Name"
-                maxLength={64}
-                required
-              />
-              <span
-                className={
-                  username.length < 64
-                    ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                    : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                }
-              >
-                {64 - username.length}
-              </span>
-            </div>
-          </div>
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="name" className="text-md w-full font-semibold">
-              Artist Name
-            </label>
-            <div className="relative w-full">
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                placeholder="Artist Name"
-                maxLength={256}
-                required
-              />
-              <span
-                className={
-                  name.length < 256
-                    ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                    : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                }
-              >
-                {256 - name.length}
-              </span>
-            </div>
-          </div>
+          <TextInput
+            id="username"
+            label="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="Name"
+            maxLength={64}
+            required
+          />
+          <TextInput
+            id="name"
+            label="Artist Name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Artist Name"
+            maxLength={64}
+            required
+          />
         </div>
         <div className="flex w-full flex-col items-center justify-start gap-2">
           <label htmlFor="bio" className="text-md w-full font-semibold">
@@ -285,7 +252,7 @@ export function Profile({
               id="bio"
               value={bio}
               onChange={e => setBio(e.target.value)}
-              className="min-h-16 w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
+              className="min-h-16 w-full rounded-lg border border-slate-300 bg-white py-2 pl-2 pr-8 text-slate-900"
               placeholder="Bio"
               maxLength={1024}
             />
@@ -302,216 +269,93 @@ export function Profile({
         </div>
         <div className="flex w-full items-center justify-start gap-2">
           <div className="flex w-full flex-col items-center justify-start gap-2">
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label htmlFor="youtube" className="text-md w-full font-semibold">
-                YouTube
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="youtube"
-                  type="text"
-                  value={youtube}
-                  onChange={e => setYoutube(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="YouTube"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faYoutube} fixedWidth />
-                </span>
-              </div>
-            </div>
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label htmlFor="twitter" className="text-md w-full font-semibold">
-                Twitter
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="twitter"
-                  type="text"
-                  value={twitter}
-                  onChange={e => setTwitter(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="Twitter"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faTwitter} fixedWidth />
-                </span>
-              </div>
-            </div>
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label htmlFor="twitch" className="text-md w-full font-semibold">
-                Twitch
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="twitch"
-                  type="text"
-                  value={twitch}
-                  onChange={e => setTwitch(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="Twitch"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faTwitch} fixedWidth />
-                </span>
-              </div>
-            </div>
+            <TextInput
+              id="youtube"
+              label="YouTube"
+              value={youtube}
+              onChange={e => setYoutube(e.target.value)}
+              placeholder="https://youtube.com/@username"
+              icon={faYoutube}
+            />
+            <TextInput
+              id="twitter"
+              label="Twitter"
+              value={twitter}
+              onChange={e => setTwitter(e.target.value)}
+              placeholder="https://x.com/username"
+              icon={faTwitter}
+            />
+            <TextInput
+              id="twitch"
+              label="Twitch"
+              value={twitch}
+              onChange={e => setTwitch(e.target.value)}
+              placeholder="https://twitch.tv/username"
+              icon={faTwitch}
+            />
           </div>
           <div className="flex w-full flex-col items-center justify-start gap-2">
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label htmlFor="spotify" className="text-md w-full font-semibold">
-                Spotify
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="spotify"
-                  type="text"
-                  value={spotify}
-                  onChange={e => setSpotify(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="Spotify"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faSpotify} fixedWidth />
-                </span>
-              </div>
-            </div>
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label
-                htmlFor="appleMusic"
-                className="text-md w-full font-semibold"
-              >
-                Apple Music
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="appleMusic"
-                  type="text"
-                  value={appleMusic}
-                  onChange={e => setAppleMusic(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="Apple Music"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faApple} fixedWidth />
-                </span>
-              </div>
-            </div>
-            <div className="flex w-full flex-col items-center justify-start gap-2">
-              <label
-                htmlFor="youtubeMusic"
-                className="text-md w-full font-semibold"
-              >
-                YouTube Music
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="youtubeMusic"
-                  type="text"
-                  value={youtubeMusic}
-                  onChange={e => setYoutubeMusic(e.target.value)}
-                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                  placeholder="YouTube Music"
-                />
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                  <FontAwesomeIcon icon={faYoutube} fixedWidth />
-                </span>
-              </div>
-            </div>
+            <TextInput
+              id="spotify"
+              label="Spotify"
+              value={spotify}
+              onChange={e => setSpotify(e.target.value)}
+              placeholder="https://open.spotify.com/artist/5B7d27dL276bbzzQ360IYN"
+              icon={faSpotify}
+            />
+            <TextInput
+              id="appleMusic"
+              label="Apple Music"
+              value={appleMusic}
+              onChange={e => setAppleMusic(e.target.value)}
+              placeholder="https://music.apple.com/us/artist/the-atriarchy/1746651813"
+              icon={faApple}
+            />
+            <TextInput
+              id="youtubeMusic"
+              label="YouTube Music"
+              value={youtubeMusic}
+              onChange={e => setYoutubeMusic(e.target.value)}
+              placeholder="https://music.youtube.com/channel/UCloFxuJiFwCSCxmpnQl7ArA"
+              icon={faYoutube}
+            />
           </div>
         </div>
         <h2 className="mt-6 w-full text-xl font-semibold">Legal Information</h2>
         <div className="flex w-full items-center justify-start gap-2">
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="legalName" className="text-md w-full font-semibold">
-              Legal Name
-            </label>
-            <div className="relative w-full">
-              <input
-                id="legalName"
-                type="text"
-                value={legalName}
-                onChange={e => setLegalName(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                placeholder="Legal Name"
-                maxLength={256}
-              />
-              <span
-                className={
-                  legalName.length < 256
-                    ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                    : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                }
-              >
-                {256 - legalName.length}
-              </span>
-            </div>
-          </div>
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="country" className="text-md w-full font-semibold">
-              Country
-            </label>
-            <div className="relative w-full">
-              <input
-                id="country"
-                type="text"
-                value={country}
-                onChange={e => setCountry(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                placeholder="Country"
-                maxLength={256}
-              />
-              <span
-                className={
-                  country.length < 256
-                    ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                    : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                }
-              >
-                {256 - country.length}
-              </span>
-            </div>
-          </div>
+          <TextInput
+            id="legalName"
+            label="Legal Name"
+            value={legalName}
+            onChange={e => setLegalName(e.target.value)}
+            placeholder="Legal Name"
+            maxLength={256}
+          />
+          <TextInput
+            id="country"
+            label="Country"
+            value={country}
+            onChange={e => setCountry(e.target.value)}
+            placeholder="Country"
+            maxLength={256}
+          />
         </div>
         <div className="flex w-full items-center justify-start gap-2">
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="email" className="text-md w-full font-semibold">
-              Email
-            </label>
-            <input
-              id="email"
-              type="text"
-              value={profile?.email ?? email ?? undefined}
-              className="w-full rounded-lg bg-gray-700 p-2"
-              placeholder="Email"
-              readOnly
-            />
-          </div>
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="phone" className="text-md w-full font-semibold">
-              Phone
-            </label>
-            <div className="relative w-full">
-              <input
-                id="phone"
-                type="text"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                placeholder="Phone"
-                maxLength={256}
-              />
-              <span
-                className={
-                  phone.length < 256
-                    ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                    : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                }
-              >
-                {256 - phone.length}
-              </span>
-            </div>
-          </div>
+          <TextInput
+            id="email"
+            label="Email"
+            value={profile?.email ?? email ?? ""}
+            placeholder="Email"
+            readOnly
+          />
+          <TextInput
+            id="phone"
+            label="Phone"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            placeholder="Phone"
+            maxLength={256}
+          />
         </div>
         <div className="mt-6 flex w-full items-center justify-start gap-2">
           <input
@@ -527,122 +371,42 @@ export function Profile({
         {pro && (
           <>
             <div className="flex w-full items-center justify-start gap-2">
-              <div className="flex w-full flex-col items-center justify-start gap-2">
-                <label
-                  htmlFor="proMember"
-                  className="text-md w-full font-semibold"
-                >
-                  What PRO are you a member of?
-                </label>
-                <div className="relative w-full">
-                  <input
-                    id="proMember"
-                    type="text"
-                    value={proMember}
-                    onChange={e => setProMember(e.target.value)}
-                    className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                    placeholder="Member"
-                    maxLength={256}
-                    required
-                  />
-                  <span
-                    className={
-                      proMember.length < 256
-                        ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                        : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                    }
-                  >
-                    {256 - proMember.length}
-                  </span>
-                </div>
-              </div>
-              <div className="flex w-full flex-col items-center justify-start gap-2">
-                <label
-                  htmlFor="proCountry"
-                  className="text-md w-full font-semibold"
-                >
-                  In which country does the PRO represent you?
-                </label>
-                <div className="relative w-full">
-                  <input
-                    id="proCountry"
-                    type="text"
-                    value={proCountry}
-                    onChange={e => setProCountry(e.target.value)}
-                    className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                    placeholder="Country"
-                    maxLength={256}
-                  />
-                  <span
-                    className={
-                      proCountry.length < 256
-                        ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                        : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                    }
-                  >
-                    {256 - proCountry.length}
-                  </span>
-                </div>
-              </div>
+              <TextInput
+                id="proMember"
+                label="What PRO are you a member of?"
+                value={proMember}
+                onChange={e => setProMember(e.target.value)}
+                placeholder="Member"
+                maxLength={256}
+                required
+              />
+              <TextInput
+                id="proCountry"
+                label="In which country does the PRO represent you?"
+                value={proCountry}
+                onChange={e => setProCountry(e.target.value)}
+                placeholder="Country"
+                maxLength={256}
+              />
             </div>
             <div className="flex w-full items-center justify-start gap-2">
-              <div className="flex w-full flex-col items-center justify-start gap-2">
-                <label
-                  htmlFor="proName"
-                  className="text-md w-full font-semibold"
-                >
-                  Name Registered with PRO
-                </label>
-                <div className="relative w-full">
-                  <input
-                    id="proName"
-                    type="text"
-                    value={proName}
-                    onChange={e => setProName(e.target.value)}
-                    className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                    placeholder="Name"
-                    maxLength={256}
-                    required
-                  />
-                  <span
-                    className={
-                      proName.length < 256
-                        ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                        : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                    }
-                  >
-                    {256 - proName.length}
-                  </span>
-                </div>
-              </div>
-              <div className="flex w-full flex-col items-center justify-start gap-2">
-                <label
-                  htmlFor="proNumber"
-                  className="text-md w-full font-semibold"
-                >
-                  What is your member number?
-                </label>
-                <div className="relative w-full">
-                  <input
-                    id="proNumber"
-                    type="text"
-                    value={proNumber}
-                    onChange={e => setProNumber(e.target.value)}
-                    className="w-full rounded-lg bg-gray-700 py-2 pl-2 pr-8"
-                    placeholder="Membership Number"
-                    maxLength={256}
-                  />
-                  <span
-                    className={
-                      proNumber.length < 256
-                        ? "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-                        : "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-red-500"
-                    }
-                  >
-                    {256 - proNumber.length}
-                  </span>
-                </div>
-              </div>
+              <TextInput
+                id="proName"
+                label="Name Registered with PRO"
+                value={proName}
+                onChange={e => setProName(e.target.value)}
+                placeholder="Name"
+                maxLength={256}
+                required
+              />
+              <TextInput
+                id="proNumber"
+                label="What is your member number?"
+                value={proNumber}
+                onChange={e => setProNumber(e.target.value)}
+                placeholder="Membership Number"
+                maxLength={256}
+              />
             </div>
           </>
         )}
