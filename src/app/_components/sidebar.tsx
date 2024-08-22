@@ -28,21 +28,20 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
         </Link>
       </div>
       {session?.user?.name && session?.user?.image && (
-        <div className="flex w-full items-center justify-start gap-2">
-          <img
-            src={session.user.image}
-            alt="Profile Picture"
-            className="h-8 w-8 rounded-full"
-          />
-          <span className="font-semibold text-white">{session.user.name}</span>
+        <div className="flex w-full items-center justify-between gap-2">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <img
+              src={session.user.image}
+              alt="Profile Picture"
+              className="h-8 w-8 rounded-full"
+            />
+            <span className="max-w-[120px] truncate font-semibold text-white">
+              {session.user.name}
+            </span>
+          </div>
+          <Auth session={session} showIcon />
         </div>
       )}
-
-      <Auth
-        session={session}
-        className="flex w-full items-center justify-start gap-2 rounded-lg bg-red-500 p-2 font-semibold transition hover:bg-red-700"
-        showIcon
-      />
     </div>
   );
 }
