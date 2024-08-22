@@ -1,7 +1,41 @@
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { z } from "zod";
 
 export const profileRouter = createTRPCRouter({
+  getPublicProfile: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const profile = await ctx.db.profile.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          links: true,
+        },
+      });
+
+      if (!profile) {
+        return null;
+      }
+
+      return {
+        username: profile.username,
+        name: profile.name,
+        bio: profile.bio,
+        links: profile.links.map(link => ({
+          type: link.type,
+          url: link.url,
+        })),
+      };
+    }),
+
   getOnboarding: protectedProcedure.query(async ({ ctx }) => {
     const profile = await ctx.db.profile.findUnique({
       where: {
