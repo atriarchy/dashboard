@@ -19,6 +19,7 @@ export const profileRouter = createTRPCRouter({
         },
         include: {
           links: true,
+          user: true,
         },
       });
 
@@ -34,6 +35,7 @@ export const profileRouter = createTRPCRouter({
           type: link.type,
           url: link.url,
         })),
+        avatar: profile.user.image,
         canEdit: ctx.session?.user.id === profile.userId,
       };
     }),

@@ -23,15 +23,24 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "Profile not found - Atriarchy Release Dashboard",
+      openGraph: {
+        siteName: "Atriarchy Studios",
+      },
+      title: "Profile not found.",
       description: "The profile you are looking for could not be found.",
+      themeColor: "#171717",
     };
   }
 
   return {
-    title: `${profile.name} (@${profile.username}) - Atriarchy Studios`,
-    description: `${profile.bio ?? `${profile.name}'s artist profile on the Atriarchy Release Dashboard.`}`,
+    openGraph: {
+      siteName: "Atriarchy Studios",
+      images: profile.avatar ?? undefined,
+    },
+    title: `${profile.name} (@${profile.username})`,
+    description: `${profile.bio ?? `${profile.name}'s artist profile on Atriarchy Studios.`}`,
     icons: [{ rel: "icon", url: "/favicon.ico" }],
+    themeColor: "#171717",
   };
 }
 
@@ -64,6 +73,16 @@ export default async function PublicProfile({
             <>
               <div className="flex h-full w-full flex-col items-center justify-start gap-4">
                 <div className="flex flex-col items-center justify-start gap-1">
+                  {profile.avatar && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={profile.avatar}
+                        alt="Profile Picture"
+                        className="mb-2 h-16 w-16 rounded-full"
+                      />
+                    </>
+                  )}
                   <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-center text-3xl font-bold text-transparent">
                     {profile.name}
                   </h1>
