@@ -5,6 +5,8 @@ import { Access } from "./access";
 import Link from "next/link";
 import { Auth } from "./auth";
 import { api } from "@/trpc/server";
+import Image from "next/image";
+import logo from "@/assets/atriarchy-light.png";
 
 export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
   const session = await getServerAuthSession();
@@ -12,6 +14,17 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
 
   return (
     <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 p-4 shadow-inner">
+      {/* Logo at the top of the sidebar */}
+      <div className="mb-4 flex flex-col items-center justify-center">
+        <Image
+          src={logo}
+          alt="Logo"
+          width={128}
+          height={69}
+          objectFit="contain"
+        />
+      </div>
+
       <div className="flex h-full w-full flex-col items-center justify-start gap-2">
         {access === "ADMIN" && <Access />}
 
