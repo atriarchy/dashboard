@@ -33,7 +33,7 @@ export default async function AdminProfilePage({
 
   return (
     <HydrateClient>
-      <main className="h-dvh w-dvw bg-gray-950 text-gray-200">
+      <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar selected="PROFILE" />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-scroll p-4">
