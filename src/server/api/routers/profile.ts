@@ -4,6 +4,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { z } from "zod";
+import { accessCheck } from "@/server/api/routers/access";
 
 export const profileRouter = createTRPCRouter({
   getPublicProfile: publicProcedure
@@ -33,6 +34,7 @@ export const profileRouter = createTRPCRouter({
           type: link.type,
           url: link.url,
         })),
+        canEdit: ctx.session?.user.id === profile.userId,
       };
     }),
 
@@ -46,17 +48,43 @@ export const profileRouter = createTRPCRouter({
     return !!profile;
   }),
 
-  getProfile: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.profile.findUnique({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      include: {
-        links: true,
-        pro: true,
-      },
-    });
-  }),
+  getProfile: protectedProcedure
+    .input(
+      z
+        .object({
+          as: z.string(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      if (input) {
+        const access = await accessCheck(ctx);
+
+        if (access !== "ADMIN") {
+          throw new Error("Unauthorized.");
+        }
+
+        return await ctx.db.profile.findUnique({
+          where: {
+            username: input.as,
+          },
+          include: {
+            links: true,
+            pro: true,
+          },
+        });
+      }
+
+      return await ctx.db.profile.findUnique({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        include: {
+          links: true,
+          pro: true,
+        },
+      });
+    }),
 
   updateProfile: protectedProcedure
     .input(
@@ -91,9 +119,34 @@ export const profileRouter = createTRPCRouter({
           )
           .optional(),
         privacy: z.enum(["PRIVATE"]).default("PRIVATE"),
+        as: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      let userId = ctx.session.user.id;
+      let email = ctx.session.user.email;
+
+      if (input.as) {
+        const access = await accessCheck(ctx);
+
+        if (access !== "ADMIN") {
+          throw new Error("Unauthorized.");
+        }
+
+        const profile = await ctx.db.profile.findUnique({
+          where: {
+            username: input.as,
+          },
+        });
+
+        if (!profile) {
+          throw new Error("User does not exist.");
+        }
+
+        userId = profile.userId;
+        email = profile?.email;
+      }
+
       if (input.links) {
         const linkTypes = input.links.map(link => link.type);
         const linkTypesUnique = [...new Set(linkTypes)];
@@ -138,7 +191,8 @@ export const profileRouter = createTRPCRouter({
 
           if (
             link.type === "YOUTUBE" &&
-            !url.hostname.endsWith("youtube.com")
+            (!url.hostname.endsWith("youtube.com") ||
+              url.hostname.endsWith("music.youtube.com"))
           ) {
             throw new Error("Invalid YouTube URL.");
           }
@@ -166,7 +220,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
-      if (username && username.userId !== ctx.session.user.id) {
+      if (username && username.userId !== userId) {
         throw new Error("Username already exists.");
       }
 
@@ -178,7 +232,7 @@ export const profileRouter = createTRPCRouter({
 
       const data = await ctx.db.profile.upsert({
         where: {
-          userId: ctx.session.user.id,
+          userId: userId,
         },
         update: {
           username: input.username,
@@ -186,18 +240,18 @@ export const profileRouter = createTRPCRouter({
           bio: input.bio,
           legalName: input.legalName,
           country: input.country,
-          email: ctx.session.user.email ?? "",
+          email: email ?? "",
           phone: input.phone,
           privacy: input.privacy,
         },
         create: {
-          userId: ctx.session.user.id,
+          userId: userId,
           username: input.username,
           name: input.name,
           bio: input.bio,
           legalName: input.legalName,
           country: input.country,
-          email: ctx.session.user.email ?? "",
+          email: email ?? "",
           phone: input.phone,
           privacy: input.privacy,
         },

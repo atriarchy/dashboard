@@ -49,10 +49,12 @@ export function Profile({
   onboarding,
   profile,
   email,
+  as,
 }: {
   onboarding?: boolean;
   profile?: ProfileType;
   email?: string | null;
+  as?: string;
 }) {
   const router = useRouter();
 
@@ -105,8 +107,7 @@ export function Profile({
       {currentUsername && (
         <Link
           href={`/@${currentUsername}`}
-          target="_blank"
-          className="flex items-center justify-center gap-2"
+          className="mb-6 flex items-center justify-center gap-2"
         >
           <FontAwesomeIcon icon={faLink} fixedWidth />
           <span>@{currentUsername}</span>
@@ -218,6 +219,7 @@ export function Profile({
                   number: proNumber,
                 }
               : undefined,
+            as: as ?? undefined,
           });
         }}
         className="flex h-full w-full grow flex-col items-center justify-start gap-2"
