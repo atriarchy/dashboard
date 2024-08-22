@@ -225,7 +225,7 @@ export function Profile({
         className="flex h-full w-full grow flex-col items-center justify-start gap-2"
       >
         <h2 className="w-full text-xl font-semibold">Profile</h2>
-        <div className="flex w-full items-center justify-start gap-2">
+        <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
           <TextInput
             id="username"
             label="Username"
@@ -269,7 +269,7 @@ export function Profile({
             </small>
           </div>
         </div>
-        <div className="flex w-full items-center justify-start gap-2">
+        <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
           <div className="flex w-full flex-col items-center justify-start gap-2">
             <TextInput
               id="youtube"
@@ -324,7 +324,7 @@ export function Profile({
           </div>
         </div>
         <h2 className="mt-6 w-full text-xl font-semibold">Legal Information</h2>
-        <div className="flex w-full items-center justify-start gap-2">
+        <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
           <TextInput
             id="legalName"
             label="Legal Name"
@@ -342,7 +342,7 @@ export function Profile({
             maxLength={256}
           />
         </div>
-        <div className="flex w-full items-center justify-start gap-2">
+        <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
           <TextInput
             id="email"
             label="Email"
@@ -372,7 +372,7 @@ export function Profile({
         </div>
         {pro && (
           <>
-            <div className="flex w-full items-center justify-start gap-2">
+            <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
               <TextInput
                 id="proMember"
                 label="What PRO are you a member of?"
@@ -391,7 +391,7 @@ export function Profile({
                 maxLength={256}
               />
             </div>
-            <div className="flex w-full items-center justify-start gap-2">
+            <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
               <TextInput
                 id="proName"
                 label="Name Registered with PRO"
