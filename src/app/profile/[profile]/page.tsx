@@ -1,5 +1,4 @@
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
 import {
   faApple,
   faSpotify,
