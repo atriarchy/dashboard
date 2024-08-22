@@ -3,7 +3,7 @@
 import { signIn, signOut } from "next-auth/react";
 import type { Session } from "next-auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 export function Auth({
   session,
@@ -25,8 +25,10 @@ export function Auth({
         }
       }}
     >
-      {showIcon && <FontAwesomeIcon icon={faPersonRunning} fixedWidth />}
-      {session ? "Sign Out" : "Sign In with Discord"}
+      {showIcon && (
+        <FontAwesomeIcon icon={faDiscord} fixedWidth className="pr-2" />
+      )}
+      {session ? "Sign Out" : "Login with Discord"}
     </button>
   );
 }

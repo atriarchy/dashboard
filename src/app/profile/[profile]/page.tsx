@@ -22,7 +22,7 @@ export default async function PublicProfile({
   return (
     <HydrateClient>
       <main className="min-h-dvh w-dvw overflow-scroll bg-gray-950 text-gray-200">
-        <div className="mx-auto flex min-h-dvh max-w-screen-lg flex-col items-center justify-between gap-4 p-4">
+        <div className="mx-auto flex min-h-dvh w-full max-w-screen-lg flex-col items-center justify-start gap-4 p-4">
           {profile ? (
             <>
               <div className="flex h-full w-full flex-col items-center justify-start gap-4">
