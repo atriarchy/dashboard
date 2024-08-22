@@ -17,12 +17,27 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
 
         <Link
           href="/dashboard/profile"
-          className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${selected === "PROFILE" ? "bg-violet-700" : "bg-gray-700 transition hover:bg-violet-500"}`}
+          className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+            selected === "PROFILE"
+              ? "bg-violet-700"
+              : "bg-gray-700 transition hover:bg-violet-500"
+          }`}
         >
           <FontAwesomeIcon icon={faCircleUser} fixedWidth />
           <span>Profile</span>
         </Link>
       </div>
+      {session?.user?.name && session?.user?.image && (
+        <div className="flex w-full items-center justify-start gap-2">
+          <img
+            src={session.user.image}
+            alt="Profile Picture"
+            className="h-8 w-8 rounded-full"
+          />
+          <span className="font-semibold text-white">{session.user.name}</span>
+        </div>
+      )}
+
       <Auth
         session={session}
         className="flex w-full items-center justify-start gap-2 rounded-lg bg-red-500 p-2 font-semibold transition hover:bg-red-700"
