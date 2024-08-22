@@ -1,3 +1,4 @@
+import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import {
   faApple,
@@ -18,6 +19,18 @@ export default async function PublicProfile({
   const profile = await api.profile.getPublicProfile({
     username: params.profile,
   });
+
+  let isAdmin = false;
+
+  const session = await getServerAuthSession();
+
+  if (session) {
+    const access = await api.access.getAccess();
+
+    if (access === "ADMIN") {
+      isAdmin = true;
+    }
+  }
 
   return (
     <HydrateClient>
@@ -69,7 +82,7 @@ export default async function PublicProfile({
                   </div>
                 )}
               </div>
-              {profile.canEdit && (
+              {profile.canEdit ? (
                 <Link
                   href="/dashboard/profile"
                   className="flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
@@ -77,6 +90,16 @@ export default async function PublicProfile({
                   <FontAwesomeIcon icon={faUserPen} fixedWidth />
                   <span>Edit</span>
                 </Link>
+              ) : (
+                isAdmin && (
+                  <Link
+                    href={`/dashboard/profile/${profile.username}`}
+                    className="flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
+                  >
+                    <FontAwesomeIcon icon={faUserPen} fixedWidth />
+                    <span>Edit as Admin</span>
+                  </Link>
+                )
               )}
             </>
           ) : (
