@@ -123,8 +123,9 @@ export function Profile({
             try {
               const url = new URL(youtube);
               if (
-                url.hostname !== "www.youtube.com" &&
-                url.hostname !== "youtube.com"
+                url.pathname === "/" ||
+                (url.hostname !== "www.youtube.com" &&
+                  url.hostname !== "youtube.com")
               ) {
                 throw new Error("Invalid YouTube URL");
               }
@@ -143,9 +144,10 @@ export function Profile({
             try {
               const url = new URL(twitter);
               if (
-                url.hostname !== "twitter.com" &&
-                url.hostname !== "www.twitter.com" &&
-                url.hostname !== "x.com"
+                url.pathname === "/" ||
+                (url.hostname !== "twitter.com" &&
+                  url.hostname !== "www.twitter.com" &&
+                  url.hostname !== "x.com")
               ) {
                 throw new Error("Invalid Twitter URL");
               }
@@ -164,8 +166,9 @@ export function Profile({
             try {
               const url = new URL(twitch);
               if (
-                url.hostname !== "www.twitch.tv" &&
-                url.hostname !== "twitch.tv"
+                url.pathname === "/" ||
+                (url.hostname !== "www.twitch.tv" &&
+                  url.hostname !== "twitch.tv")
               ) {
                 throw new Error("Invalid Twitch URL");
               }
@@ -203,7 +206,7 @@ export function Profile({
           if (appleMusic) {
             try {
               const url = new URL(appleMusic);
-              if (url.hostname !== "music.apple.com") {
+              if (url.pathname === "/" || url.hostname !== "music.apple.com") {
                 throw new Error("Invalid Apple Music URL");
               }
             } catch {

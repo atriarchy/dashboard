@@ -90,7 +90,7 @@ export const profileRouter = createTRPCRouter({
     .input(
       z.object({
         username: z.string().min(1).max(64),
-        name: z.string().min(1).max(256),
+        name: z.string().min(1).max(64),
         bio: z.string().max(1024).optional(),
         legalName: z.string().max(256).optional(),
         country: z.string().max(256).optional(),
