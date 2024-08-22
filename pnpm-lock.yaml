@@ -10,6 +10,24 @@ importers:
       "@auth/prisma-adapter":
         specifier: ^1.6.0
         version: 1.6.0(@prisma/client@5.18.0(prisma@5.18.0))
+      "@fortawesome/fontawesome-svg-core":
+        specifier: ^6.6.0
+        version: 6.6.0
+      "@fortawesome/free-brands-svg-icons":
+        specifier: ^6.6.0
+        version: 6.6.0
+      "@fortawesome/free-regular-svg-icons":
+        specifier: ^6.6.0
+        version: 6.6.0
+      "@fortawesome/free-solid-svg-icons":
+        specifier: ^6.6.0
+        version: 6.6.0
+      "@fortawesome/react-fontawesome":
+        specifier: ^0.2.2
+        version: 0.2.2(@fortawesome/fontawesome-svg-core@6.6.0)(react@18.3.1)
+      "@headlessui/react":
+        specifier: ^2.1.2
+        version: 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@prisma/client":
         specifier: ^5.14.0
         version: 5.18.0(prisma@5.18.0)
@@ -37,12 +55,18 @@ importers:
       next-auth:
         specifier: ^4.24.7
         version: 4.24.7(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      prisma-field-encryption:
+        specifier: ^1.5.2
+        version: 1.5.2(@prisma/client@5.18.0(prisma@5.18.0))
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-hot-toast:
+        specifier: ^2.4.1
+        version: 2.4.1(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -87,10 +111,10 @@ importers:
         specifier: ^8.4.39
         version: 8.4.41
       prettier:
-        specifier: ^3.3.2
+        specifier: ^3.3.3
         version: 3.3.3
       prettier-plugin-tailwindcss:
-        specifier: ^0.6.5
+        specifier: ^0.6.6
         version: 0.6.6(prettier@3.3.3)
       prisma:
         specifier: ^5.14.0
@@ -103,6 +127,20 @@ importers:
         version: 5.5.4
 
 packages:
+  "@47ng/cloak@1.1.0":
+    resolution:
+      {
+        integrity: sha512-47dVSPgjTiH3Fgt2CATudxJAU7Fv1WjFIo2e4tXG2UcQitqmIGf9GCgv1MnGv8ctNGPAy9gsjHnNujzuZ1bOow==,
+      }
+    hasBin: true
+
+  "@47ng/codec@1.1.0":
+    resolution:
+      {
+        integrity: sha512-gvtA2RjijvEiYQbURPM6/Z+ySfS4lmtQ9NovDzzT+5ekeZ3M5pGiotlT94Qd+At4AYwWp7mWJLvxFn3JR+BZbA==,
+      }
+    engines: { node: ">=11" }
+
   "@alloc/quick-lru@5.2.0":
     resolution:
       {
@@ -171,6 +209,96 @@ packages:
         integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==,
       }
     engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
+
+  "@floating-ui/core@1.6.7":
+    resolution:
+      {
+        integrity: sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==,
+      }
+
+  "@floating-ui/dom@1.6.10":
+    resolution:
+      {
+        integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==,
+      }
+
+  "@floating-ui/react-dom@2.1.1":
+    resolution:
+      {
+        integrity: sha512-4h84MJt3CHrtG18mGsXuLCHMrug49d7DFkU0RMIyshRveBeyV2hmV/pDaF2Uxtu8kgq5r46llp5E5FQiR0K2Yg==,
+      }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+
+  "@floating-ui/react@0.26.22":
+    resolution:
+      {
+        integrity: sha512-LNv4azPt8SpT4WW7Kku5JNVjLk2GcS0bGGjFTAgqOONRFo9r/aaGHHPpdiIuQbB1t8shmWyWqTTUDmZ9fcNshg==,
+      }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+
+  "@floating-ui/utils@0.2.7":
+    resolution:
+      {
+        integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==,
+      }
+
+  "@fortawesome/fontawesome-common-types@6.6.0":
+    resolution:
+      {
+        integrity: sha512-xyX0X9mc0kyz9plIyryrRbl7ngsA9jz77mCZJsUkLl+ZKs0KWObgaEBoSgQiYWAsSmjz/yjl0F++Got0Mdp4Rw==,
+      }
+    engines: { node: ">=6" }
+
+  "@fortawesome/fontawesome-svg-core@6.6.0":
+    resolution:
+      {
+        integrity: sha512-KHwPkCk6oRT4HADE7smhfsKudt9N/9lm6EJ5BVg0tD1yPA5hht837fB87F8pn15D8JfTqQOjhKTktwmLMiD7Kg==,
+      }
+    engines: { node: ">=6" }
+
+  "@fortawesome/free-brands-svg-icons@6.6.0":
+    resolution:
+      {
+        integrity: sha512-1MPD8lMNW/earme4OQi1IFHtmHUwAKgghXlNwWi9GO7QkTfD+IIaYpIai4m2YJEzqfEji3jFHX1DZI5pbY/biQ==,
+      }
+    engines: { node: ">=6" }
+
+  "@fortawesome/free-regular-svg-icons@6.6.0":
+    resolution:
+      {
+        integrity: sha512-Yv9hDzL4aI73BEwSEh20clrY8q/uLxawaQ98lekBx6t9dQKDHcDzzV1p2YtBGTtolYtNqcWdniOnhzB+JPnQEQ==,
+      }
+    engines: { node: ">=6" }
+
+  "@fortawesome/free-solid-svg-icons@6.6.0":
+    resolution:
+      {
+        integrity: sha512-IYv/2skhEDFc2WGUcqvFJkeK39Q+HyPf5GHUrT/l2pKbtgEIv1al1TKd6qStR5OIwQdN1GZP54ci3y4mroJWjA==,
+      }
+    engines: { node: ">=6" }
+
+  "@fortawesome/react-fontawesome@0.2.2":
+    resolution:
+      {
+        integrity: sha512-EnkrprPNqI6SXJl//m29hpaNzOp1bruISWaOiRtkMi/xSvHJlzc2j2JAYS7egxt/EbjSNV/k6Xy0AQI6vB2+1g==,
+      }
+    peerDependencies:
+      "@fortawesome/fontawesome-svg-core": ~1 || ~6
+      react: ">=16.3"
+
+  "@headlessui/react@2.1.2":
+    resolution:
+      {
+        integrity: sha512-Kb3hgk9gRNRcTZktBrKdHhF3xFhYkca1Rk6e1/im2ENf83dgN54orMW0uSKTXFnUpZOUFZ+wcY05LlipwgZIFQ==,
+      }
+    engines: { node: ">=10" }
+    peerDependencies:
+      react: ^18
+      react-dom: ^18
 
   "@humanwhocodes/config-array@0.11.14":
     resolution:
@@ -397,16 +525,89 @@ packages:
         integrity: sha512-I/3u0x2n31rGaAuBRx2YK4eB7R/1zCuayo2DGwSpGyrJWsZesrV7QVw7ND0/Suxeo/vLkJ5OwuBqHoCxvTHpOg==,
       }
 
+  "@prisma/generator-helper@5.18.0":
+    resolution:
+      {
+        integrity: sha512-3ffmrd9KE8ssg/fwyvfwMxrDAunLF8DLFjfwYnDRE7VaNIhkUVZwB77jAwpMCtukvCsAp14WGWu4itvLMzH3GQ==,
+      }
+
   "@prisma/get-platform@5.18.0":
     resolution:
       {
         integrity: sha512-Tk+m7+uhqcKDgnMnFN0lRiH7Ewea0OEsZZs9pqXa7i3+7svS3FSCqDBCaM9x5fmhhkufiG0BtunJVDka+46DlA==,
       }
 
+  "@react-aria/focus@3.18.2":
+    resolution:
+      {
+        integrity: sha512-Jc/IY+StjA3uqN73o6txKQ527RFU7gnG5crEl5Xy3V+gbYp2O5L3ezAo/E0Ipi2cyMbG6T5Iit1IDs7hcGu8aw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  "@react-aria/interactions@3.22.2":
+    resolution:
+      {
+        integrity: sha512-xE/77fRVSlqHp2sfkrMeNLrqf2amF/RyuAS6T5oDJemRSgYM3UoxTbWjucPhfnoW7r32pFPHHgz4lbdX8xqD/g==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  "@react-aria/ssr@3.9.5":
+    resolution:
+      {
+        integrity: sha512-xEwGKoysu+oXulibNUSkXf8itW0npHHTa6c4AyYeZIJyRoegeteYuFpZUBPtIDE8RfHdNsSmE1ssOkxRnwbkuQ==,
+      }
+    engines: { node: ">= 12" }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  "@react-aria/utils@3.25.2":
+    resolution:
+      {
+        integrity: sha512-GdIvG8GBJJZygB4L2QJP1Gabyn2mjFsha73I2wSe+o4DYeGWoJiMZRM06PyTIxLH4S7Sn7eVDtsSBfkc2VY/NA==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  "@react-stately/utils@3.10.3":
+    resolution:
+      {
+        integrity: sha512-moClv7MlVSHpbYtQIkm0Cx+on8Pgt1XqtPx6fy9rQFb2DNc9u1G3AUVnqA17buOkH1vLxAtX4MedlxMWyRCYYA==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  "@react-types/shared@3.24.1":
+    resolution:
+      {
+        integrity: sha512-AUQeGYEm/zDTN6zLzdXolDxz3Jk5dDL7f506F07U8tBwxNNI3WRdhU84G0/AaFikOZzDXhOZDr3MhQMzyE7Ydw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
   "@rushstack/eslint-patch@1.10.4":
     resolution:
       {
         integrity: sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==,
+      }
+
+  "@stablelib/base64@1.0.1":
+    resolution:
+      {
+        integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==,
+      }
+
+  "@stablelib/hex@1.0.1":
+    resolution:
+      {
+        integrity: sha512-PQOEChVBjhYGgAD+ehO2ow1gSj1slre3jW4oMD4kV8VrhYhzmtsQDWDZej3BQO8qkVezdczDvISxVSF24PuYNA==,
+      }
+
+  "@stablelib/utf8@1.0.2":
+    resolution:
+      {
+        integrity: sha512-sDL1aB2U8FIpj7SjQJMxbOFIFkKvDKQGPHSrYejHZhtLNSK3qHe6ZIfa0woWkOiaJsdYslFzrc0VWXJZHmSIQQ==,
       }
 
   "@swc/counter@0.1.3":
@@ -458,6 +659,21 @@ packages:
       }
     peerDependencies:
       react: ^18.0.0
+
+  "@tanstack/react-virtual@3.10.1":
+    resolution:
+      {
+        integrity: sha512-h5kNeE+yQwspjl9E3sJ3UYQu/MuspNOBT5cVdc+NA0uU9B1XSkxbzp86teV3arMDVcQ4ESExqs4JyIirYAMcuA==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@tanstack/virtual-core@3.10.1":
+    resolution:
+      {
+        integrity: sha512-JDi3wU1HIxuxx8BgD7Ix8IXlelCKdTJIh9c0qBs+QXHdix3mjMbkXI3wOq0TuCx1w1RGgzZue34QrM/NPdp/sw==,
+      }
 
   "@trpc/client@11.0.0-rc.482":
     resolution:
@@ -956,6 +1172,13 @@ packages:
         integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==,
       }
 
+  clsx@2.1.1:
+    resolution:
+      {
+        integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==,
+      }
+    engines: { node: ">=6" }
+
   color-convert@2.0.1:
     resolution:
       {
@@ -988,6 +1211,13 @@ packages:
         integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==,
       }
     engines: { node: ">= 6" }
+
+  commander@8.3.0:
+    resolution:
+      {
+        integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==,
+      }
+    engines: { node: ">= 12" }
 
   concat-map@0.0.1:
     resolution:
@@ -1146,6 +1376,13 @@ packages:
         integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==,
       }
     engines: { node: ">=6.0.0" }
+
+  dotenv@10.0.0:
+    resolution:
+      {
+        integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==,
+      }
+    engines: { node: ">=10" }
 
   eastasianwidth@0.2.0:
     resolution:
@@ -1625,6 +1862,14 @@ packages:
       }
     engines: { node: ">=10" }
 
+  goober@2.1.14:
+    resolution:
+      {
+        integrity: sha512-4UpC0NdGyAFqLNPnhCT2iHpza2q+RAY3GV85a/mRPdzyPQMsj0KmMMuetdIkzWRbJ+Hgau1EZztq8ImmiMGhsg==,
+      }
+    peerDependencies:
+      csstype: ^3.0.10
+
   gopd@1.0.1:
     resolution:
       {
@@ -1711,6 +1956,12 @@ packages:
         integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==,
       }
     engines: { node: ">= 4" }
+
+  immer@10.1.1:
+    resolution:
+      {
+        integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==,
+      }
 
   import-fresh@3.3.0:
     resolution:
@@ -2372,6 +2623,13 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  object-path@0.11.8:
+    resolution:
+      {
+        integrity: sha512-YJjNZrlXJFM42wTBn6zgOJVar9KFJvzx6sTWDte8sWZF//cnjl0BxHNpfZx+ZffXX63A9q0b1zsFiBX4g4X5KA==,
+      }
+    engines: { node: ">= 10.12.0" }
+
   object.assign@4.1.5:
     resolution:
       {
@@ -2740,6 +2998,15 @@ packages:
         integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==,
       }
 
+  prisma-field-encryption@1.5.2:
+    resolution:
+      {
+        integrity: sha512-pkdpqs4zr6uyE0CUX0ygsB7Lh5kH34LQIeN3cis4cKbfRgy/OONxQqeCZ8zT8VTHpHRIrK1bexuMrNK5W+oP9w==,
+      }
+    hasBin: true
+    peerDependencies:
+      "@prisma/client": ">= 4.7"
+
   prisma@5.18.0:
     resolution:
       {
@@ -2774,6 +3041,16 @@ packages:
       }
     peerDependencies:
       react: ^18.3.1
+
+  react-hot-toast@2.4.1:
+    resolution:
+      {
+        integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==,
+      }
+    engines: { node: ">=10" }
+    peerDependencies:
+      react: ">=16"
+      react-dom: ">=16"
 
   react-is@16.13.1:
     resolution:
@@ -2880,6 +3157,12 @@ packages:
     resolution:
       {
         integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==,
+      }
+
+  s-ago@2.2.0:
+    resolution:
+      {
+        integrity: sha512-t6Q/aFCCJSBf5UUkR/WH0mDHX8EGm2IBQ7nQLobVLsdxOlkryYMbOlwu2D4Cf7jPUp0v1LhfPgvIZNoi9k8lUA==,
       }
 
   safe-array-concat@1.1.2:
@@ -3154,6 +3437,12 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  tabbable@6.2.0:
+    resolution:
+      {
+        integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==,
+      }
+
   tailwindcss@3.4.10:
     resolution:
       {
@@ -3400,6 +3689,22 @@ packages:
       }
 
 snapshots:
+  "@47ng/cloak@1.1.0":
+    dependencies:
+      "@47ng/codec": 1.1.0
+      "@stablelib/base64": 1.0.1
+      "@stablelib/hex": 1.0.1
+      "@stablelib/utf8": 1.0.2
+      chalk: 4.1.2
+      commander: 8.3.0
+      dotenv: 10.0.0
+      s-ago: 2.2.0
+
+  "@47ng/codec@1.1.0":
+    dependencies:
+      "@stablelib/base64": 1.0.1
+      "@stablelib/hex": 1.0.1
+
   "@alloc/quick-lru@5.2.0": {}
 
   "@auth/core@0.29.0":
@@ -3447,6 +3752,64 @@ snapshots:
       - supports-color
 
   "@eslint/js@8.57.0": {}
+
+  "@floating-ui/core@1.6.7":
+    dependencies:
+      "@floating-ui/utils": 0.2.7
+
+  "@floating-ui/dom@1.6.10":
+    dependencies:
+      "@floating-ui/core": 1.6.7
+      "@floating-ui/utils": 0.2.7
+
+  "@floating-ui/react-dom@2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@floating-ui/dom": 1.6.10
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  "@floating-ui/react@0.26.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@floating-ui/react-dom": 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@floating-ui/utils": 0.2.7
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tabbable: 6.2.0
+
+  "@floating-ui/utils@0.2.7": {}
+
+  "@fortawesome/fontawesome-common-types@6.6.0": {}
+
+  "@fortawesome/fontawesome-svg-core@6.6.0":
+    dependencies:
+      "@fortawesome/fontawesome-common-types": 6.6.0
+
+  "@fortawesome/free-brands-svg-icons@6.6.0":
+    dependencies:
+      "@fortawesome/fontawesome-common-types": 6.6.0
+
+  "@fortawesome/free-regular-svg-icons@6.6.0":
+    dependencies:
+      "@fortawesome/fontawesome-common-types": 6.6.0
+
+  "@fortawesome/free-solid-svg-icons@6.6.0":
+    dependencies:
+      "@fortawesome/fontawesome-common-types": 6.6.0
+
+  "@fortawesome/react-fontawesome@0.2.2(@fortawesome/fontawesome-svg-core@6.6.0)(react@18.3.1)":
+    dependencies:
+      "@fortawesome/fontawesome-svg-core": 6.6.0
+      prop-types: 15.8.1
+      react: 18.3.1
+
+  "@headlessui/react@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@floating-ui/react": 0.26.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@react-aria/focus": 3.18.2(react@18.3.1)
+      "@react-aria/interactions": 3.22.2(react@18.3.1)
+      "@tanstack/react-virtual": 3.10.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   "@humanwhocodes/config-array@0.11.14":
     dependencies:
@@ -3558,11 +3921,61 @@ snapshots:
       "@prisma/engines-version": 5.18.0-25.4c784e32044a8a016d99474bd02a3b6123742169
       "@prisma/get-platform": 5.18.0
 
+  "@prisma/generator-helper@5.18.0":
+    dependencies:
+      "@prisma/debug": 5.18.0
+
   "@prisma/get-platform@5.18.0":
     dependencies:
       "@prisma/debug": 5.18.0
 
+  "@react-aria/focus@3.18.2(react@18.3.1)":
+    dependencies:
+      "@react-aria/interactions": 3.22.2(react@18.3.1)
+      "@react-aria/utils": 3.25.2(react@18.3.1)
+      "@react-types/shared": 3.24.1(react@18.3.1)
+      "@swc/helpers": 0.5.5
+      clsx: 2.1.1
+      react: 18.3.1
+
+  "@react-aria/interactions@3.22.2(react@18.3.1)":
+    dependencies:
+      "@react-aria/ssr": 3.9.5(react@18.3.1)
+      "@react-aria/utils": 3.25.2(react@18.3.1)
+      "@react-types/shared": 3.24.1(react@18.3.1)
+      "@swc/helpers": 0.5.5
+      react: 18.3.1
+
+  "@react-aria/ssr@3.9.5(react@18.3.1)":
+    dependencies:
+      "@swc/helpers": 0.5.5
+      react: 18.3.1
+
+  "@react-aria/utils@3.25.2(react@18.3.1)":
+    dependencies:
+      "@react-aria/ssr": 3.9.5(react@18.3.1)
+      "@react-stately/utils": 3.10.3(react@18.3.1)
+      "@react-types/shared": 3.24.1(react@18.3.1)
+      "@swc/helpers": 0.5.5
+      clsx: 2.1.1
+      react: 18.3.1
+
+  "@react-stately/utils@3.10.3(react@18.3.1)":
+    dependencies:
+      "@swc/helpers": 0.5.5
+      react: 18.3.1
+
+  "@react-types/shared@3.24.1(react@18.3.1)":
+    dependencies:
+      react: 18.3.1
+
   "@rushstack/eslint-patch@1.10.4": {}
+
+  "@stablelib/base64@1.0.1": {}
+
+  "@stablelib/hex@1.0.1": {}
+
+  "@stablelib/utf8@1.0.2": {}
 
   "@swc/counter@0.1.3": {}
 
@@ -3590,6 +4003,14 @@ snapshots:
     dependencies:
       "@tanstack/query-core": 5.52.0
       react: 18.3.1
+
+  "@tanstack/react-virtual@3.10.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@tanstack/virtual-core": 3.10.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  "@tanstack/virtual-core@3.10.1": {}
 
   "@trpc/client@11.0.0-rc.482(@trpc/server@11.0.0-rc.482)":
     dependencies:
@@ -3942,6 +4363,8 @@ snapshots:
 
   client-only@0.0.1: {}
 
+  clsx@2.1.1: {}
+
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -3953,6 +4376,8 @@ snapshots:
   commander@12.1.0: {}
 
   commander@4.1.1: {}
+
+  commander@8.3.0: {}
 
   concat-map@0.0.1: {}
 
@@ -4052,6 +4477,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  dotenv@10.0.0: {}
 
   eastasianwidth@0.2.0: {}
 
@@ -4535,6 +4962,10 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
+  goober@2.1.14(csstype@3.1.3):
+    dependencies:
+      csstype: 3.1.3
+
   gopd@1.0.1:
     dependencies:
       get-intrinsic: 1.2.4
@@ -4568,6 +4999,8 @@ snapshots:
   husky@9.1.5: {}
 
   ignore@5.3.2: {}
+
+  immer@10.1.1: {}
 
   import-fresh@3.3.0:
     dependencies:
@@ -4932,6 +5365,8 @@ snapshots:
 
   object-keys@1.1.1: {}
 
+  object-path@0.11.8: {}
+
   object.assign@4.1.5:
     dependencies:
       call-bind: 1.0.7
@@ -5104,6 +5539,18 @@ snapshots:
 
   pretty-format@3.8.0: {}
 
+  prisma-field-encryption@1.5.2(@prisma/client@5.18.0(prisma@5.18.0)):
+    dependencies:
+      "@47ng/cloak": 1.1.0
+      "@prisma/client": 5.18.0(prisma@5.18.0)
+      "@prisma/generator-helper": 5.18.0
+      debug: 4.3.6
+      immer: 10.1.1
+      object-path: 0.11.8
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - supports-color
+
   prisma@5.18.0:
     dependencies:
       "@prisma/engines": 5.18.0
@@ -5123,6 +5570,14 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-hot-toast@2.4.1(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      goober: 2.1.14(csstype@3.1.3)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - csstype
 
   react-is@16.13.1: {}
 
@@ -5189,6 +5644,8 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  s-ago@2.2.0: {}
 
   safe-array-concat@1.1.2:
     dependencies:
@@ -5366,6 +5823,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  tabbable@6.2.0: {}
 
   tailwindcss@3.4.10:
     dependencies:

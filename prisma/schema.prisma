@@ -14,16 +14,56 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
+enum AccessRole {
+    ADMIN
+    ARTIST
+}
+
+enum ProfilePrivacy {
+    PRIVATE
+}
+
+model Access {
+    id                      String     @id @default(cuid())
+    provider                String
+    providerAccountId       String
+    providerAccountUsername String
+    role                    AccessRole
+    note                    String?
+}
+
+model Profile {
+    id        String         @id @default(cuid())
+    user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String         @unique
+    username  String         @unique
     name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    bio       String?
+    legalName String? /// @encrypted
+    country   String? /// @encrypted
+    email     String /// @encrypted
+    phone     String? /// @encrypted
+    pro       ProProfile?
+    links     ProfileLink[]
+    privacy   ProfilePrivacy
+}
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+model ProProfile {
+    id        String  @id @default(cuid())
+    profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profileId String  @unique
+    member    String /// @encrypted
+    country   String /// @encrypted
+    name      String /// @encrypted
+    number    String /// @encrypted
+}
 
-    @@index([name])
+model ProfileLink {
+    id        String  @id @default(cuid())
+    profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profileId String
+    type      String
+    url       String
 }
 
 // Necessary for Next auth
@@ -62,7 +102,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    profile       Profile?
 }
 
 model VerificationToken {
