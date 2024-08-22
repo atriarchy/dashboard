@@ -14,11 +14,12 @@ export function Auth({
   showIcon?: boolean;
 }) {
   return session ? (
-    <FontAwesomeIcon
-      icon={faSignOutAlt}
-      className="cursor-pointer text-white hover:text-red-200"
+    <button
+      className="text-white transition hover:text-red-200"
       onClick={async () => await signOut()}
-    />
+    >
+      <FontAwesomeIcon icon={faSignOutAlt} />
+    </button>
   ) : (
     <button
       onClick={async () => await signIn("discord")}

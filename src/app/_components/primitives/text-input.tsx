@@ -1,6 +1,6 @@
-import React, { ChangeEvent } from "react";
+import React, { type ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { type IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface TextInputProps {
   id: string;
