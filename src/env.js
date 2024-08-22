@@ -13,7 +13,6 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    DATA_ENCRYPTION_PASSPHRASE: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -38,6 +37,7 @@ export const env = createEnv({
     FILE_STORAGE_SECRET: z.string(),
     FILE_STORAGE_BUCKET: z.string(),
     FILE_STORAGE_PATH_STYLE: optionalBoolSchema,
+    PRISMA_FIELD_ENCRYPTION_KEY: z.string(),
   },
 
   /**
@@ -55,7 +55,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
-    DATA_ENCRYPTION_PASSPHRASE: process.env.DATA_ENCRYPTION_PASSPHRASE,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -69,6 +68,7 @@ export const env = createEnv({
     FILE_STORAGE_SECRET: process.env.FILE_STORAGE_SECRET,
     FILE_STORAGE_BUCKET: process.env.FILE_STORAGE_BUCKET,
     FILE_STORAGE_PATH_STYLE: process.env.FILE_STORAGE_PATH_STYLE,
+    PRISMA_FIELD_ENCRYPTION_KEY: process.env.PRISMA_FIELD_ENCRYPTION_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
