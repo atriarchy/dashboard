@@ -34,8 +34,8 @@ export default async function PublicProfile({
 
   return (
     <HydrateClient>
-      <main className="min-h-dvh w-dvw overflow-scroll bg-neutral-900 text-gray-200">
-        <div className="mx-auto flex min-h-dvh w-full max-w-screen-lg flex-col items-center justify-start gap-4 p-4">
+      <main className="min-h-dvh w-dvw overflow-y-auto bg-neutral-900 text-gray-200">
+        <div className="mx-auto flex min-h-dvh w-full max-w-screen-lg flex-col items-center justify-between gap-4 p-4">
           {profile ? (
             <>
               <div className="flex h-full w-full flex-col items-center justify-start gap-4">
@@ -48,7 +48,9 @@ export default async function PublicProfile({
                   </span>
                 </div>
                 {profile.bio && (
-                  <p className="text-center text-lg">{profile.bio}</p>
+                  <p className="whitespace-pre-wrap text-center text-lg">
+                    {profile.bio}
+                  </p>
                 )}
                 {profile.links.length > 0 && (
                   <div className="mt-4 flex items-center justify-start gap-4">

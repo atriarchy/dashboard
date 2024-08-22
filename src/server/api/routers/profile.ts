@@ -90,7 +90,7 @@ export const profileRouter = createTRPCRouter({
     .input(
       z.object({
         username: z.string().min(1).max(64),
-        name: z.string().min(1).max(256),
+        name: z.string().min(1).max(64),
         bio: z.string().max(1024).optional(),
         legalName: z.string().max(256).optional(),
         country: z.string().max(256).optional(),
@@ -170,42 +170,49 @@ export const profileRouter = createTRPCRouter({
 
           if (
             link.type === "SPOTIFY" &&
-            !url.hostname.endsWith("spotify.com")
+            (url.hostname !== "open.spotify.com" ||
+              !url.pathname.startsWith("/artist/"))
           ) {
             throw new Error("Invalid Spotify URL.");
           }
 
           if (
             link.type === "APPLE_MUSIC" &&
-            !url.hostname.endsWith("music.apple.com")
+            url.hostname !== "music.apple.com"
           ) {
             throw new Error("Invalid Apple Music URL.");
           }
 
           if (
             link.type === "YOUTUBE_MUSIC" &&
-            !url.hostname.endsWith("music.youtube.com")
+            (url.hostname !== "music.youtube.com" ||
+              !url.pathname.startsWith("/channel/"))
           ) {
             throw new Error("Invalid YouTube Music URL.");
           }
 
           if (
             link.type === "YOUTUBE" &&
-            (!url.hostname.endsWith("youtube.com") ||
-              url.hostname.endsWith("music.youtube.com"))
+            url.hostname !== "www.youtube.com" &&
+            url.hostname !== "youtube.com"
           ) {
             throw new Error("Invalid YouTube URL.");
           }
 
           if (
             link.type === "TWITTER" &&
-            !url.hostname.endsWith("twitter.com") &&
-            !url.hostname.endsWith("x.com")
+            url.hostname !== "twitter.com" &&
+            url.hostname !== "www.twitter.com" &&
+            url.hostname !== "x.com"
           ) {
             throw new Error("Invalid Twitter URL.");
           }
 
-          if (link.type === "TWITCH" && !url.hostname.endsWith("twitch.tv")) {
+          if (
+            link.type === "TWITCH" &&
+            url.hostname !== "www.twitch.tv" &&
+            url.hostname !== "twitch.tv"
+          ) {
             throw new Error("Invalid Twitch URL.");
           }
         });
