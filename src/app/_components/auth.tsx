@@ -4,31 +4,30 @@ import { signIn, signOut } from "next-auth/react";
 import type { Session } from "next-auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 export function Auth({
   session,
-  className,
   showIcon,
 }: {
   session: Session | null;
-  className: string;
   showIcon?: boolean;
 }) {
-  return (
+  return session ? (
+    <FontAwesomeIcon
+      icon={faSignOutAlt}
+      className="cursor-pointer text-white hover:text-red-200"
+      onClick={async () => await signOut()}
+    />
+  ) : (
     <button
-      className={className}
-      onClick={async () => {
-        if (session) {
-          await signOut();
-        } else {
-          await signIn("discord");
-        }
-      }}
+      onClick={async () => await signIn("discord")}
+      className="rounded bg-neutral-500 px-4 py-2 transition hover:bg-neutral-500/50"
     >
       {showIcon && (
         <FontAwesomeIcon icon={faDiscord} fixedWidth className="pr-2" />
       )}
-      {session ? "Sign Out" : "Login with Discord"}
+      Login with Discord
     </button>
   );
 }

@@ -34,11 +34,7 @@ export default async function Home() {
         <div className="flex w-1/2 flex-col items-center justify-center">
           <div className="flex h-full flex-col items-center justify-center gap-4 p-4">
             <h1 className="mb-8 text-4xl font-bold text-white">Login</h1>
-            <Auth
-              session={session}
-              className="rounded bg-neutral-500 px-4 py-2 transition hover:bg-neutral-500/50"
-              showIcon
-            />
+            <Auth session={session} showIcon />
           </div>
         </div>
       </main>
