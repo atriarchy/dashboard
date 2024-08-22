@@ -11,7 +11,7 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
   const access = await api.access.getAccess();
 
   return (
-    <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-gray-800 p-4 shadow-inner">
+    <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 p-4 shadow-inner">
       <div className="flex h-full w-full flex-col items-center justify-start gap-2">
         {access === "ADMIN" && <Access />}
 
