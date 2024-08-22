@@ -121,7 +121,13 @@ export function Profile({
 
           if (youtube) {
             try {
-              new URL(youtube);
+              const url = new URL(youtube);
+              if (
+                url.hostname !== "www.youtube.com" &&
+                url.hostname !== "youtube.com"
+              ) {
+                throw new Error("Invalid YouTube URL");
+              }
             } catch {
               toast.error("Invalid YouTube URL");
               return;
@@ -135,7 +141,14 @@ export function Profile({
 
           if (twitter) {
             try {
-              new URL(twitter);
+              const url = new URL(twitter);
+              if (
+                url.hostname !== "twitter.com" &&
+                url.hostname !== "www.twitter.com" &&
+                url.hostname !== "x.com"
+              ) {
+                throw new Error("Invalid Twitter URL");
+              }
             } catch {
               toast.error("Invalid Twitter URL");
               return;
@@ -149,7 +162,13 @@ export function Profile({
 
           if (twitch) {
             try {
-              new URL(twitch);
+              const url = new URL(twitch);
+              if (
+                url.hostname !== "www.twitch.tv" &&
+                url.hostname !== "twitch.tv"
+              ) {
+                throw new Error("Invalid Twitch URL");
+              }
             } catch {
               toast.error("Invalid Twitch URL");
               return;
@@ -163,7 +182,13 @@ export function Profile({
 
           if (spotify) {
             try {
-              new URL(spotify);
+              const url = new URL(spotify);
+              if (
+                url.hostname !== "open.spotify.com" ||
+                !url.pathname.startsWith("/artist/")
+              ) {
+                throw new Error("Invalid Spotify URL");
+              }
             } catch {
               toast.error("Invalid Spotify URL");
               return;
@@ -177,7 +202,10 @@ export function Profile({
 
           if (appleMusic) {
             try {
-              new URL(appleMusic);
+              const url = new URL(appleMusic);
+              if (url.hostname !== "music.apple.com") {
+                throw new Error("Invalid Apple Music URL");
+              }
             } catch {
               toast.error("Invalid Apple Music URL");
               return;
@@ -191,7 +219,13 @@ export function Profile({
 
           if (youtubeMusic) {
             try {
-              new URL(youtubeMusic);
+              const url = new URL(youtubeMusic);
+              if (
+                url.hostname !== "music.youtube.com" ||
+                !url.pathname.startsWith("/channel/")
+              ) {
+                throw new Error("Invalid YouTube Music URL");
+              }
             } catch {
               toast.error("Invalid YouTube Music URL");
               return;
