@@ -288,121 +288,121 @@ export function Profile({
         </div>
         <div className="flex w-full items-center justify-start gap-2">
           <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="youtube" className="text-md w-full font-semibold">
-              YouTube
-            </label>
-            <div className="relative w-full">
-              <input
-                id="youtube"
-                type="text"
-                value={youtube}
-                onChange={e => setYoutube(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="YouTube"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faYoutube} fixedWidth />
-              </span>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label htmlFor="youtube" className="text-md w-full font-semibold">
+                YouTube
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="youtube"
+                  type="text"
+                  value={youtube}
+                  onChange={e => setYoutube(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="YouTube"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faYoutube} fixedWidth />
+                </span>
+              </div>
+            </div>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label htmlFor="twitter" className="text-md w-full font-semibold">
+                Twitter
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="twitter"
+                  type="text"
+                  value={twitter}
+                  onChange={e => setTwitter(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="Twitter"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faTwitter} fixedWidth />
+                </span>
+              </div>
+            </div>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label htmlFor="twitch" className="text-md w-full font-semibold">
+                Twitch
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="twitch"
+                  type="text"
+                  value={twitch}
+                  onChange={e => setTwitch(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="Twitch"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faTwitch} fixedWidth />
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="spotify" className="text-md w-full font-semibold">
-              Spotify
-            </label>
-            <div className="relative w-full">
-              <input
-                id="spotify"
-                type="text"
-                value={spotify}
-                onChange={e => setSpotify(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="Spotify"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faSpotify} fixedWidth />
-              </span>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label htmlFor="spotify" className="text-md w-full font-semibold">
+                Spotify
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="spotify"
+                  type="text"
+                  value={spotify}
+                  onChange={e => setSpotify(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="Spotify"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faSpotify} fixedWidth />
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="flex w-full items-center justify-start gap-2">
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="twitter" className="text-md w-full font-semibold">
-              Twitter
-            </label>
-            <div className="relative w-full">
-              <input
-                id="twitter"
-                type="text"
-                value={twitter}
-                onChange={e => setTwitter(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="Twitter"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faTwitter} fixedWidth />
-              </span>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label
+                htmlFor="appleMusic"
+                className="text-md w-full font-semibold"
+              >
+                Apple Music
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="appleMusic"
+                  type="text"
+                  value={appleMusic}
+                  onChange={e => setAppleMusic(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="Apple Music"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faApple} fixedWidth />
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label
-              htmlFor="appleMusic"
-              className="text-md w-full font-semibold"
-            >
-              Apple Music
-            </label>
-            <div className="relative w-full">
-              <input
-                id="appleMusic"
-                type="text"
-                value={appleMusic}
-                onChange={e => setAppleMusic(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="Apple Music"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faApple} fixedWidth />
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex w-full items-center justify-start gap-2">
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label htmlFor="twitch" className="text-md w-full font-semibold">
-              Twitch
-            </label>
-            <div className="relative w-full">
-              <input
-                id="twitch"
-                type="text"
-                value={twitch}
-                onChange={e => setTwitch(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="Twitch"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faTwitch} fixedWidth />
-              </span>
-            </div>
-          </div>
-          <div className="flex w-full flex-col items-center justify-start gap-2">
-            <label
-              htmlFor="youtubeMusic"
-              className="text-md w-full font-semibold"
-            >
-              YouTube Music
-            </label>
-            <div className="relative w-full">
-              <input
-                id="youtubeMusic"
-                type="text"
-                value={youtubeMusic}
-                onChange={e => setYoutubeMusic(e.target.value)}
-                className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
-                placeholder="YouTube Music"
-              />
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
-                <FontAwesomeIcon icon={faYoutube} fixedWidth />
-              </span>
+            <div className="flex w-full flex-col items-center justify-start gap-2">
+              <label
+                htmlFor="youtubeMusic"
+                className="text-md w-full font-semibold"
+              >
+                YouTube Music
+              </label>
+              <div className="relative w-full">
+                <input
+                  id="youtubeMusic"
+                  type="text"
+                  value={youtubeMusic}
+                  onChange={e => setYoutubeMusic(e.target.value)}
+                  className="w-full rounded-lg bg-gray-700 py-2 pl-8 pr-2"
+                  placeholder="YouTube Music"
+                />
+                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                  <FontAwesomeIcon icon={faYoutube} fixedWidth />
+                </span>
+              </div>
             </div>
           </div>
         </div>
