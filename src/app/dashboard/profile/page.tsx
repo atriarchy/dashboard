@@ -24,7 +24,7 @@ export default async function ProfilePage() {
       <main className="h-dvh w-dvw bg-gray-950 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar selected="PROFILE" />
-          <div className="flex h-full w-full grow flex-col items-start justify-start gap-2 p-4">
+          <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-scroll p-4">
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               My Profile
             </h1>

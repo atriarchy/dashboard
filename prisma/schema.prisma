@@ -20,7 +20,6 @@ enum AccessRole {
 }
 
 enum ProfilePrivacy {
-    PUBLIC
     PRIVATE
 }
 
@@ -34,18 +33,29 @@ model Access {
 }
 
 model Profile {
-    id          String         @id @default(cuid())
-    user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String         @unique
-    username    String         @unique
-    name        String
-    bio         String?
-    firstName   String? /// @encrypted
-    lastName    String? /// @encrypted
-    country     String? /// @encrypted
-    ascapNumber String? /// @encrypted
-    links       ProfileLink[]
-    privacy     ProfilePrivacy
+    id        String         @id @default(cuid())
+    user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String         @unique
+    username  String         @unique
+    name      String
+    bio       String?
+    legalName String? /// @encrypted
+    country   String? /// @encrypted
+    email     String /// @encrypted
+    phone     String? /// @encrypted
+    pro       ProProfile?
+    links     ProfileLink[]
+    privacy   ProfilePrivacy
+}
+
+model ProProfile {
+    id        String  @id @default(cuid())
+    profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profileId String  @unique
+    member    String /// @encrypted
+    country   String /// @encrypted
+    name      String /// @encrypted
+    number    String /// @encrypted
 }
 
 model ProfileLink {

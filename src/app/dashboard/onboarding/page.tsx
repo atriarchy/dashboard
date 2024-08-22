@@ -31,7 +31,7 @@ export default async function Onboarding() {
               "Let's get you set up with your Artist profile. Once your set up, you can share your profile and contribute to Atriarchy albums."
             }
           </p>
-          <Profile onboarding />
+          <Profile onboarding email={session.user.email} />
         </div>
       </main>
     </HydrateClient>
