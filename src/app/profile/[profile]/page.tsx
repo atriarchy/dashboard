@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import {
@@ -10,6 +11,29 @@ import {
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { profile: string };
+}): Promise<Metadata> {
+  const profile = await api.profile.getPublicProfile({
+    username: params.profile,
+  });
+
+  if (!profile) {
+    return {
+      title: "Profile not found - Atriarchy Release Dashboard",
+      description: "The profile you are looking for could not be found.",
+    };
+  }
+
+  return {
+    title: `${profile.name} (@${profile.username}) - Atriarchy Studios`,
+    description: `${profile.bio || `${profile.name}'s artist profile on the Atriarchy Release Dashboard.`}`,
+    icons: [{ rel: "icon", url: "/favicon.ico" }],
+  };
+}
 
 export default async function PublicProfile({
   params,
