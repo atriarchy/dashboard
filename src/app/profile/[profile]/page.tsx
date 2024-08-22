@@ -7,6 +7,7 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default async function PublicProfile({
   params,
@@ -35,7 +36,7 @@ export default async function PublicProfile({
               {profile.links.length > 0 && (
                 <div className="mt-4 flex items-center justify-start gap-4">
                   {profile.links.map((link, index) => (
-                    <a
+                    <Link
                       key={index}
                       href={link.url}
                       target="_blank"
@@ -59,7 +60,7 @@ export default async function PublicProfile({
                       {link.type === "YOUTUBE_MUSIC" && (
                         <FontAwesomeIcon icon={faYoutube} />
                       )}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}

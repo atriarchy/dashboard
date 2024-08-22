@@ -13,6 +13,7 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 export type ProfileType = {
   id: string;
@@ -101,14 +102,14 @@ export function Profile({
   return (
     <div className="flex w-full flex-col items-start justify-start gap-2">
       {currentUsername && (
-        <a
+        <Link
           href={`/@${currentUsername}`}
           target="_blank"
           className="flex items-center justify-center gap-2"
         >
           <FontAwesomeIcon icon={faLink} fixedWidth />
           <span>@{currentUsername}</span>
-        </a>
+        </Link>
       )}
       <form
         onSubmit={e => {
