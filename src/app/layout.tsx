@@ -9,6 +9,11 @@ import { Toaster } from "react-hot-toast";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
+import Head from "next/head";
+import { env } from "@/env";
+
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
@@ -22,12 +27,27 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
+      <Head>
+        {env.NODE_ENV == "production" && (
+          <script
+            defer
+            src="https://analytics.atriarchy.work/script.js"
+            data-website-id="6cdd7703-0720-4693-86da-dd6f67440a2a"
+          ></script>
+        )}
+      </Head>
       <body>
         <TRPCReactProvider>
           <div>
             <Toaster />
           </div>
           {children}
+          {env.NODE_ENV == "production" && (
+            <>
+              <Analytics />
+              <SpeedInsights />
+            </>
+          )}
         </TRPCReactProvider>
       </body>
     </html>
