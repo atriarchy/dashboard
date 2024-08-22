@@ -28,7 +28,9 @@ export async function generateMetadata({
       },
       title: "Profile not found.",
       description: "The profile you are looking for could not be found.",
-      themeColor: "#171717",
+      other: {
+        ["theme-color"]: "#171717",
+      },
     };
   }
 
@@ -40,7 +42,9 @@ export async function generateMetadata({
     title: `${profile.name} (@${profile.username})`,
     description: `${profile.bio ?? `${profile.name}'s artist profile on Atriarchy Studios.`}`,
     icons: [{ rel: "icon", url: "/favicon.ico" }],
-    themeColor: "#171717",
+    other: {
+      ["theme-color"]: "#171717",
+    },
   };
 }
 

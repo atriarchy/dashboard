@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description:
     "The Atriarchy Release Dashboard streamlines communication, collaboration, and tracking throughout the release pipeline for Atriarchy community projects.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  other: {
+    ["theme-color"]: "#171717",
+  },
 };
 
 export default function RootLayout({
