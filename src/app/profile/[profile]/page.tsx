@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import {
@@ -10,6 +11,42 @@ import {
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { profile: string };
+}): Promise<Metadata> {
+  const profile = await api.profile.getPublicProfile({
+    username: params.profile,
+  });
+
+  if (!profile) {
+    return {
+      openGraph: {
+        siteName: "Atriarchy Studios",
+      },
+      title: "Profile not found.",
+      description: "The profile you are looking for could not be found.",
+      other: {
+        ["theme-color"]: "#171717",
+      },
+    };
+  }
+
+  return {
+    openGraph: {
+      siteName: "Atriarchy Studios",
+      images: profile.avatar ?? undefined,
+    },
+    title: `${profile.name} (@${profile.username})`,
+    description: `${profile.bio ?? `${profile.name}'s artist profile on Atriarchy Studios.`}`,
+    icons: [{ rel: "icon", url: "/favicon.ico" }],
+    other: {
+      ["theme-color"]: "#171717",
+    },
+  };
+}
 
 export default async function PublicProfile({
   params,
@@ -40,6 +77,16 @@ export default async function PublicProfile({
             <>
               <div className="flex h-full w-full flex-col items-center justify-start gap-4">
                 <div className="flex flex-col items-center justify-start gap-1">
+                  {profile.avatar && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={profile.avatar}
+                        alt="Profile Picture"
+                        className="mb-2 h-16 w-16 rounded-full"
+                      />
+                    </>
+                  )}
                   <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-center text-3xl font-bold text-transparent">
                     {profile.name}
                   </h1>

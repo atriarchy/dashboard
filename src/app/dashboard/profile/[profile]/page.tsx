@@ -36,7 +36,7 @@ export default async function AdminProfilePage({
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar selected="PROFILE" />
-          <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-scroll p-4">
+          <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {profile ? (
               <>
                 <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
