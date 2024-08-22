@@ -226,7 +226,9 @@ export const profileRouter = createTRPCRouter({
           },
         });
 
-        return;
+        return {
+          username: data.username,
+        };
       }
 
       await ctx.db.proProfile.upsert({
@@ -248,6 +250,8 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
-      return;
+      return {
+        username: data.username,
+      };
     }),
 });

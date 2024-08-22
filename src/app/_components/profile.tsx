@@ -12,6 +12,7 @@ import {
   faTwitter,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 export type ProfileType = {
   id: string;
@@ -82,13 +83,15 @@ export function Profile({
   const [proCountry, setProCountry] = useState(profile?.pro?.country ?? "");
   const [proName, setProName] = useState(profile?.pro?.name ?? "");
   const [proNumber, setProNumber] = useState(profile?.pro?.number ?? "");
+  const [currentUsername, setCurrentUsername] = useState(profile?.username);
 
   const updateProfile = api.profile.updateProfile.useMutation({
-    onSuccess: () => {
+    onSuccess: data => {
       toast.success("Profile updated!");
       if (onboarding) {
         router.push("/dashboard");
       }
+      setCurrentUsername(data.username);
     },
     onError: error => {
       toast.error(error.message);
@@ -96,7 +99,17 @@ export function Profile({
   });
 
   return (
-    <div className="flex w-full flex-col items-center justify-start gap-2">
+    <div className="flex w-full flex-col items-start justify-start gap-2">
+      {currentUsername && (
+        <a
+          href={`/@${currentUsername}`}
+          target="_blank"
+          className="flex items-center justify-center gap-2"
+        >
+          <FontAwesomeIcon icon={faLink} fixedWidth />
+          <span>@{currentUsername}</span>
+        </a>
+      )}
       <form
         onSubmit={e => {
           e.preventDefault();
