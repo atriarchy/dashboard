@@ -1,9 +1,9 @@
 import { getServerAuthSession } from "@/server/auth";
 import { faCircleUser, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Access } from "./access";
+import { Access } from "@/app/_components/access";
 import Link from "next/link";
-import { Auth } from "./auth";
+import { Auth } from "@/app/_components/auth";
 import { api } from "@/trpc/server";
 import Image from "next/image";
 import logo from "@/assets/atriarchy-light.png";

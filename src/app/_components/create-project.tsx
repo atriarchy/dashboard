@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
-import TextInput from "./primitives/text-input";
+import TextInput from "@/app/_components/primitives/text-input";
 
 export function CreateProject() {
   const router = useRouter();

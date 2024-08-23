@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 
 import { api } from "@/trpc/react";
-import { CreateProject } from "./create-project";
+import { CreateProject } from "@/app/_components/create-project";
 
 export function Projects({ access }: { access?: "ADMIN" | null }) {
   const projects = api.project.getProjects.useInfiniteQuery(
