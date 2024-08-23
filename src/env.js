@@ -53,7 +53,8 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: z
       .string()
       .url()
-      .refine(url => !url.endsWith("/")),
+      .refine(url => !url.endsWith("/"))
+      .optional(),
   },
 
   /**
