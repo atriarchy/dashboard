@@ -107,10 +107,15 @@ export function Profile({
       {currentUsername && (
         <div
           className="mb-6 flex cursor-pointer items-center justify-center gap-2"
-          onClick={() => {
-            const link = `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`;
-            navigator.clipboard.writeText(link);
-            toast.success("Link copied to clipboard!");
+          onClick={async () => {
+            try {
+              const link = `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`;
+              await navigator.clipboard.writeText(link);
+              toast.success("Link copied to clipboard!");
+            } catch (err) {
+              console.error("Failed to copy the link:", err);
+              window.open(`https://yoursite.com/@${currentUsername}`, "_blank");
+            }
           }}
         >
           <FontAwesomeIcon icon={faLink} fixedWidth />
