@@ -78,12 +78,7 @@ export const env = createEnv({
     PRISMA_FIELD_ENCRYPTION_KEY: process.env.PRISMA_FIELD_ENCRYPTION_KEY,
     // Client:
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
-    // If there is a NEXT_PUBLIC_VERCEL_URL set, use that like NextAuth.js does
-    NEXT_PUBLIC_BASE_URL:
-      process.env.NODE_ENV === "production"
-        ? (process.env.NEXT_PUBLIC_BASE_URL ??
-          process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL)
-        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
