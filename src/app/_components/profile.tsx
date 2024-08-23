@@ -13,8 +13,8 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import TextInput from "./primitives/text-input";
+import TextInput from "@/app/_components/primitives/text-input";
+import { env } from "@/env";
 
 export type ProfileType = {
   id: string;
@@ -105,14 +105,19 @@ export function Profile({
   return (
     <div className="flex w-full flex-col items-start justify-start gap-2">
       {currentUsername && (
-        <Link
-          href={`/@${currentUsername}`}
-          className="mb-6 flex items-center justify-center gap-2"
+        <div
+          className="mb-6 flex cursor-pointer items-center justify-center gap-2"
+          onClick={() => {
+            const link = `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`;
+            navigator.clipboard.writeText(link);
+            toast.success("Link copied to clipboard!");
+          }}
         >
           <FontAwesomeIcon icon={faLink} fixedWidth />
           <span>@{currentUsername}</span>
-        </Link>
+        </div>
       )}
+
       <form
         onSubmit={e => {
           e.preventDefault();
