@@ -53,7 +53,7 @@ model Profile {
     links     ProfileLink[]
     privacy   ProfilePrivacy
     createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
+    updatedAt DateTime       @default(now()) @updatedAt
 }
 
 model ProProfile {
@@ -83,7 +83,7 @@ model Project {
     status      ProjectStatus
     agreements  Agreement[]
     createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
+    updatedAt   DateTime      @default(now()) @updatedAt
 }
 
 model Agreement {
