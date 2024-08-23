@@ -22,7 +22,7 @@ const TextInput = ({
   onChange,
   placeholder = "",
   maxLength,
-  className = "w-full rounded-lg border border-slate-300 bg-white py-2 pl-2 pr-8 text-slate-900",
+  className = "w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900",
   icon,
   readOnly = false,
   required = false,
@@ -43,7 +43,7 @@ const TextInput = ({
           type="text"
           value={value}
           onChange={onChange}
-          className={`${className} ${icon ? "pl-8" : ""}`}
+          className={`${className} ${icon ? "pl-8" : ""} ${maxLength ? "pr-8" : ""}`}
           placeholder={placeholder}
           maxLength={maxLength}
           required={required}

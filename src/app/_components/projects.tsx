@@ -20,7 +20,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
         <span className="text-lg font-medium">{projects.error.message}</span>
       ) : (
         <>
-          <div className="flex items-start justify-center gap-4">
+          <div className="flex items-start justify-start gap-4">
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Projects
             </h1>
