@@ -83,13 +83,15 @@ export const projectRouter = createTRPCRouter({
       }
 
       if (input.thumbnail) {
+        const key = !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
+          ? crypto.randomBytes(32).toString("hex")
+          : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`;
+
         const url = await getSignedUrl(
           ctx.s3,
           new PutObjectCommand({
             Bucket: env.FILE_STORAGE_BUCKET,
-            Key: !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
-              ? crypto.randomBytes(32).toString("hex")
-              : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`,
+            Key: key,
             ContentType: input.thumbnail.fileType,
             ContentLength: input.thumbnail.fileSize,
             ChecksumSHA256: input.thumbnail.checksum,
@@ -104,7 +106,7 @@ export const projectRouter = createTRPCRouter({
           data: {
             projectId: project.id,
             userId: ctx.session.user.id,
-            url: url.split("?")[0]!,
+            key: key,
           },
         });
 
@@ -140,6 +142,9 @@ export const projectRouter = createTRPCRouter({
             ? { status: { in: ["ACTIVE", "RELEASED"] } }
             : undefined,
         orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+        include: {
+          thumbnail: true,
+        },
       });
 
       let cursor;
@@ -150,21 +155,59 @@ export const projectRouter = createTRPCRouter({
 
       return {
         cursor: cursor,
-        data: data,
+        data: data.map(project => ({
+          username: project.username,
+          title: project.title,
+          description: project.description,
+          deadline: project.deadline,
+          status: project.status,
+          thumbnail: project.thumbnail
+            ? `${env.FILE_STORAGE_CDN_URL}/${project.thumbnail.key}`
+            : undefined,
+        })),
       };
     }),
 
   getProject: protectedProcedure
-    .input(z.object({ id: z.string().cuid2() }))
+    .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const access = await accessCheck(ctx);
 
-      return ctx.db.project.findUnique({
+      const data = await ctx.db.project.findFirst({
         where:
           access !== "ADMIN"
-            ? { id: input.id, status: { in: ["ACTIVE", "RELEASED"] } }
-            : { id: input.id },
+            ? {
+                username: {
+                  equals: input.username,
+                  mode: "insensitive",
+                },
+                status: { in: ["ACTIVE", "RELEASED"] },
+              }
+            : {
+                username: {
+                  equals: input.username,
+                  mode: "insensitive",
+                },
+              },
+        include: {
+          thumbnail: true,
+        },
       });
+
+      if (!data) {
+        throw new Error("Project not found.");
+      }
+
+      return {
+        username: data.username,
+        title: data.title,
+        description: data.description,
+        deadline: data.deadline,
+        status: data.status,
+        thumbnail: data.thumbnail
+          ? `${env.FILE_STORAGE_CDN_URL}/${data.thumbnail.key}`
+          : undefined,
+      };
     }),
 
   updateProject: protectedProcedure

@@ -93,7 +93,7 @@ model ProjectThumbnail {
     projectId String  @unique
     user      User    @relation(fields: [userId], references: [id])
     userId    String
-    url       String
+    key       String
 }
 
 model Agreement {

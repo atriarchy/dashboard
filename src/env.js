@@ -30,7 +30,7 @@ export const env = createEnv({
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
     DISCORD_TOKEN: z.string(),
-    FILE_STORAGE_CDN_URL: z.string().optional(),
+    FILE_STORAGE_CDN_URL: z.string(),
     FILE_STORAGE_ENDPOINT: z.string(),
     FILE_STORAGE_KEY: z.string(),
     FILE_STORAGE_REGION: z.string(),

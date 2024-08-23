@@ -32,7 +32,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                 {group?.data.map(project => (
                   <Link
                     href={`/dashboard/project/${project.username}`}
-                    key={project.id}
+                    key={project.username}
                     className="w-full break-words rounded-lg bg-gray-800 px-4 py-2 transition-colors hover:bg-gray-800/80 disabled:bg-gray-800/50"
                   >
                     {project.title}
