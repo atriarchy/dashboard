@@ -17,6 +17,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
+import FileUpload from "./primitives/file-upload";
 
 export function CreateProject() {
   const router = useRouter();
@@ -27,7 +28,6 @@ export function CreateProject() {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [thumbnail, setThumbnail] = useState<File | undefined>();
-  const [thumbnailURL, setThumbnailURL] = useState<string | undefined>();
 
   const initalFocusRef = useRef(null);
 
@@ -202,67 +202,20 @@ export function CreateProject() {
                           placeholder="Deadline"
                         />
                       </div>
-                      <div className="flex w-full flex-col items-center justify-start gap-2">
-                        <label
-                          htmlFor="thumbnail"
-                          className="text-md w-full font-semibold"
-                        >
-                          Thumbnail
-                        </label>
-                        {thumbnailURL && (
-                          <>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={thumbnailURL}
-                              alt="Thumbnail"
-                              className="w-full rounded-lg"
-                            />
-                            <button
-                              onClick={() => {
-                                if (thumbnailURL) {
-                                  URL.revokeObjectURL(thumbnailURL);
-                                }
-
-                                setThumbnail(undefined);
-                                setThumbnailURL(undefined);
-                              }}
-                              className="w-full rounded-lg bg-red-500 p-2 transition hover:bg-red-700"
-                            >
-                              Remove
-                            </button>
-                          </>
+                      <FileUpload
+                        id="thumbnail"
+                        label="Thumbnail"
+                        accept={["image/png", "image/jpeg"]}
+                        setFile={setThumbnail}
+                        preview={thumbnailURL => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={thumbnailURL}
+                            alt="Thumbnail"
+                            className="h-full w-full rounded-lg object-cover"
+                          />
                         )}
-                        <button
-                          type="button"
-                          id="thumbnail"
-                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 transition hover:bg-white/50"
-                          onClick={() =>
-                            document.getElementById("thumbnailInput")?.click()
-                          }
-                        >
-                          Upload
-                        </button>
-                        <input
-                          type="file"
-                          accept="image/png,image/jpeg"
-                          id="thumbnailInput"
-                          onChange={e => {
-                            const file = e.target.files?.[0];
-
-                            e.target.value = "";
-
-                            if (!file) return;
-
-                            if (thumbnailURL) {
-                              URL.revokeObjectURL(thumbnailURL);
-                            }
-
-                            setThumbnail(file);
-                            setThumbnailURL(URL.createObjectURL(file));
-                          }}
-                          className="hidden"
-                        />
-                      </div>
+                      />
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
