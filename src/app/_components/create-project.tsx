@@ -49,7 +49,7 @@ export function CreateProject() {
           }
         );
       }
-      router.push(`/dashboard/project/${username}`);
+      router.push(`/dashboard/projects/${username}`);
     },
     onError: error => {
       toast.error(error.message);
