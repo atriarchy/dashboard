@@ -87,7 +87,9 @@ export const projectRouter = createTRPCRouter({
           ctx.s3,
           new PutObjectCommand({
             Bucket: env.FILE_STORAGE_BUCKET,
-            Key: crypto.randomBytes(32).toString("hex"),
+            Key: !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
+              ? crypto.randomBytes(32).toString("hex")
+              : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`,
             ContentType: input.thumbnail.fileType,
             ContentLength: input.thumbnail.fileSize,
             ChecksumSHA256: input.thumbnail.checksum,
