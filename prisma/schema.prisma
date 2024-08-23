@@ -23,6 +23,12 @@ enum ProfilePrivacy {
     PRIVATE
 }
 
+enum ProjectStatus {
+    DRAFT
+    ACTIVE
+    RELEASED
+}
+
 model Access {
     id                      String     @id @default(cuid())
     provider                String
@@ -46,6 +52,8 @@ model Profile {
     pro       ProProfile?
     links     ProfileLink[]
     privacy   ProfilePrivacy
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
 }
 
 model ProProfile {
@@ -64,6 +72,37 @@ model ProfileLink {
     profileId String
     type      String
     url       String
+}
+
+model Project {
+    id          String        @id @default(cuid())
+    username    String        @unique
+    title       String
+    description String?
+    deadline    DateTime?
+    status      ProjectStatus
+    agreements  Agreement[]
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+}
+
+model Agreement {
+    id         String              @id @default(cuid())
+    project    Project             @relation(fields: [projectId], references: [id])
+    projectId  String
+    templateId String
+    documents  AgreementDocument[]
+}
+
+model AgreementDocument {
+    id          String    @id @default(cuid())
+    agreement   Agreement @relation(fields: [agreementId], references: [id])
+    agreementId String
+    user        User      @relation(fields: [userId], references: [id])
+    userId      String
+    email       String
+    documentId  String
+    signingUrl  String
 }
 
 // Necessary for Next auth
@@ -95,14 +134,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    profile       Profile?
+    id                String              @id @default(cuid())
+    name              String?
+    email             String?             @unique
+    emailVerified     DateTime?
+    image             String?
+    accounts          Account[]
+    sessions          Session[]
+    profile           Profile?
+    AgreementDocument AgreementDocument[]
 }
 
 model VerificationToken {

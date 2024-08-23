@@ -15,5 +15,5 @@ export default async function Dashboard() {
     return redirect("/dashboard/onboarding");
   }
 
-  return redirect("/dashboard/profile");
+  return redirect("/dashboard/projects");
 }
