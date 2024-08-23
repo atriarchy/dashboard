@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
-import { env } from "@/env";
+import { getPublicUrl } from "@/utils/url";
 
 export type ProfileType = {
   id: string;
@@ -109,15 +109,12 @@ export function Profile({
           className="mb-6 flex cursor-pointer items-center justify-center gap-2"
           onClick={async () => {
             try {
-              const link = `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`;
+              const link = `${getPublicUrl()}/@${currentUsername}`;
               await navigator.clipboard.writeText(link);
               toast.success("Link copied to clipboard!");
             } catch (err) {
               console.error("Failed to copy the link:", err);
-              window.open(
-                `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`,
-                "_blank"
-              );
+              window.open(`${getPublicUrl()}/@${currentUsername}`, "_blank");
             }
           }}
         >
