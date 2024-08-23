@@ -114,7 +114,10 @@ export function Profile({
               toast.success("Link copied to clipboard!");
             } catch (err) {
               console.error("Failed to copy the link:", err);
-              window.open(`https://yoursite.com/@${currentUsername}`, "_blank");
+              window.open(
+                `${env.NEXT_PUBLIC_BASE_URL}/@${currentUsername}`,
+                "_blank"
+              );
             }
           }}
         >
