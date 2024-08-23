@@ -30,7 +30,7 @@ export function CreateProject() {
 
   const createProject = api.project.createProject.useMutation({
     onSuccess: ({ username }) => {
-      router.push(`dashboard/project/${username}`);
+      router.push(`/dashboard/project/${username}`);
     },
     onError: error => {
       toast.error(error.message);
