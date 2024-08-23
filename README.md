@@ -48,12 +48,12 @@ Create a [Discord application](https://discord.com/developers/applications), set
 3. Copy `.env.example` to `.env` and open your copy in a text editor and fill it:
    1. The Next Auth secret (`NEXTAUTH_SECRET`) has to be filled with a 32-byte Base64-encoded secret. See [Generate secrets](#generate-secrets) below.
    2. The data encryption passphrase (`PRISMA_FIELD_ENCRYPTION_KEY`) has to be filled with an AES-GCM 256 key. See [Generate secrets](#generate-secrets) below.
-4. Push the database schema to the new database using `pnpm prisma db push`.
+4. Push the database schema to the new database using `pnpm db:push`.
 5. Start the dev server using `pnpm dev`
 6. The website should be running at `http://localhost:3000/` (open in browser)
 
 - Learn more about the stack at [Create T3 App - Introduction](https://create.t3.gg/en/introduction)
-- You can use the Prisma Studio to view your database. Launch it with `pnpm prisma studio`
+- You can use the Prisma Studio to view your database. Launch it with `pnpm db:studio`
 
 ### Generate secrets
 

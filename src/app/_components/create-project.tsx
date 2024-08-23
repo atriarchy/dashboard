@@ -16,6 +16,7 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
+import { computeSHA256 } from "@/app/_helpers/crypto";
 
 export function CreateProject() {
   const router = useRouter();
@@ -25,11 +26,29 @@ export function CreateProject() {
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [thumbnail, setThumbnail] = useState<File | undefined>();
+  const [thumbnailURL, setThumbnailURL] = useState<string | undefined>();
 
   const initalFocusRef = useRef(null);
 
   const createProject = api.project.createProject.useMutation({
-    onSuccess: ({ username }) => {
+    onSuccess: async ({ username, upload }) => {
+      if (upload && thumbnail) {
+        await toast.promise(
+          fetch(upload.url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": thumbnail.type,
+            },
+            body: thumbnail,
+          }),
+          {
+            loading: "Uploading...",
+            success: "Uploaded.",
+            error: "Error uploading.",
+          }
+        );
+      }
       router.push(`/dashboard/project/${username}`);
     },
     onError: error => {
@@ -100,7 +119,7 @@ export function CreateProject() {
                     <form
                       id="createProject"
                       className="flex flex-col items-start justify-start gap-2"
-                      onSubmit={e => {
+                      onSubmit={async e => {
                         e.preventDefault();
 
                         if (createProject.isPending) return;
@@ -111,6 +130,13 @@ export function CreateProject() {
                           description: description || undefined,
                           deadline: deadline
                             ? new Date(deadline).toISOString()
+                            : undefined,
+                          thumbnail: thumbnail
+                            ? {
+                                fileType: thumbnail.type,
+                                fileSize: thumbnail.size,
+                                checksum: await computeSHA256(thumbnail),
+                              }
                             : undefined,
                         });
                       }}
@@ -174,6 +200,67 @@ export function CreateProject() {
                           onChange={e => setDeadline(e.target.value)}
                           className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
                           placeholder="Deadline"
+                        />
+                      </div>
+                      <div className="flex w-full flex-col items-center justify-start gap-2">
+                        <label
+                          htmlFor="thumbnail"
+                          className="text-md w-full font-semibold"
+                        >
+                          Thumbnail
+                        </label>
+                        {thumbnailURL && (
+                          <>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={thumbnailURL}
+                              alt="Thumbnail"
+                              className="w-full rounded-lg"
+                            />
+                            <button
+                              onClick={() => {
+                                if (thumbnailURL) {
+                                  URL.revokeObjectURL(thumbnailURL);
+                                }
+
+                                setThumbnail(undefined);
+                                setThumbnailURL(undefined);
+                              }}
+                              className="w-full rounded-lg bg-red-500 p-2 transition hover:bg-red-700"
+                            >
+                              Remove
+                            </button>
+                          </>
+                        )}
+                        <button
+                          type="button"
+                          id="thumbnail"
+                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 transition hover:bg-white/50"
+                          onClick={() =>
+                            document.getElementById("thumbnailInput")?.click()
+                          }
+                        >
+                          Upload
+                        </button>
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg"
+                          id="thumbnailInput"
+                          onChange={e => {
+                            const file = e.target.files?.[0];
+
+                            e.target.value = "";
+
+                            if (!file) return;
+
+                            if (thumbnailURL) {
+                              URL.revokeObjectURL(thumbnailURL);
+                            }
+
+                            setThumbnail(file);
+                            setThumbnailURL(URL.createObjectURL(file));
+                          }}
+                          className="hidden"
                         />
                       </div>
                     </form>
