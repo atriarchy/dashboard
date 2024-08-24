@@ -60,11 +60,16 @@ export const agreementRouter = createTRPCRouter({
       const data = (await response.json()) as {
         Recipient: {
           id: number;
+          role: string;
         }[];
       };
 
-      if (data.Recipient.length < 1) {
-        throw new Error("No recipients.");
+      const recipient = data.Recipient.find(
+        recipient => recipient.role === "SIGNER"
+      );
+
+      if (!recipient) {
+        throw new Error("No recipient found.");
       }
 
       await ctx.db.agreement.create({
@@ -73,7 +78,7 @@ export const agreementRouter = createTRPCRouter({
           title: input.title,
           description: input.description,
           templateId: input.agreement,
-          recipientId: data.Recipient[0]!.id,
+          recipientId: recipient.id,
         },
       });
 
@@ -218,6 +223,7 @@ export const agreementRouter = createTRPCRouter({
         recipients: {
           email: string;
           signingUrl: string;
+          role: string;
         }[];
       };
 
@@ -226,8 +232,12 @@ export const agreementRouter = createTRPCRouter({
         throw new Error("Failed to generate document.");
       }
 
-      if (data.recipients.length < 1) {
-        throw new Error("No recipients.");
+      const recipient = data.recipients.find(
+        recipient => recipient.role === "SIGNER"
+      );
+
+      if (!recipient) {
+        throw new Error("No recipient found.");
       }
 
       const sendResponse = await fetch(
@@ -253,11 +263,11 @@ export const agreementRouter = createTRPCRouter({
           agreementId: agreement.id,
           userId: ctx.session.user.id,
           documentId: data.documentId,
-          email: data.recipients[0]!.email,
-          signingUrl: data.recipients[0]!.signingUrl,
+          email: recipient.email,
+          signingUrl: recipient.signingUrl,
         },
       });
 
-      return data.recipients[0]!.signingUrl;
+      return recipient.signingUrl;
     }),
 });
