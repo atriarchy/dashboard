@@ -95,6 +95,21 @@ export const agreementRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const project = await ctx.db.project.findFirst({
+        where: {
+          username: {
+            equals: input.project,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (!project || (project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Project not found.");
+      }
+
       const agreements = await ctx.db.agreement.findMany({
         where: {
           project: {
@@ -155,6 +170,8 @@ export const agreementRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
       const document = await ctx.db.agreementDocument.findFirst({
         where: {
           agreementId: input.agreement,
@@ -178,7 +195,10 @@ export const agreementRouter = createTRPCRouter({
         },
       });
 
-      if (!agreement) {
+      if (
+        !agreement ||
+        (agreement.project.status === "DRAFT" && access !== "ADMIN")
+      ) {
         throw new Error("Agreement not found.");
       }
 
