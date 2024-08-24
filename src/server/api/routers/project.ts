@@ -1,33 +1,35 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import crypto from "crypto";
 import { env } from "@/env";
+import { getUploadURL } from "@/server/s3";
 
 const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB
+const projectValidation = z.object({
+  title: z.string().min(1).max(64),
+  username: z.string().min(1).max(64),
+  description: z.string().min(1).max(1024).optional(),
+  deadline: z.string().datetime().optional(),
+  discordChannelId: z.string().regex(/^\d+$/).optional(),
+  thumbnail: z
+    .object({
+      fileType: z.string(),
+      fileSize: z.number(),
+      checksum: z.string(),
+    })
+    .optional(),
+});
+
+type ProjectMutation = {
+  username: string;
+  upload?: { url: string };
+};
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
-    .input(
-      z.object({
-        title: z.string().min(1).max(64),
-        username: z.string().min(1).max(64),
-        description: z.string().min(1).max(1024).optional(),
-        deadline: z.string().datetime().optional(),
-        discordChannelId: z.string().regex(/^\d+$/).optional(),
-        thumbnail: z
-          .object({
-            fileType: z.string(),
-            fileSize: z.number(),
-            checksum: z.string(),
-          })
-          .optional(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    .input(projectValidation)
+    .mutation(async ({ ctx, input }): Promise<ProjectMutation> => {
       const access = await accessCheck(ctx);
 
       if (access !== "ADMIN") {
@@ -114,44 +116,35 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
-      if (input.thumbnail) {
-        const key = !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
-          ? crypto.randomBytes(32).toString("hex")
-          : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`;
-
-        const url = await getSignedUrl(
-          ctx.s3,
-          new PutObjectCommand({
-            Bucket: env.FILE_STORAGE_BUCKET,
-            Key: key,
-            ContentType: input.thumbnail.fileType,
-            ContentLength: input.thumbnail.fileSize,
-            ChecksumSHA256: input.thumbnail.checksum,
-            Metadata: {
-              userId: ctx.session.user.id,
-            },
-          }),
-          { expiresIn: 60 } // 60 seconds
-        );
-
-        await ctx.db.projectThumbnail.create({
-          data: {
-            projectId: project.id,
-            userId: ctx.session.user.id,
-            key: key,
-          },
-        });
-
+      if (!input.thumbnail) {
         return {
           username: project.username,
-          upload: {
-            url: url,
-          },
         };
       }
+      const { url, key } = await getUploadURL({
+        file: {
+          type: input.thumbnail.fileType,
+          size: input.thumbnail.fileSize,
+          checksum: input.thumbnail.checksum,
+        },
+        metadata: {
+          userId: ctx.session.user.id,
+        },
+      });
+
+      await ctx.db.projectThumbnail.create({
+        data: {
+          projectId: project.id,
+          userId: ctx.session.user.id,
+          key: key,
+        },
+      });
 
       return {
         username: project.username,
+        upload: {
+          url: url,
+        },
       };
     }),
 
@@ -231,10 +224,12 @@ export const projectRouter = createTRPCRouter({
       }
 
       return {
+        id: data.id,
         username: data.username,
         title: data.title,
         description: data.description,
         deadline: data.deadline,
+        discordChannelId: data.discordChannelId,
         status: data.status,
         thumbnail: data.thumbnail
           ? `${env.FILE_STORAGE_CDN_URL}/${data.thumbnail.key}`
@@ -244,16 +239,11 @@ export const projectRouter = createTRPCRouter({
 
   updateProject: protectedProcedure
     .input(
-      z.object({
+      projectValidation.extend({
         id: z.string(),
-        title: z.string().min(1).max(64),
-        username: z.string().min(1).max(64),
-        description: z.string().min(1).max(1024).optional(),
-        deadline: z.string().datetime().optional(),
-        discordChannelId: z.string().regex(/^\d+$/).optional(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ProjectMutation> => {
       const access = await accessCheck(ctx);
 
       if (access !== "ADMIN") {
@@ -302,18 +292,48 @@ export const projectRouter = createTRPCRouter({
         }
       }
 
-      await ctx.db.project.update({
+      const project = await ctx.db.project.update({
         where: { id: input.id },
         data: {
-          title: input.title ?? null,
-          username: input.username ?? null,
-          description: input.description ?? null,
-          deadline: input.deadline ?? null,
-          discordChannelId: input.discordChannelId ?? null,
+          title: input.title,
+          username: input.username,
+          description: input.description,
+          deadline: input.deadline,
+          discordChannelId: input.discordChannelId,
         },
       });
 
-      return;
+      if (!input.thumbnail) {
+        return {
+          username: project.username,
+        };
+      }
+
+      const { url, key } = await getUploadURL({
+        file: {
+          type: input.thumbnail.fileType,
+          size: input.thumbnail.fileSize,
+          checksum: input.thumbnail.checksum,
+        },
+        metadata: {
+          userId: ctx.session.user.id,
+        },
+      });
+
+      await ctx.db.projectThumbnail.create({
+        data: {
+          projectId: input.id,
+          userId: ctx.session.user.id,
+          key: key,
+        },
+      });
+
+      return {
+        username: project.username,
+        upload: {
+          url: url,
+        },
+      };
     }),
 
   deleteProject: protectedProcedure
