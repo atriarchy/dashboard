@@ -111,7 +111,7 @@ model Project {
     thumbnail        ProjectThumbnail?
     agreements       Agreement[]
     tracks           Track[]
-    discordChannelId String?
+    discordChannelId String?           @unique
     createdAt        DateTime          @default(now())
     updatedAt        DateTime          @default(now()) @updatedAt
     closedAt         DateTime?
@@ -134,7 +134,7 @@ model Track {
     projectId        String
     title            String
     description      String?
-    discordChannelId String?
+    discordChannelId String?             @unique
     collaborators    TrackCollaborator[]
     musicStatus      TrackMusicStatus
     visualStatus     TrackVisualStatus

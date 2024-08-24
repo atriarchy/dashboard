@@ -54,6 +54,16 @@ export const projectRouter = createTRPCRouter({
       }
 
       if (input.discordChannelId) {
+        const check = await ctx.db.project.findUnique({
+          where: {
+            discordChannelId: input.discordChannelId,
+          },
+        });
+
+        if (check) {
+          throw new Error("Discord channel already in use.");
+        }
+
         const request = await fetch(
           "https://discord.com/api/v10/channels/" + input.discordChannelId,
           {
