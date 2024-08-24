@@ -72,9 +72,10 @@ export function Agreements({
                         });
                       }}
                       className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                      disabled={sign.isPending}
                     >
                       <FontAwesomeIcon icon={faPenNib} />
-                      <span>Sign</span>
+                      <span>{sign.isPending ? "Loading..." : "Sign"}</span>
                     </button>
                   )}
                 </div>

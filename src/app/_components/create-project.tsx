@@ -73,6 +73,11 @@ export function CreateProject() {
           onClose={() => {
             if (createProject.isPending) return;
             setIsOpen(false);
+            setTitle("");
+            setUsername("");
+            setDescription("");
+            setDeadline("");
+            setThumbnail(undefined);
           }}
           initialFocus={initalFocusRef}
         >
@@ -107,6 +112,11 @@ export function CreateProject() {
                       onClick={() => {
                         if (createProject.isPending) return;
                         setIsOpen(false);
+                        setTitle("");
+                        setUsername("");
+                        setDescription("");
+                        setDeadline("");
+                        setThumbnail(undefined);
                       }}
                       aria-label="Close"
                     >
@@ -207,10 +217,10 @@ export function CreateProject() {
                         accept={["image/png", "image/jpeg"]}
                         maxSize={1048576} // 1MB
                         setFile={setThumbnail}
-                        preview={thumbnailURL => (
+                        preview={thumbnailUrl => (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
-                            src={thumbnailURL}
+                            src={thumbnailUrl}
                             alt="Thumbnail"
                             className="h-full w-full rounded-lg object-cover"
                           />
@@ -224,6 +234,11 @@ export function CreateProject() {
                         onClick={() => {
                           if (createProject.isPending) return;
                           setIsOpen(false);
+                          setTitle("");
+                          setUsername("");
+                          setDescription("");
+                          setDeadline("");
+                          setThumbnail(undefined);
                         }}
                       >
                         Cancel

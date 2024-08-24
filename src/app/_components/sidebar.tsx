@@ -1,5 +1,10 @@
 import { getServerAuthSession } from "@/server/auth";
-import { faCircleUser, faMusic } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleUser,
+  faFile,
+  faMusic,
+  faRecordVinyl,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Access } from "@/app/_components/access";
 import Link from "next/link";
@@ -10,8 +15,10 @@ import logo from "@/assets/atriarchy-light.png";
 
 export async function Sidebar({
   selected,
+  project,
 }: {
-  selected?: "PROFILE" | "PROJECTS";
+  selected?: "PROFILE" | "PROJECTS" | "PROJECTS_TRACKS" | "PROJECTS_AGREEMENTS";
+  project?: string;
 }) {
   const session = await getServerAuthSession();
   const access = await api.access.getAccess();
@@ -34,7 +41,7 @@ export async function Sidebar({
         {access === "ADMIN" && <Access />}
         <Link
           href="/dashboard/profile"
-          className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+          className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
             selected === "PROFILE"
               ? "bg-violet-700"
               : "bg-gray-700 transition hover:bg-violet-500"
@@ -45,7 +52,7 @@ export async function Sidebar({
         </Link>
         <Link
           href="/dashboard/projects"
-          className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+          className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
             selected === "PROJECTS"
               ? "bg-violet-700"
               : "bg-gray-700 transition hover:bg-violet-500"
@@ -54,6 +61,35 @@ export async function Sidebar({
           <FontAwesomeIcon icon={faMusic} fixedWidth />
           <span>Projects</span>
         </Link>
+        {project && (
+          <div className="mt-8 flex h-full w-full flex-col items-center justify-start gap-2">
+            <span className="text-lm w-full font-semibold text-white">
+              {project}
+            </span>
+            <Link
+              href={`/dashboard/projects/${project}/tracks`}
+              className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+                selected === "PROJECTS_TRACKS"
+                  ? "bg-violet-700"
+                  : "bg-gray-700 transition hover:bg-violet-500"
+              }`}
+            >
+              <FontAwesomeIcon icon={faRecordVinyl} fixedWidth />
+              <span>Tracks</span>
+            </Link>
+            <Link
+              href={`/dashboard/projects/${project}/agreements`}
+              className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+                selected === "PROJECTS_AGREEMENTS"
+                  ? "bg-violet-700"
+                  : "bg-gray-700 transition hover:bg-violet-500"
+              }`}
+            >
+              <FontAwesomeIcon icon={faFile} fixedWidth />
+              <span>Agreements</span>
+            </Link>
+          </div>
+        )}
       </div>
       {session?.user?.name && session?.user?.image && (
         <div className="flex w-full items-center justify-between gap-2">

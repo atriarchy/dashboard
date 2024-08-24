@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
-import { ProjectNavbar } from "@/app/_components/project-navbar";
 
 export default async function TracksPage({
   params,
@@ -33,9 +32,8 @@ export default async function TracksPage({
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="PROJECTS" />
+          <Sidebar selected="PROJECTS_TRACKS" project={project.username} />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <ProjectNavbar selected="TRACKS" project={project.username} />
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Tracks
             </h1>
