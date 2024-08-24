@@ -26,6 +26,7 @@ enum ProfilePrivacy {
 enum ProjectStatus {
     DRAFT
     ACTIVE
+    CLOSED
     RELEASED
 }
 
@@ -85,6 +86,8 @@ model Project {
     agreements  Agreement[]
     createdAt   DateTime          @default(now())
     updatedAt   DateTime          @default(now()) @updatedAt
+    closedAt    DateTime?
+    releasedAt  DateTime?
 }
 
 model ProjectThumbnail {
