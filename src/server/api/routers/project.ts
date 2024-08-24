@@ -71,7 +71,7 @@ export const projectRouter = createTRPCRouter({
           type: number;
         };
 
-        if (data.type !== 0) {
+        if (data.type !== 0 && data.type !== 15) {
           throw new Error("Invalid Discord channel type.");
         }
       }

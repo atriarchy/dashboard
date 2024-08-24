@@ -18,7 +18,10 @@ export async function Sidebar({
   project,
 }: {
   selected?: "PROFILE" | "PROJECTS" | "PROJECTS_TRACKS" | "PROJECTS_AGREEMENTS";
-  project?: string;
+  project?: {
+    title: string;
+    username: string;
+  };
 }) {
   const session = await getServerAuthSession();
   const access = await api.access.getAccess();
@@ -64,10 +67,10 @@ export async function Sidebar({
         {project && (
           <div className="mt-8 flex h-full w-full flex-col items-center justify-start gap-2">
             <span className="text-lm w-full font-semibold text-white">
-              {project}
+              {project.title}
             </span>
             <Link
-              href={`/dashboard/projects/${project}/tracks`}
+              href={`/dashboard/projects/${project.username}/tracks`}
               className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                 selected === "PROJECTS_TRACKS"
                   ? "bg-violet-700"
@@ -78,7 +81,7 @@ export async function Sidebar({
               <span>Tracks</span>
             </Link>
             <Link
-              href={`/dashboard/projects/${project}/agreements`}
+              href={`/dashboard/projects/${project.username}/agreements`}
               className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                 selected === "PROJECTS_AGREEMENTS"
                   ? "bg-violet-700"
