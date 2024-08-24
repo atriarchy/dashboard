@@ -85,7 +85,7 @@ export function CreateTrack({ project }: { project: string }) {
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
                   <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
-                    <DialogTitle as="h3">New Project</DialogTitle>
+                    <DialogTitle as="h3">New Track</DialogTitle>
                     <button
                       disabled={createTrack.isPending}
                       onClick={() => {
