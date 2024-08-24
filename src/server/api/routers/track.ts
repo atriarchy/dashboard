@@ -102,7 +102,7 @@ export const trackRouter = createTRPCRouter({
           const usernameCheckWithIndex =
             index < 2 ? usernameCheck : usernameCheck + index;
 
-          const usernameFind = await ctx.db.project.findFirst({
+          const usernameFind = await ctx.db.track.findFirst({
             where: {
               username: {
                 equals: usernameCheckWithIndex,
@@ -144,37 +144,44 @@ export const trackRouter = createTRPCRouter({
 
       let discordChannelId;
 
-      const messageContent = {
-        content: `<@${discordProvider.providerAccountId}> created a new track!`,
-        embeds: [
-          {
-            title: input.title,
-            description: input.description,
-            color: 0x171717,
-            fields: [
-              {
-                name: "Track Manager",
-                value: `[${profile.name} \(@${profile.username}\)](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}>`,
-              },
-            ],
-          },
-        ],
-        components: [
-          {
-            type: 1,
-            components: [
-              {
-                type: 2,
-                label: "View Track",
-                style: 5,
-                url: `${getPublicUrl()}/dashboard/projects/${project.username}/tracks/${username}`,
-              },
-            ],
-          },
-        ],
-      };
-
       if (project.discordChannelId) {
+        if (
+          project.discordChannelType !== 0 &&
+          project.discordChannelType !== 15
+        ) {
+          throw new Error("Invalid Discord channel type.");
+        }
+
+        const messageContent = {
+          content: `<@${discordProvider.providerAccountId}> created a new track!`,
+          embeds: [
+            {
+              title: input.title,
+              description: input.description,
+              color: 0x171717,
+              fields: [
+                {
+                  name: "Track Manager",
+                  value: `[${profile.name} \(@${profile.username}\)](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}>`,
+                },
+              ],
+            },
+          ],
+          components: [
+            {
+              type: 1,
+              components: [
+                {
+                  type: 2,
+                  label: "View Track",
+                  style: 5,
+                  url: `${getPublicUrl()}/dashboard/projects/${project.username}/tracks/${username}`,
+                },
+              ],
+            },
+          ],
+        };
+
         const request = await fetch(
           "https://discord.com/api/v10/channels/" +
             project.discordChannelId +
