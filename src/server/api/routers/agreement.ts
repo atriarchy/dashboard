@@ -61,11 +61,14 @@ export const agreementRouter = createTRPCRouter({
         Recipient: {
           id: number;
           role: string;
+          email: string;
         }[];
       };
 
       const recipient = data.Recipient.find(
-        recipient => recipient.role === "SIGNER"
+        recipient =>
+          recipient.role === "SIGNER" &&
+          recipient.email.endsWith("@documenso.com")
       );
 
       if (!recipient) {
@@ -221,6 +224,7 @@ export const agreementRouter = createTRPCRouter({
       const data = (await response.json()) as {
         documentId: number;
         recipients: {
+          recipientId: number;
           email: string;
           signingUrl: string;
           role: string;
@@ -233,7 +237,7 @@ export const agreementRouter = createTRPCRouter({
       }
 
       const recipient = data.recipients.find(
-        recipient => recipient.role === "SIGNER"
+        recipient => recipient.recipientId === agreement.recipientId
       );
 
       if (!recipient) {
