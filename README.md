@@ -39,7 +39,7 @@ There's a few ways that you can help contribute.
 
 ### Prerequisite
 
-Create a [Discord application](https://discord.com/developers/applications), setting the OAuth callback to be `http://localhost:3000/api/auth/callback/discord`. Note down your client ID and client secret.
+Create a [Discord application](https://discord.com/developers/applications), setting the OAuth callback to be `http://localhost:4000/api/auth/callback/discord`. Note down your client ID and client secret.
 
 ### Local development
 
@@ -50,7 +50,7 @@ Create a [Discord application](https://discord.com/developers/applications), set
    2. The data encryption passphrase (`PRISMA_FIELD_ENCRYPTION_KEY`) has to be filled with an AES-GCM 256 key. See [Generate secrets](#generate-secrets) below.
 4. Push the database schema to the new database using `pnpm db:push`.
 5. Start the dev server using `pnpm dev`
-6. The website should be running at `http://localhost:3000/` (open in browser)
+6. The website should be running at `http://localhost:4000/` (open in browser)
 
 - Learn more about the stack at [Create T3 App - Introduction](https://create.t3.gg/en/introduction)
 - You can use the Prisma Studio to view your database. Launch it with `pnpm db:studio`
