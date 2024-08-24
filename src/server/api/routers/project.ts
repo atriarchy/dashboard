@@ -139,7 +139,7 @@ export const projectRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where:
           access !== "ADMIN"
-            ? { status: { in: ["ACTIVE", "RELEASED"] } }
+            ? { status: { in: ["ACTIVE", "CLOSED", "RELEASED"] } }
             : undefined,
         orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
         include: {
@@ -181,7 +181,7 @@ export const projectRouter = createTRPCRouter({
                   equals: input.username,
                   mode: "insensitive",
                 },
-                status: { in: ["ACTIVE", "RELEASED"] },
+                status: { in: ["ACTIVE", "CLOSED", "RELEASED"] },
               }
             : {
                 username: {
