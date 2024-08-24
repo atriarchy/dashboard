@@ -17,6 +17,7 @@ export const projectRouter = createTRPCRouter({
         username: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         deadline: z.string().datetime().optional(),
+        discordChannelId: z.string().regex(/^\d+$/).optional(),
         thumbnail: z
           .object({
             fileType: z.string(),
@@ -52,6 +53,43 @@ export const projectRouter = createTRPCRouter({
         );
       }
 
+      let discordChannelType;
+
+      if (input.discordChannelId) {
+        const check = await ctx.db.project.findUnique({
+          where: {
+            discordChannelId: input.discordChannelId,
+          },
+        });
+
+        if (check) {
+          throw new Error("Discord channel already in use.");
+        }
+
+        const request = await fetch(
+          "https://discord.com/api/v10/channels/" + input.discordChannelId,
+          {
+            headers: {
+              Authorization: `Bot ${env.DISCORD_TOKEN}`,
+            },
+          }
+        );
+
+        if (!request.ok) {
+          throw new Error("Discord channel not found.");
+        }
+
+        const data = (await request.json()) as {
+          type: number;
+        };
+
+        if (data.type !== 0 && data.type !== 15) {
+          throw new Error("Invalid Discord channel type.");
+        }
+
+        discordChannelType = data.type;
+      }
+
       if (input.thumbnail) {
         if (!allowedFileTypes.includes(input.thumbnail.fileType)) {
           throw new Error("Invalid file type.");
@@ -68,6 +106,10 @@ export const projectRouter = createTRPCRouter({
           username: input.username,
           description: input.description,
           deadline: input.deadline,
+          discordChannelId: input.discordChannelId,
+          discordChannelType: input.discordChannelId
+            ? discordChannelType
+            : undefined,
           status: "DRAFT",
         },
       });
@@ -208,6 +250,7 @@ export const projectRouter = createTRPCRouter({
         username: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         deadline: z.string().datetime().optional(),
+        discordChannelId: z.string().regex(/^\d+$/).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -236,6 +279,29 @@ export const projectRouter = createTRPCRouter({
         );
       }
 
+      if (input.discordChannelId) {
+        const request = await fetch(
+          "https://discord.com/api/v10/channels/" + input.discordChannelId,
+          {
+            headers: {
+              Authorization: `Bot ${env.DISCORD_TOKEN}`,
+            },
+          }
+        );
+
+        if (!request.ok) {
+          throw new Error("Discord channel not found.");
+        }
+
+        const data = (await request.json()) as {
+          type: number;
+        };
+
+        if (data.type !== 0) {
+          throw new Error("Invalid Discord channel type.");
+        }
+      }
+
       await ctx.db.project.update({
         where: { id: input.id },
         data: {
@@ -243,6 +309,7 @@ export const projectRouter = createTRPCRouter({
           username: input.username ?? null,
           description: input.description ?? null,
           deadline: input.deadline ?? null,
+          discordChannelId: input.discordChannelId ?? null,
         },
       });
 

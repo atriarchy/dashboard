@@ -13,44 +13,24 @@ import {
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
-import { computeSHA256 } from "@/app/_helpers/crypto";
-import FileUpload from "./primitives/file-upload";
 
-export function CreateProject() {
+export function CreateTrack({ project }: { project: string }) {
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [discordChannelId, setDiscordChannelId] = useState("");
-  const [thumbnail, setThumbnail] = useState<File | undefined>();
+  const [advanced, setAdvanced] = useState(false);
 
   const initalFocusRef = useRef(null);
 
-  const createProject = api.project.createProject.useMutation({
-    onSuccess: async ({ username, upload }) => {
-      if (upload && thumbnail) {
-        await toast.promise(
-          fetch(upload.url, {
-            method: "PUT",
-            headers: {
-              "Content-Type": thumbnail.type,
-            },
-            body: thumbnail,
-          }),
-          {
-            loading: "Uploading...",
-            success: "Uploaded.",
-            error: "Error uploading.",
-          }
-        );
-      }
-      router.push(`/dashboard/projects/${username}`);
+  const createTrack = api.track.createTrack.useMutation({
+    onSuccess: async ({ username }) => {
+      router.push(`/dashboard/projects/${project}/tracks/${username}`);
     },
     onError: error => {
       toast.error(error.message);
@@ -61,10 +41,10 @@ export function CreateProject() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
+        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
       >
         <FontAwesomeIcon icon={faPlus} />
-        Add Project
+        Add Track
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -72,14 +52,12 @@ export function CreateProject() {
           as="div"
           className="relative z-10"
           onClose={() => {
-            if (createProject.isPending) return;
+            if (createTrack.isPending) return;
             setIsOpen(false);
             setTitle("");
             setUsername("");
             setDescription("");
-            setDeadline("");
-            setDiscordChannelId("");
-            setThumbnail(undefined);
+            setAdvanced(false);
           }}
           initialFocus={initalFocusRef}
         >
@@ -108,18 +86,16 @@ export function CreateProject() {
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
                   <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
-                    <DialogTitle as="h3">New Project</DialogTitle>
+                    <DialogTitle as="h3">New Track</DialogTitle>
                     <button
-                      disabled={createProject.isPending}
+                      disabled={createTrack.isPending}
                       onClick={() => {
-                        if (createProject.isPending) return;
+                        if (createTrack.isPending) return;
                         setIsOpen(false);
                         setTitle("");
                         setUsername("");
                         setDescription("");
-                        setDeadline("");
-                        setDiscordChannelId("");
-                        setThumbnail(undefined);
+                        setAdvanced(false);
                       }}
                       aria-label="Close"
                     >
@@ -133,23 +109,15 @@ export function CreateProject() {
                       onSubmit={async e => {
                         e.preventDefault();
 
-                        if (createProject.isPending) return;
+                        if (createTrack.isPending) return;
 
-                        createProject.mutate({
+                        createTrack.mutate({
+                          project,
                           title,
-                          username,
+                          username: advanced
+                            ? username || undefined
+                            : undefined,
                           description: description || undefined,
-                          deadline: deadline
-                            ? new Date(deadline).toISOString()
-                            : undefined,
-                          discordChannelId: discordChannelId || undefined,
-                          thumbnail: thumbnail
-                            ? {
-                                fileType: thumbnail.type,
-                                fileSize: thumbnail.size,
-                                checksum: await computeSHA256(thumbnail),
-                              }
-                            : undefined,
                         });
                       }}
                     >
@@ -162,15 +130,7 @@ export function CreateProject() {
                         maxLength={64}
                         required
                       />
-                      <TextInput
-                        id="username"
-                        label="Slug"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        placeholder="Slug"
-                        maxLength={64}
-                        required
-                      />
+
                       <div className="flex w-full flex-col items-center justify-start gap-2">
                         <label
                           htmlFor="description"
@@ -198,60 +158,44 @@ export function CreateProject() {
                           </small>
                         </div>
                       </div>
-                      <div className="flex w-full flex-col items-center justify-start gap-2">
-                        <label
-                          htmlFor="deadline"
-                          className="text-md w-full font-semibold"
-                        >
-                          Deadline
-                        </label>
-                        <input
-                          type="datetime-local"
-                          id="deadline"
-                          value={deadline}
-                          onChange={e => setDeadline(e.target.value)}
-                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
-                          placeholder="Deadline"
+                      <button
+                        type="button"
+                        className={`flex items-center justify-center gap-2 text-sm text-gray-400 ${
+                          advanced ? "" : "mb-2"
+                        }`}
+                        onClick={() => setAdvanced(!advanced)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className={`transition duration-300 ${
+                            advanced ? "rotate-180" : ""
+                          }`}
                         />
-                      </div>
-                      <TextInput
-                        id="discordChannelId"
-                        label="Discord Channel ID"
-                        value={discordChannelId}
-                        onChange={e => setDiscordChannelId(e.target.value)}
-                        placeholder="Discord Channel ID"
-                        required
-                      />
-                      <FileUpload
-                        id="thumbnail"
-                        label="Thumbnail"
-                        infoLabel={"Accepts: .png, .jpeg\nMax Size: 1MB"}
-                        accept={["image/png", "image/jpeg"]}
-                        maxSize={1048576} // 1MB
-                        setFile={setThumbnail}
-                        preview={thumbnailUrl => (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={thumbnailUrl}
-                            alt="Thumbnail"
-                            className="h-full w-full rounded-lg object-cover"
-                          />
-                        )}
-                      />
+                        <span>Advanced</span>
+                      </button>
+                      {advanced && (
+                        <TextInput
+                          id="username"
+                          label="Slug"
+                          value={username}
+                          onChange={e => setUsername(e.target.value)}
+                          placeholder="Slug"
+                          maxLength={64}
+                          required
+                        />
+                      )}
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
                         className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={createTrack.isPending}
                         onClick={() => {
-                          if (createProject.isPending) return;
+                          if (createTrack.isPending) return;
                           setIsOpen(false);
                           setTitle("");
                           setUsername("");
                           setDescription("");
-                          setDeadline("");
-                          setDiscordChannelId("");
-                          setThumbnail(undefined);
+                          setAdvanced(false);
                         }}
                       >
                         Cancel
@@ -260,9 +204,9 @@ export function CreateProject() {
                         type="submit"
                         form="createProject"
                         className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={createTrack.isPending}
                       >
-                        {createProject.isPending ? "Loading..." : "Create"}
+                        {createTrack.isPending ? "Loading..." : "Create"}
                       </button>
                     </div>
                   </div>

@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
-import { ProjectNavbar } from "@/app/_components/project-navbar";
 import { Agreements } from "@/app/_components/agreements";
 
 export default async function AgreementsPage({
@@ -34,9 +33,14 @@ export default async function AgreementsPage({
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="PROJECTS" />
+          <Sidebar
+            selected="PROJECTS_AGREEMENTS"
+            project={{
+              title: project.title,
+              username: project.username,
+            }}
+          />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <ProjectNavbar selected="AGREEMENTS" project={project.username} />
             <Agreements access={access} project={params.project} />
           </div>
         </div>
