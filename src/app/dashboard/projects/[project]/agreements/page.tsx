@@ -33,7 +33,7 @@ export default async function AgreementsPage({
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="PROJECTS_AGREEMENTS" project={project.username} />
+          <Sidebar selected="PROJECTS_AGREEMENTS" project={project.title} />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <Agreements access={access} project={params.project} />
           </div>

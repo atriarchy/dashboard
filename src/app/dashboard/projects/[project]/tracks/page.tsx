@@ -33,7 +33,7 @@ export default async function TracksPage({
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="PROJECTS_TRACKS" project={project.username} />
+          <Sidebar selected="PROJECTS_TRACKS" project={project.title} />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <div className="mb-8 flex flex-col items-start justify-start gap-2">
               <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
