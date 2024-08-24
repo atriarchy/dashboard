@@ -57,6 +57,7 @@ export function CreateTrack({ project }: { project: string }) {
             setTitle("");
             setUsername("");
             setDescription("");
+            setAdvanced(false);
           }}
           initialFocus={initalFocusRef}
         >
@@ -94,6 +95,7 @@ export function CreateTrack({ project }: { project: string }) {
                         setTitle("");
                         setUsername("");
                         setDescription("");
+                        setAdvanced(false);
                       }}
                       aria-label="Close"
                     >
@@ -193,6 +195,7 @@ export function CreateTrack({ project }: { project: string }) {
                           setTitle("");
                           setUsername("");
                           setDescription("");
+                          setAdvanced(false);
                         }}
                       >
                         Cancel
