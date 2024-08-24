@@ -1,11 +1,14 @@
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface FileUploadProps {
   id: string;
   label: string;
+  infoLabel?: string;
   accept: string[];
+  maxSize?: number;
   setFile: (file: File | undefined) => void;
   preview: (fileURL: string) => React.ReactNode;
   direction?: "row" | "column";
@@ -14,7 +17,9 @@ interface FileUploadProps {
 const FileUpload = ({
   id,
   label,
+  infoLabel,
   accept,
+  maxSize,
   setFile,
   preview,
   direction = "row",
@@ -22,12 +27,30 @@ const FileUpload = ({
   const [fileURL, setFileURL] = useState<string | undefined>();
   const [drag, setDrag] = useState(false);
 
+  const updateFile = (file: File | undefined) => {
+    if (!file) return;
+
+    if (!accept.includes(file.type)) {
+      return toast.error("Invalid file type.");
+    }
+
+    if (maxSize && file.size > maxSize) {
+      return toast.error("File size is too large.");
+    }
+
+    if (fileURL) {
+      URL.revokeObjectURL(fileURL);
+    }
+
+    setFile(file);
+    setFileURL(URL.createObjectURL(file));
+  };
+
   return (
-    <div className="flex w-full flex-col items-center justify-start gap-2">
-      <label htmlFor={id} className="text-md w-full font-semibold">
+    <div className="flex w-full flex-col items-center justify-start">
+      <label htmlFor={id} className="text-md w-full pb-2 font-semibold">
         {label}
       </label>
-
       <button
         id={id}
         type="button"
@@ -52,31 +75,28 @@ const FileUpload = ({
 
           const file = e.dataTransfer.files?.[0];
 
-          if (!file) return;
-
-          if (!accept.includes(file.type)) return;
-
-          if (fileURL) {
-            URL.revokeObjectURL(fileURL);
-          }
-
-          setFile(file);
-          setFileURL(URL.createObjectURL(file));
+          updateFile(file);
         }}
         onClick={() => document.getElementById(id + "Input")?.click()}
-        className={`flex min-h-52 w-full items-center justify-center gap-4 rounded-lg border-2 border-dashed bg-neutral-800 p-8 text-white transition ${fileURL ? "" : "group"} ${fileURL && direction === "column" ? "flex-col" : ""} ${drag ? "border-sky-500" : "border-white"}`}
+        className={`flex min-h-60 w-full items-center justify-center gap-4 rounded-lg border-2 border-dashed bg-neutral-800 p-8 text-white transition ${fileURL ? "" : "group"} ${fileURL && direction === "column" ? "flex-col" : ""} ${drag ? "border-sky-500 shadow-inner shadow-sky-500" : "border-white"}`}
       >
-        {fileURL && <div className="h-32 w-32">{preview(fileURL)}</div>}
+        {fileURL && (
+          <div
+            className={`pointer-events-noneflex items-center justify-center ${direction === "row" ? "h-32 w-32" : "h-16 w-full"}`}
+          >
+            {preview(fileURL)}
+          </div>
+        )}
         <div
-          className={`flex items-center justify-center gap-4 ${fileURL && direction === "column" ? "w-full flex-row" : "w-fit flex-col"}`}
+          className={`pointer-events-none flex items-center justify-center gap-4 ${fileURL && direction === "column" ? "w-full flex-row" : "w-fit flex-col"}`}
         >
           {!fileURL && (
             <FontAwesomeIcon icon={faCloudArrowUp} className="text-6xl" />
           )}
-          <div className="w-full rounded-lg bg-white px-4 py-2 text-black transition hover:bg-white/50 group-hover:bg-white/50">
+          <div className="pointer-events-none w-full rounded-lg bg-white px-4 py-2 text-black transition hover:bg-white/50 group-hover:bg-white/50">
             Drag or Upload
           </div>
-          {fileURL && (
+          {fileURL ? (
             <button
               type="button"
               onClick={e => {
@@ -90,10 +110,18 @@ const FileUpload = ({
                 setFile(undefined);
                 setFileURL(undefined);
               }}
-              className="w-full rounded-lg bg-red-500 px-4 py-2 transition hover:bg-red-700"
+              className={`w-full rounded-lg bg-red-500 px-4 py-2 transition hover:bg-red-700 ${drag ? "pointer-events-none" : "pointer-events-auto"}`}
             >
               Remove
             </button>
+          ) : (
+            <>
+              {infoLabel && (
+                <span className="whitespace-pre-line text-xs text-gray-400">
+                  {infoLabel}
+                </span>
+              )}
+            </>
           )}
         </div>
       </button>
@@ -104,16 +132,9 @@ const FileUpload = ({
         onChange={e => {
           const file = e.target.files?.[0];
 
+          updateFile(file);
+
           e.target.value = "";
-
-          if (!file) return;
-
-          if (fileURL) {
-            URL.revokeObjectURL(fileURL);
-          }
-
-          setFile(file);
-          setFileURL(URL.createObjectURL(file));
         }}
         className="hidden"
       />

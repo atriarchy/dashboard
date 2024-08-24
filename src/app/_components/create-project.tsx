@@ -205,7 +205,9 @@ export function CreateProject() {
                       <FileUpload
                         id="thumbnail"
                         label="Thumbnail"
+                        infoLabel={"Accepts: .png, .jpeg\nMax Size: 1MB"}
                         accept={["image/png", "image/jpeg"]}
+                        maxSize={1048576} // 1MB
                         setFile={setThumbnail}
                         preview={thumbnailURL => (
                           // eslint-disable-next-line @next/next/no-img-element
