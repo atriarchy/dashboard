@@ -13,7 +13,7 @@ import {
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 
@@ -24,6 +24,7 @@ export function CreateTrack({ project }: { project: string }) {
   const [title, setTitle] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
+  const [advanced, setAdvanced] = useState(false);
 
   const initalFocusRef = useRef(null);
 
@@ -111,7 +112,9 @@ export function CreateTrack({ project }: { project: string }) {
                         createTrack.mutate({
                           project,
                           title,
-                          username: username || undefined,
+                          username: advanced
+                            ? username || undefined
+                            : undefined,
                           description: description || undefined,
                         });
                       }}
@@ -125,15 +128,7 @@ export function CreateTrack({ project }: { project: string }) {
                         maxLength={64}
                         required
                       />
-                      {/* <TextInput
-                        id="username"
-                        label="Slug"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        placeholder="Slug"
-                        maxLength={64}
-                        required
-                      /> */}
+
                       <div className="flex w-full flex-col items-center justify-start gap-2">
                         <label
                           htmlFor="description"
@@ -161,6 +156,32 @@ export function CreateTrack({ project }: { project: string }) {
                           </small>
                         </div>
                       </div>
+                      <button
+                        type="button"
+                        className={`flex items-center justify-center gap-2 text-sm text-gray-400 ${
+                          advanced ? "" : "mb-2"
+                        }`}
+                        onClick={() => setAdvanced(!advanced)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className={`transition duration-300 ${
+                            advanced ? "rotate-180" : ""
+                          }`}
+                        />
+                        <span>Advanced</span>
+                      </button>
+                      {advanced && (
+                        <TextInput
+                          id="username"
+                          label="Slug"
+                          value={username}
+                          onChange={e => setUsername(e.target.value)}
+                          placeholder="Slug"
+                          maxLength={64}
+                          required
+                        />
+                      )}
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
