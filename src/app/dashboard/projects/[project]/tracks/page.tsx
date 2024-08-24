@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
+import { Tracks } from "@/app/_components/tracks";
 
 export default async function TracksPage({
   params,
@@ -34,9 +35,15 @@ export default async function TracksPage({
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar selected="PROJECTS_TRACKS" project={project.username} />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              Tracks
-            </h1>
+            <div className="mb-8 flex flex-col items-start justify-start gap-2">
+              <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                {project.title}
+              </h1>
+              {project.description && (
+                <p className="text-lg">{project.description}</p>
+              )}
+            </div>
+            <Tracks project={params.project} />
           </div>
         </div>
       </main>

@@ -107,7 +107,7 @@ export const agreementRouter = createTRPCRouter({
       });
 
       if (!project || (project.status === "DRAFT" && access !== "ADMIN")) {
-        throw new Error("Project not found.");
+        return [];
       }
 
       const agreements = await ctx.db.agreement.findMany({

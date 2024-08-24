@@ -143,7 +143,6 @@ export function CreateAgreement({
                         value={agreement}
                         onChange={e => setAgreement(e.target.value)}
                         placeholder="Template URL or ID"
-                        maxLength={64}
                         required
                       />
                       <TextInput

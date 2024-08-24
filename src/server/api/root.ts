@@ -2,6 +2,7 @@ import { accessRouter } from "@/server/api/routers/access";
 import { profileRouter } from "@/server/api/routers/profile";
 import { projectRouter } from "@/server/api/routers/project";
 import { agreementRouter } from "@/server/api/routers/agreement";
+import { trackRouter } from "@/server/api/routers/track";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   project: projectRouter,
   agreement: agreementRouter,
+  track: trackRouter,
 });
 
 // export type definition of API

@@ -55,7 +55,7 @@ export const accessRouter = createTRPCRouter({
         id: z.string().optional(),
         role: z.enum(["ADMIN"]),
         note: z.string().optional(),
-        discordId: z.string().optional(),
+        discordId: z.string().regex(/^\d+$/).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -96,7 +96,7 @@ export const accessRouter = createTRPCRouter({
         }
 
         const response = await fetch(
-          `https://discord.com/api/v10/users/${input.discordId}`,
+          "https://discord.com/api/v10/users/" + input.discordId,
           {
             headers: {
               Authorization: `Bot ${env.DISCORD_TOKEN}`,
@@ -199,7 +199,7 @@ export const accessRouter = createTRPCRouter({
 
       if (user.provider === "discord") {
         const response = await fetch(
-          `https://discord.com/api/v10/users/${user.providerAccountId}`,
+          "https://discord.com/api/v10/users/" + user.providerAccountId,
           {
             headers: {
               Authorization: `Bot ${env.DISCORD_TOKEN}`,

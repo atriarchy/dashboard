@@ -30,6 +30,32 @@ enum ProjectStatus {
     RELEASED
 }
 
+enum TrackCollaboratorRole {
+    MANAGER
+    EDITOR
+    CONTRIBUTOR
+}
+
+enum TrackMusicStatus {
+    IDEA
+    DEMO
+    WRITING
+    PRODUCTION
+    RECORDING
+    MIX_MASTER
+    ABANDONED
+    FINISHED
+}
+
+enum TrackVisualStatus {
+    SEARCHING
+    CONCEPT
+    WORKING
+    POLISHING
+    ABANDONED
+    FINISHED
+}
+
 model Access {
     id                      String     @id @default(cuid())
     provider                String
@@ -76,18 +102,20 @@ model ProfileLink {
 }
 
 model Project {
-    id          String            @id @default(cuid())
-    username    String            @unique
-    title       String
-    description String?
-    deadline    DateTime?
-    status      ProjectStatus
-    thumbnail   ProjectThumbnail?
-    agreements  Agreement[]
-    createdAt   DateTime          @default(now())
-    updatedAt   DateTime          @default(now()) @updatedAt
-    closedAt    DateTime?
-    releasedAt  DateTime?
+    id               String            @id @default(cuid())
+    username         String            @unique
+    title            String
+    description      String?
+    deadline         DateTime?
+    status           ProjectStatus
+    thumbnail        ProjectThumbnail?
+    agreements       Agreement[]
+    tracks           Track[]
+    discordChannelId String?
+    createdAt        DateTime          @default(now())
+    updatedAt        DateTime          @default(now()) @updatedAt
+    closedAt         DateTime?
+    releasedAt       DateTime?
 }
 
 model ProjectThumbnail {
@@ -99,9 +127,34 @@ model ProjectThumbnail {
     key       String
 }
 
+model Track {
+    id               String              @id @default(cuid())
+    username         String              @unique
+    project          Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+    projectId        String
+    title            String
+    description      String?
+    discordChannelId String?
+    collaborators    TrackCollaborator[]
+    musicStatus      TrackMusicStatus
+    visualStatus     TrackVisualStatus
+    createdAt        DateTime            @default(now())
+    updatedAt        DateTime            @default(now()) @updatedAt
+}
+
+model TrackCollaborator {
+    id             String                @id @default(cuid())
+    track          Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId        String
+    user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId         String
+    acceptedInvite Boolean               @default(false)
+    role           TrackCollaboratorRole
+}
+
 model Agreement {
     id          String              @id @default(cuid())
-    project     Project             @relation(fields: [projectId], references: [id])
+    project     Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
     projectId   String
     templateId  Int                 @unique
     recipientId Int
@@ -112,9 +165,9 @@ model Agreement {
 
 model AgreementDocument {
     id          String    @id @default(cuid())
-    agreement   Agreement @relation(fields: [agreementId], references: [id])
+    agreement   Agreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
     agreementId String
-    user        User      @relation(fields: [userId], references: [id])
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId      String
     email       String
     documentId  Int       @unique
@@ -160,6 +213,7 @@ model User {
     profile            Profile?
     agreementDocuments AgreementDocument[]
     projectThumbnails  ProjectThumbnail[]
+    trackCollaborators TrackCollaborator[]
 }
 
 model VerificationToken {
