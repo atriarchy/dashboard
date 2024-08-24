@@ -93,10 +93,10 @@ export const profileRouter = createTRPCRouter({
       z.object({
         username: z.string().min(1).max(64),
         name: z.string().min(1).max(64),
-        bio: z.string().max(1024).optional(),
-        legalName: z.string().max(256).optional(),
-        country: z.string().max(256).optional(),
-        phone: z.string().max(256).optional(),
+        bio: z.string().min(1).max(1024).optional(),
+        legalName: z.string().min(1).max(256).optional(),
+        country: z.string().min(1).max(256).optional(),
+        phone: z.string().min(1).max(256).optional(),
         pro: z
           .object({
             member: z.string().min(1).max(256),
@@ -246,11 +246,11 @@ export const profileRouter = createTRPCRouter({
         update: {
           username: input.username,
           name: input.name,
-          bio: input.bio,
-          legalName: input.legalName,
-          country: input.country,
+          bio: input.bio ?? null,
+          legalName: input.legalName ?? null,
+          country: input.country ?? null,
           email: email ?? "",
-          phone: input.phone,
+          phone: input.phone ?? null,
           privacy: input.privacy,
         },
         create: {

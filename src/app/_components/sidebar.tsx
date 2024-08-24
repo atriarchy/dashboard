@@ -1,14 +1,18 @@
 import { getServerAuthSession } from "@/server/auth";
-import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { faCircleUser, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Access } from "./access";
+import { Access } from "@/app/_components/access";
 import Link from "next/link";
-import { Auth } from "./auth";
+import { Auth } from "@/app/_components/auth";
 import { api } from "@/trpc/server";
 import Image from "next/image";
 import logo from "@/assets/atriarchy-light.png";
 
-export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
+export async function Sidebar({
+  selected,
+}: {
+  selected?: "PROFILE" | "PROJECTS";
+}) {
   const session = await getServerAuthSession();
   const access = await api.access.getAccess();
   const profile = await api.profile.getProfile();
@@ -28,7 +32,6 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
 
       <div className="flex h-full w-full flex-col items-center justify-start gap-2">
         {access === "ADMIN" && <Access />}
-
         <Link
           href="/dashboard/profile"
           className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
@@ -39,6 +42,17 @@ export async function Sidebar({ selected }: { selected?: "PROFILE" }) {
         >
           <FontAwesomeIcon icon={faCircleUser} fixedWidth />
           <span>Profile</span>
+        </Link>
+        <Link
+          href="/dashboard/projects"
+          className={`bg-purple- flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+            selected === "PROJECTS"
+              ? "bg-violet-700"
+              : "bg-gray-700 transition hover:bg-violet-500"
+          }`}
+        >
+          <FontAwesomeIcon icon={faMusic} fixedWidth />
+          <span>Projects</span>
         </Link>
       </div>
       {session?.user?.name && session?.user?.image && (

@@ -40,7 +40,7 @@ export default function RootLayout({
           ></script>
         )}
       </Head>
-      <body>
+      <body className="bg-neutral-900">
         <TRPCReactProvider>
           <div>
             <Toaster />
