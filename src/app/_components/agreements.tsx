@@ -39,7 +39,9 @@ export function Agreements({
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Agreements
             </h1>
-            {access === "ADMIN" && <CreateAgreement project={project} />}
+            {access === "ADMIN" && (
+              <CreateAgreement project={project} refetch={agreements.refetch} />
+            )}
           </div>
           <div className="flex w-full flex-col items-start justify-start gap-2">
             {agreements.data?.map(agreement => (

@@ -16,7 +16,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 
-export function CreateAgreement({ project }: { project: string }) {
+export function CreateAgreement({
+  project,
+  refetch,
+}: {
+  project: string;
+  refetch: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [agreement, setAgreement] = useState("");
   const [title, setTitle] = useState("");
@@ -26,6 +32,7 @@ export function CreateAgreement({ project }: { project: string }) {
 
   const createAgreement = api.agreement.createAgreement.useMutation({
     onSuccess: async () => {
+      refetch();
       setIsOpen(false);
     },
     onError: error => {
