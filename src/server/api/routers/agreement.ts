@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
 import { env } from "@/env";
+import { getPublicUrl } from "@/utils/url";
 
 export const agreementRouter = createTRPCRouter({
   createAgreement: protectedProcedure
@@ -203,7 +204,7 @@ export const agreementRouter = createTRPCRouter({
             ],
             meta: {
               redirectUrl:
-                env.NEXT_PUBLIC_BASE_URL +
+                getPublicUrl() +
                 "/dashboard/projects/" +
                 agreement.project.username +
                 "/agreements",
