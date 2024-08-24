@@ -102,20 +102,21 @@ model ProfileLink {
 }
 
 model Project {
-    id               String            @id @default(cuid())
-    username         String            @unique
-    title            String
-    description      String?
-    deadline         DateTime?
-    status           ProjectStatus
-    thumbnail        ProjectThumbnail?
-    agreements       Agreement[]
-    tracks           Track[]
-    discordChannelId String?           @unique
-    createdAt        DateTime          @default(now())
-    updatedAt        DateTime          @default(now()) @updatedAt
-    closedAt         DateTime?
-    releasedAt       DateTime?
+    id                 String            @id @default(cuid())
+    username           String            @unique
+    title              String
+    description        String?
+    deadline           DateTime?
+    status             ProjectStatus
+    thumbnail          ProjectThumbnail?
+    agreements         Agreement[]
+    tracks             Track[]
+    discordChannelId   String?           @unique
+    discordChannelType Int?
+    createdAt          DateTime          @default(now())
+    updatedAt          DateTime          @default(now()) @updatedAt
+    closedAt           DateTime?
+    releasedAt         DateTime?
 }
 
 model ProjectThumbnail {

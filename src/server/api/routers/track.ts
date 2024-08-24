@@ -144,6 +144,36 @@ export const trackRouter = createTRPCRouter({
 
       let discordChannelId;
 
+      const messageContent = {
+        content: `[${profile.name} \(@${profile.username}\)](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}> created a new track!`,
+        embeds: [
+          {
+            title: input.title,
+            description: input.description,
+            color: 0x171717,
+            fields: [
+              {
+                name: "Track Manager",
+                value: `[${profile.name} \(@${profile.username}\)](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}>`,
+              },
+            ],
+          },
+        ],
+        components: [
+          {
+            type: 1,
+            components: [
+              {
+                type: 2,
+                label: "View Track",
+                style: 5,
+                url: `${getPublicUrl()}/dashboard/projects/${project.username}/tracks/${username}`,
+              },
+            ],
+          },
+        ],
+      };
+
       if (project.discordChannelId) {
         const request = await fetch(
           "https://discord.com/api/v10/channels/" +
@@ -160,6 +190,8 @@ export const trackRouter = createTRPCRouter({
               type: 11,
               topic: input.description,
               parent_id: project.discordChannelId,
+              message:
+                project.discordChannelType === 15 ? messageContent : undefined,
             }),
           }
         );
@@ -174,50 +206,24 @@ export const trackRouter = createTRPCRouter({
 
         discordChannelId = response.id;
 
-        const messageRequest = await fetch(
-          "https://discord.com/api/v10/channels/" +
-            discordChannelId +
-            "/messages",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bot ${env.DISCORD_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              content: `[${profile.name} \(@${profile.username}](${getPublicUrl()}/@${profile.username}\))\n<@${discordProvider.providerAccountId}> created a new track!`,
-              embeds: [
-                {
-                  title: input.title,
-                  description: input.description,
-                  color: 0x171717,
-                  fields: [
-                    {
-                      name: "Track Manager",
-                      value: `[${profile.name} \(@${profile.username}](${getPublicUrl()}/@${profile.username}\))\n<@${discordProvider.providerAccountId}>`,
-                    },
-                  ],
-                },
-              ],
-              components: [
-                {
-                  type: 1,
-                  components: [
-                    {
-                      type: 2,
-                      label: "View Track",
-                      style: 5,
-                      url: `${getPublicUrl()}/dashboard/projects/${project.username}/tracks/${username}`,
-                    },
-                  ],
-                },
-              ],
-            }),
-          }
-        );
+        if (project.discordChannelType !== 15) {
+          const messageRequest = await fetch(
+            "https://discord.com/api/v10/channels/" +
+              discordChannelId +
+              "/messages",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bot ${env.DISCORD_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(messageContent),
+            }
+          );
 
-        if (!messageRequest.ok) {
-          throw new Error("Could not send Discord message.");
+          if (!messageRequest.ok) {
+            throw new Error("Could not send Discord message.");
+          }
         }
       }
 

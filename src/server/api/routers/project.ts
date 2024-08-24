@@ -53,6 +53,8 @@ export const projectRouter = createTRPCRouter({
         );
       }
 
+      let discordChannelType;
+
       if (input.discordChannelId) {
         const check = await ctx.db.project.findUnique({
           where: {
@@ -84,6 +86,8 @@ export const projectRouter = createTRPCRouter({
         if (data.type !== 0 && data.type !== 15) {
           throw new Error("Invalid Discord channel type.");
         }
+
+        discordChannelType = data.type;
       }
 
       if (input.thumbnail) {
@@ -103,6 +107,9 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           deadline: input.deadline,
           discordChannelId: input.discordChannelId,
+          discordChannelType: input.discordChannelId
+            ? discordChannelType
+            : undefined,
           status: "DRAFT",
         },
       });
