@@ -185,6 +185,7 @@ export const trackRouter = createTRPCRouter({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              content: `[${profile.name} (@${profile.username}](${getPublicUrl()}/@${profile.username}))\n<@${discordProvider.providerAccountId}> created a new track!`,
               embeds: [
                 {
                   title: input.title,
@@ -193,7 +194,7 @@ export const trackRouter = createTRPCRouter({
                   fields: [
                     {
                       name: "Track Manager",
-                      value: `${profile.name}\n[@${profile.username}](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}>`,
+                      value: `[${profile.name} (@${profile.username}](${getPublicUrl()}/@${profile.username}))\n<@${discordProvider.providerAccountId}>`,
                     },
                   ],
                 },
