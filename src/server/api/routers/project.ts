@@ -195,7 +195,7 @@ export const projectRouter = createTRPCRouter({
       });
 
       if (!data) {
-        throw new Error("Project not found.");
+        return null;
       }
 
       return {
