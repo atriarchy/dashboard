@@ -17,7 +17,6 @@ export const projectRouter = createTRPCRouter({
         username: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         deadline: z.string().datetime().optional(),
-        agreements: z.array(z.string()).optional(),
         thumbnail: z
           .object({
             fileType: z.string(),
@@ -72,15 +71,6 @@ export const projectRouter = createTRPCRouter({
           status: "DRAFT",
         },
       });
-
-      if (input.agreements) {
-        await ctx.db.agreement.createMany({
-          data: input.agreements.map(agreement => ({
-            projectId: project.id,
-            templateId: agreement,
-          })),
-        });
-      }
 
       if (input.thumbnail) {
         const key = !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")

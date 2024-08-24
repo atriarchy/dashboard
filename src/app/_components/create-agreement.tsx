@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Fragment, useRef, useState } from "react";
 import {
   Dialog,
@@ -16,40 +15,18 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
-import { computeSHA256 } from "@/app/_helpers/crypto";
-import FileUpload from "./primitives/file-upload";
 
-export function CreateProject() {
-  const router = useRouter();
-
+export function CreateAgreement({ project }: { project: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [agreement, setAgreement] = useState("");
   const [title, setTitle] = useState("");
-  const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [thumbnail, setThumbnail] = useState<File | undefined>();
 
   const initalFocusRef = useRef(null);
 
-  const createProject = api.project.createProject.useMutation({
-    onSuccess: async ({ username, upload }) => {
-      if (upload && thumbnail) {
-        await toast.promise(
-          fetch(upload.url, {
-            method: "PUT",
-            headers: {
-              "Content-Type": thumbnail.type,
-            },
-            body: thumbnail,
-          }),
-          {
-            loading: "Uploading...",
-            success: "Uploaded.",
-            error: "Error uploading.",
-          }
-        );
-      }
-      router.push(`/dashboard/projects/${username}`);
+  const createAgreement = api.agreement.createAgreement.useMutation({
+    onSuccess: async () => {
+      setIsOpen(false);
     },
     onError: error => {
       toast.error(error.message);
@@ -63,7 +40,7 @@ export function CreateProject() {
         className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
       >
         <FontAwesomeIcon icon={faPlus} />
-        Add Project
+        Add Agreement
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -71,8 +48,11 @@ export function CreateProject() {
           as="div"
           className="relative z-10"
           onClose={() => {
-            if (createProject.isPending) return;
+            if (createAgreement.isPending) return;
             setIsOpen(false);
+            setAgreement("");
+            setTitle("");
+            setDescription("");
           }}
           initialFocus={initalFocusRef}
         >
@@ -103,10 +83,13 @@ export function CreateProject() {
                   <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
                     <DialogTitle as="h3">New Project</DialogTitle>
                     <button
-                      disabled={createProject.isPending}
+                      disabled={createAgreement.isPending}
                       onClick={() => {
-                        if (createProject.isPending) return;
+                        if (createAgreement.isPending) return;
                         setIsOpen(false);
+                        setAgreement("");
+                        setTitle("");
+                        setDescription("");
                       }}
                       aria-label="Close"
                     >
@@ -120,40 +103,45 @@ export function CreateProject() {
                       onSubmit={async e => {
                         e.preventDefault();
 
-                        if (createProject.isPending) return;
+                        if (createAgreement.isPending) return;
 
-                        createProject.mutate({
+                        let templateId = agreement;
+
+                        try {
+                          const agreementUrl = new URL(agreement);
+
+                          templateId =
+                            agreementUrl.pathname.split("/")[2] ?? "";
+                        } catch {}
+
+                        if (!templateId || isNaN(Number(templateId))) {
+                          toast.error("Invalid template URL or ID");
+                          return;
+                        }
+
+                        createAgreement.mutate({
+                          agreement: Number(templateId),
+                          project,
                           title,
-                          username,
                           description: description || undefined,
-                          deadline: deadline
-                            ? new Date(deadline).toISOString()
-                            : undefined,
-                          thumbnail: thumbnail
-                            ? {
-                                fileType: thumbnail.type,
-                                fileSize: thumbnail.size,
-                                checksum: await computeSHA256(thumbnail),
-                              }
-                            : undefined,
                         });
                       }}
                     >
+                      <TextInput
+                        id="agreement"
+                        label="Template"
+                        value={agreement}
+                        onChange={e => setAgreement(e.target.value)}
+                        placeholder="Template URL or ID"
+                        maxLength={64}
+                        required
+                      />
                       <TextInput
                         id="title"
                         label="Title"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         placeholder="Title"
-                        maxLength={64}
-                        required
-                      />
-                      <TextInput
-                        id="username"
-                        label="Slug"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        placeholder="Slug"
                         maxLength={64}
                         required
                       />
@@ -184,46 +172,17 @@ export function CreateProject() {
                           </small>
                         </div>
                       </div>
-                      <div className="flex w-full flex-col items-center justify-start gap-2">
-                        <label
-                          htmlFor="deadline"
-                          className="text-md w-full font-semibold"
-                        >
-                          Deadline
-                        </label>
-                        <input
-                          type="datetime-local"
-                          id="deadline"
-                          value={deadline}
-                          onChange={e => setDeadline(e.target.value)}
-                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
-                          placeholder="Deadline"
-                        />
-                      </div>
-                      <FileUpload
-                        id="thumbnail"
-                        label="Thumbnail"
-                        infoLabel={"Accepts: .png, .jpeg\nMax Size: 1MB"}
-                        accept={["image/png", "image/jpeg"]}
-                        maxSize={1048576} // 1MB
-                        setFile={setThumbnail}
-                        preview={thumbnailURL => (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={thumbnailURL}
-                            alt="Thumbnail"
-                            className="h-full w-full rounded-lg object-cover"
-                          />
-                        )}
-                      />
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
                         className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={createAgreement.isPending}
                         onClick={() => {
-                          if (createProject.isPending) return;
+                          if (createAgreement.isPending) return;
                           setIsOpen(false);
+                          setAgreement("");
+                          setTitle("");
+                          setDescription("");
                         }}
                       >
                         Cancel
@@ -232,9 +191,9 @@ export function CreateProject() {
                         type="submit"
                         form="createProject"
                         className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={createAgreement.isPending}
                       >
-                        {createProject.isPending ? "Loading..." : "Create"}
+                        {createAgreement.isPending ? "Loading..." : "Create"}
                       </button>
                     </div>
                   </div>

@@ -100,11 +100,14 @@ model ProjectThumbnail {
 }
 
 model Agreement {
-    id         String              @id @default(cuid())
-    project    Project             @relation(fields: [projectId], references: [id])
-    projectId  String
-    templateId String
-    documents  AgreementDocument[]
+    id          String              @id @default(cuid())
+    project     Project             @relation(fields: [projectId], references: [id])
+    projectId   String
+    templateId  Int                 @unique
+    recipientId Int
+    title       String
+    description String?
+    documents   AgreementDocument[]
 }
 
 model AgreementDocument {
@@ -114,7 +117,7 @@ model AgreementDocument {
     user        User      @relation(fields: [userId], references: [id])
     userId      String
     email       String
-    documentId  String
+    documentId  Int       @unique
     signingUrl  String
 }
 
