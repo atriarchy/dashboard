@@ -145,7 +145,7 @@ export const trackRouter = createTRPCRouter({
       let discordChannelId;
 
       const messageContent = {
-        content: `[${profile.name} \(@${profile.username}\)](${getPublicUrl()}/@${profile.username})\n<@${discordProvider.providerAccountId}> created a new track!`,
+        content: `<@${discordProvider.providerAccountId}> created a new track!`,
         embeds: [
           {
             title: input.title,
