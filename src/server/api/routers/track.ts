@@ -220,7 +220,7 @@ export const trackRouter = createTRPCRouter({
         }
       }
 
-      await ctx.db.track.create({
+      const track = await ctx.db.track.create({
         data: {
           projectId: project.id,
           username: username,
@@ -229,6 +229,15 @@ export const trackRouter = createTRPCRouter({
           discordChannelId: discordChannelId,
           musicStatus: "IDEA",
           visualStatus: "SEARCHING",
+        },
+      });
+
+      await ctx.db.trackCollaborator.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          acceptedInvite: true,
+          role: "MANAGER",
         },
       });
 
