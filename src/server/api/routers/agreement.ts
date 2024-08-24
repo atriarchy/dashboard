@@ -224,7 +224,6 @@ export const agreementRouter = createTRPCRouter({
       const data = (await response.json()) as {
         documentId: number;
         recipients: {
-          recipientId: number;
           email: string;
           signingUrl: string;
           role: string;
@@ -237,7 +236,7 @@ export const agreementRouter = createTRPCRouter({
       }
 
       const recipient = data.recipients.find(
-        recipient => recipient.recipientId === agreement.recipientId
+        recipient => recipient.email === profile.email
       );
 
       if (!recipient) {
