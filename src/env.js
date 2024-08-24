@@ -37,6 +37,8 @@ export const env = createEnv({
     FILE_STORAGE_SECRET: z.string(),
     FILE_STORAGE_BUCKET: z.string(),
     FILE_STORAGE_PATH_STYLE: optionalBoolSchema,
+    DOCUMENSO_URL: z.string().url(),
+    DOCUMENSO_KEY: z.string(),
     PRISMA_FIELD_ENCRYPTION_KEY: z.string(),
   },
 
@@ -76,6 +78,8 @@ export const env = createEnv({
     FILE_STORAGE_SECRET: process.env.FILE_STORAGE_SECRET,
     FILE_STORAGE_BUCKET: process.env.FILE_STORAGE_BUCKET,
     FILE_STORAGE_PATH_STYLE: process.env.FILE_STORAGE_PATH_STYLE,
+    DOCUMENSO_URL: process.env.DOCUMENSO_URL,
+    DOCUMENSO_KEY: process.env.DOCUMENSO_KEY,
     PRISMA_FIELD_ENCRYPTION_KEY: process.env.PRISMA_FIELD_ENCRYPTION_KEY,
     // Client:
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
