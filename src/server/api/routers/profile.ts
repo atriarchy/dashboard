@@ -4,7 +4,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { z } from "zod";
-import { accessCheck } from "@/server/api/routers/access";
+import { accessCheck, providersCheck } from "@/server/api/routers/access";
 
 export const profileRouter = createTRPCRouter({
   getPublicProfile: publicProcedure
@@ -125,6 +125,8 @@ export const profileRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const providers = await providersCheck(ctx);
+
       let userId = ctx.session.user.id;
       let email = ctx.session.user.email;
 
@@ -265,6 +267,34 @@ export const profileRouter = createTRPCRouter({
           privacy: input.privacy,
         },
       });
+
+      if (providers && userId === ctx.session.user.id) {
+        const discordProviders = providers
+          .map(provider => {
+            if (provider.provider === "discord") {
+              return {
+                discordUserId: provider.providerAccountId,
+              };
+            }
+
+            return null;
+          })
+          .filter(p => p !== null);
+
+        if (discordProviders && discordProviders.length > 0) {
+          await ctx.db.trackCollaborator.updateMany({
+            where: {
+              OR: discordProviders,
+            },
+            data: {
+              userId: ctx.session.user.id,
+              discordUserId: null,
+              discordUsername: null,
+              discordAvatar: null,
+            },
+          });
+        }
+      }
 
       await ctx.db.profileLink.deleteMany({
         where: {
