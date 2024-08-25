@@ -57,18 +57,6 @@ export async function Sidebar({
       </div>
 
       <div className="flex h-full w-full flex-col items-center justify-start gap-2">
-        {access === "ADMIN" && <Access />}
-        <Link
-          href="/dashboard/profile"
-          className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
-            selected === "PROFILE"
-              ? "bg-violet-700"
-              : "bg-gray-700 transition hover:bg-violet-500"
-          }`}
-        >
-          <FontAwesomeIcon icon={faCircleUser} fixedWidth />
-          <span>Profile</span>
-        </Link>
         <Link
           href="/dashboard/projects"
           className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
@@ -152,8 +140,20 @@ export async function Sidebar({
           </>
         )}
       </div>
+      {access === "ADMIN" && <Access />}
+      <Link
+        href="/dashboard/profile"
+        className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+          selected === "PROFILE"
+            ? "bg-violet-700"
+            : "bg-gray-700 transition hover:bg-violet-500"
+        }`}
+      >
+        <FontAwesomeIcon icon={faCircleUser} fixedWidth />
+        <span>Profile</span>
+      </Link>
       {session?.user?.name && session?.user?.image && (
-        <div className="flex w-full items-center justify-between gap-2">
+        <div className="flex w-full items-center justify-between gap-2 pt-2">
           <div className="flex items-center gap-2 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
