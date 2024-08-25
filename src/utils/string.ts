@@ -9,6 +9,7 @@ export function humanize(str: string): string {
     })
     .join(" ");
 }
+
 export function slugify(input: string) {
   return input
     .normalize("NFD")

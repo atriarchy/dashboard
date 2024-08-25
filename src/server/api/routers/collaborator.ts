@@ -11,6 +11,7 @@ export const collaboratorRouter = createTRPCRouter({
         discord: z.string().optional(),
         track: z.string(),
         role: z.enum(["CONTRIBUTOR", "EDITOR"]),
+        skipInvite: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -42,7 +43,7 @@ export const collaboratorRouter = createTRPCRouter({
       });
 
       if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
-        return null;
+        throw new Error("Track not found.");
       }
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
@@ -51,7 +52,10 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Manager not found.");
       }
 
-      if (manager.user.id !== ctx.session.user.id) {
+      if (
+        (manager.user.id !== ctx.session.user.id && access !== "ADMIN") ||
+        (input.skipInvite && access !== "ADMIN")
+      ) {
         throw new Error("Unauthorized.");
       }
 
@@ -157,7 +161,7 @@ export const collaboratorRouter = createTRPCRouter({
             discordUsername: data.username,
             discordAvatar: data.avatar ?? null,
             role: input.role,
-            acceptedInvite: false,
+            acceptedInvite: input.skipInvite,
           },
         });
 

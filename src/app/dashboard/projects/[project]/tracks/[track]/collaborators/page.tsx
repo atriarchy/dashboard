@@ -29,6 +29,8 @@ export default async function CollaboratorPage({
     );
   }
 
+  const access = await api.access.getAccess();
+
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
@@ -46,7 +48,7 @@ export default async function CollaboratorPage({
             }}
           />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <Collaborators username={track.username} />
+            <Collaborators username={track.username} access={access} />
           </div>
         </div>
       </main>

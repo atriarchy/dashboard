@@ -6,7 +6,13 @@ import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { CreateCollaborator } from "./create-collaborator";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
-export function Collaborators({ username }: { username: string }) {
+export function Collaborators({
+  username,
+  access,
+}: {
+  username: string;
+  access?: "ADMIN" | null;
+}) {
   const track = api.track.getTrack.useQuery({
     username: username,
   });
@@ -37,6 +43,7 @@ export function Collaborators({ username }: { username: string }) {
               <CreateCollaborator
                 refetch={() => track.refetch()}
                 track={username}
+                access={access}
               />
             )}
           </div>
