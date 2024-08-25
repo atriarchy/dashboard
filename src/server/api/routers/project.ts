@@ -12,7 +12,7 @@ const projectValidation = z.object({
     .string()
     .min(1)
     .max(64)
-    .regex(/^[a-zA-Z0-9-_]+$/),
+    .regex(/^[a-z0-9-]+$/),
   description: z.string().min(1).max(1024).optional(),
   deadline: z.string().datetime().optional(),
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "RELEASED"]).optional(),
