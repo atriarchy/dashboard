@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -144,13 +145,16 @@ model Track {
 }
 
 model TrackCollaborator {
-    id             String                @id @default(cuid())
-    track          Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
-    trackId        String
-    user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId         String
-    acceptedInvite Boolean               @default(false)
-    role           TrackCollaboratorRole
+    id              String                @id @default(cuid())
+    track           Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId         String
+    user            User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId          String?
+    discordUserId   String?
+    discordUsername String?
+    discordAvatar   String?
+    acceptedInvite  Boolean               @default(false)
+    role            TrackCollaboratorRole
 }
 
 model Agreement {

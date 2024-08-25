@@ -257,4 +257,116 @@ export const trackRouter = createTRPCRouter({
 
       return { username: username };
     }),
+
+  getTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(64),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        return null;
+      }
+
+      let myRole: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER" = "VIEWER";
+
+      const collaborators = (
+        await Promise.all(
+          track.collaborators.map(async collaborator => {
+            if (collaborator.user?.profile) {
+              if (collaborator.user.profile.userId === ctx.session.user.id) {
+                myRole = collaborator.role;
+              }
+
+              return {
+                type: "ATRIARCHY" as const,
+                username: collaborator.user.profile.username,
+                name: collaborator.user.profile.name,
+                role: collaborator.role,
+                acceptedInvite: collaborator.acceptedInvite,
+                avatar: collaborator.user.image,
+              };
+            }
+
+            if (collaborator.discordUserId) {
+              return {
+                type: "DISCORD" as const,
+                discord: {
+                  userId: collaborator.discordUserId,
+                  username: collaborator.discordUsername,
+                  avatar: collaborator.discordAvatar,
+                },
+                role: collaborator.role,
+                acceptedInvite: collaborator.acceptedInvite,
+              };
+            }
+
+            await ctx.db.trackCollaborator.delete({
+              where: {
+                id: collaborator.id,
+              },
+            });
+
+            return null;
+          })
+        )
+      )
+        .filter(c => c !== null)
+        .sort((a, b) => {
+          if (a.role === b.role) return 0;
+          if (a.role === "MANAGER") return -1;
+          if (b.role === "MANAGER") return 1;
+          if (a.role === "EDITOR") return -1;
+          if (b.role === "EDITOR") return 1;
+          if (a.role === "CONTRIBUTOR") return -1;
+          if (b.role === "CONTRIBUTOR") return 1;
+          if (a.role === "VIEWER") return -1;
+          if (b.role === "VIEWER") return 1;
+          return 0;
+        });
+
+      const manager = collaborators.find(c => c.role === "MANAGER");
+
+      return {
+        username: track.username,
+        title: track.title,
+        description: track.description,
+        musicStatus: track.musicStatus,
+        visualStatus: track.visualStatus,
+        project: {
+          username: track.project.username,
+          title: track.project.title,
+          description: track.project.description,
+        },
+        collaborators: collaborators,
+        me: {
+          role: myRole as "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER",
+        },
+        manager: manager,
+      };
+    }),
 });

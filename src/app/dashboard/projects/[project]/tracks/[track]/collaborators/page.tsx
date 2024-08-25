@@ -2,11 +2,12 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
+import { Collaborators } from "@/app/_components/collaborators";
 
-export default async function ProjectPage({
+export default async function CollaboratorPage({
   params,
 }: {
-  params: { project: string };
+  params: { project: string; track: string };
 }) {
   const session = await getServerAuthSession();
 
@@ -20,21 +21,32 @@ export default async function ProjectPage({
     return redirect("/dashboard/onboarding");
   }
 
-  const project = await api.project.getProject({ username: params.project });
+  const track = await api.track.getTrack({ username: params.track });
 
-  if (project) {
-    return redirect(`/dashboard/projects/${params.project}/tracks`);
+  if (!track) {
+    return redirect(
+      `/dashboard/projects/${params.project}/tracks/${params.track}`
+    );
   }
 
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar />
+          <Sidebar
+            selected="PROJECTS_TRACKS_COLLABORATORS"
+            project={{
+              title: track.project.title,
+              username: track.project.username,
+            }}
+            track={{
+              title: track.title,
+              username: track.username,
+              access: track.me.role,
+            }}
+          />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              Project not found.
-            </h1>
+            <Collaborators username={track.username} />
           </div>
         </div>
       </main>

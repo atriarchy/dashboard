@@ -6,7 +6,7 @@ import { Sidebar } from "@/app/_components/sidebar";
 export default async function ProjectPage({
   params,
 }: {
-  params: { project: string };
+  params: { project: string; track: string };
 }) {
   const session = await getServerAuthSession();
 
@@ -20,10 +20,12 @@ export default async function ProjectPage({
     return redirect("/dashboard/onboarding");
   }
 
-  const project = await api.project.getProject({ username: params.project });
+  const track = await api.track.getTrack({ username: params.track });
 
-  if (project) {
-    return redirect(`/dashboard/projects/${params.project}/tracks`);
+  if (track) {
+    return redirect(
+      `/dashboard/projects/${params.project}/tracks/${params.track}/info`
+    );
   }
 
   return (
@@ -33,7 +35,7 @@ export default async function ProjectPage({
           <Sidebar />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              Project not found.
+              Track not found.
             </h1>
           </div>
         </div>
