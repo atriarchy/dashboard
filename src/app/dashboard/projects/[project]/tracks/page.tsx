@@ -56,14 +56,6 @@ export default async function TracksPage({
                       ? formatDateToDatetimeLocal(project.deadline)
                       : undefined,
                     discordChannelId: project.discordChannelId,
-                    thumbnail: project.thumbnail
-                      ? await fetch(project.thumbnail)
-                          .then(res => res.blob())
-                          .catch(err => {
-                            console.error(err);
-                            return undefined;
-                          })
-                      : undefined,
                   }}
                 />
               </div>
