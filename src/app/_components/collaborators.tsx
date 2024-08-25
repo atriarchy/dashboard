@@ -34,7 +34,10 @@ export function Collaborators({ username }: { username: string }) {
               </span>
             )}
             {track.data.me.role === "MANAGER" && (
-              <CreateCollaborator refetch={() => track.refetch()} />
+              <CreateCollaborator
+                refetch={() => track.refetch()}
+                track={username}
+              />
             )}
           </div>
           <div className="flex w-full flex-col items-start justify-start gap-2">

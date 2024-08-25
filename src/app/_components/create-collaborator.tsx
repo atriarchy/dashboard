@@ -15,13 +15,20 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import {
   faGlobe,
   faMagnifyingGlass,
+  faPlus,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
-export function CreateCollaborator({ refetch }: { refetch: () => void }) {
+export function CreateCollaborator({
+  refetch,
+  track,
+}: {
+  refetch: () => void;
+  track: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<
@@ -52,6 +59,18 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
     },
   });
 
+  const addCollaborator = api.collaborator.addCollaborator.useMutation({
+    onSuccess: async () => {
+      refetch();
+      setIsOpen(false);
+      setSearch("");
+      setResults(undefined);
+    },
+    onError: error => {
+      toast.error(error.message);
+    },
+  });
+
   return (
     <>
       <button
@@ -67,7 +86,7 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
           as="div"
           className="relative z-10"
           onClose={() => {
-            if (query.isPending) return;
+            if (query.isPending || addCollaborator.isPending) return;
             setIsOpen(false);
             setSearch("");
             setResults(undefined);
@@ -101,9 +120,10 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
                   <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
                     <DialogTitle as="h3"> Add Collaborator</DialogTitle>
                     <button
-                      disabled={query.isPending}
+                      disabled={query.isPending || addCollaborator.isPending}
                       onClick={() => {
-                        if (query.isPending) return;
+                        if (query.isPending || addCollaborator.isPending)
+                          return;
                         setIsOpen(false);
                         setSearch("");
                         setResults(undefined);
@@ -134,9 +154,11 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
                       <button
                         type="submit"
                         className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
-                        disabled={query.isPending}
+                        disabled={query.isPending || addCollaborator.isPending}
                       >
-                        {query.isPending ? "Loading..." : "Create"}
+                        {query.isPending || addCollaborator.isPending
+                          ? "Loading..."
+                          : "Create"}
                       </button>
                     </form>
                     {results?.atriarchy.map(user => (
@@ -170,7 +192,22 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-start gap-2"></div>
+                        <button
+                          onClick={() => {
+                            addCollaborator.mutate({
+                              username: user.username,
+                              track: track,
+                              role: "CONTRIBUTOR",
+                            });
+                          }}
+                          className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                          disabled={
+                            addCollaborator.isPending || query.isPending
+                          }
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                          <span>Add</span>
+                        </button>
                       </div>
                     ))}
                     {results?.discord.map(user => (
@@ -199,12 +236,27 @@ export function CreateCollaborator({ refetch }: { refetch: () => void }) {
                                 </h2>
                               </div>
                               <p className="text-sm text-gray-400">
-                                @{user.username}
+                                {user.username}
                               </p>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-start gap-2"></div>
+                        <button
+                          onClick={() => {
+                            addCollaborator.mutate({
+                              discord: user.id,
+                              track: track,
+                              role: "CONTRIBUTOR",
+                            });
+                          }}
+                          className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                          disabled={
+                            addCollaborator.isPending || query.isPending
+                          }
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                          <span>Add</span>
+                        </button>
                       </div>
                     ))}
                   </div>
