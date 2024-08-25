@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { CreateCollaborator } from "./create-collaborator";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import toast from "react-hot-toast";
 
 export function Collaborators({
   username,
@@ -15,6 +16,24 @@ export function Collaborators({
 }) {
   const track = api.track.getTrack.useQuery({
     username: username,
+  });
+
+  const updateCollaborator = api.collaborator.updateCollaborator.useMutation({
+    onSuccess: async () => {
+      await track.refetch();
+    },
+    onError: () => {
+      toast.error("Failed to update access.");
+    },
+  });
+
+  const deleteCollaborator = api.collaborator.deleteCollaborator.useMutation({
+    onSuccess: async () => {
+      await track.refetch();
+    },
+    onError: () => {
+      toast.error("Failed to update access.");
+    },
   });
 
   return (
@@ -39,7 +58,7 @@ export function Collaborators({
                   : `${track.data.manager.discord.username} (Discord)`}
               </span>
             )}
-            {track.data.me.role === "MANAGER" && (
+            {(track.data.me.role === "MANAGER" || access === "ADMIN") && (
               <CreateCollaborator
                 refetch={() => track.refetch()}
                 track={username}
@@ -55,7 +74,7 @@ export function Collaborators({
                     key={"atriarchy:" + collaborator.username}
                     className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
                   >
-                    <div className="flex items-center justify-start gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <FontAwesomeIcon
                         icon={faGlobe}
                         className="mr-2 text-xl"
@@ -85,6 +104,43 @@ export function Collaborators({
                           Invited
                         </span>
                       )}
+
+                      <select
+                        onChange={event => {
+                          if (event.target.value === "_delete") {
+                            deleteCollaborator.mutate({
+                              username: collaborator.username,
+                              track: username,
+                            });
+
+                            return;
+                          }
+
+                          updateCollaborator.mutate({
+                            username: collaborator.username,
+                            role: event.target.value as
+                              | "CONTRIBUTOR"
+                              | "EDITOR",
+                            track: username,
+                          });
+                        }}
+                        value={collaborator.role}
+                        className="rounded-full bg-gray-700 p-2"
+                        disabled={
+                          updateCollaborator.isPending ||
+                          deleteCollaborator.isPending ||
+                          collaborator.me ||
+                          (track.data?.me.role !== "MANAGER" &&
+                            access !== "ADMIN")
+                        }
+                      >
+                        <option value="MANAGER" disabled>
+                          Manager
+                        </option>
+                        <option value="EDITOR">Editor</option>
+                        <option value="CONTRIBUTOR">Contributor</option>
+                        <option value="_delete">Delete</option>
+                      </select>
                     </div>
                   </div>
                 );
@@ -96,7 +152,7 @@ export function Collaborators({
                     key={"discord:" + collaborator.discord.userId}
                     className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
                   >
-                    <div className="flex items-center justify-start gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <FontAwesomeIcon
                         icon={faDiscord}
                         className="mr-2 text-xl"
@@ -109,18 +165,55 @@ export function Collaborators({
                           className="h-8 w-8 rounded-full"
                         />
                       )}
-                      <div className="flex items-center justify-start gap-2">
-                        <h2 className="text-lg font-bold">
-                          {collaborator.discord.username}
-                        </h2>
-                      </div>
+                      <h2 className="text-lg font-bold">
+                        {collaborator.discord.username}
+                      </h2>
                     </div>
-                    <div className="flex items-center justify-start gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       {!collaborator.acceptedInvite && (
                         <span className="rounded-full bg-neutral-950 px-2 py-1 text-sm">
                           Invited
                         </span>
                       )}
+                      <select
+                        onChange={event => {
+                          if (event.target.value === "_delete") {
+                            deleteCollaborator.mutate({
+                              username:
+                                collaborator.discord.username ?? undefined,
+                              track: username,
+                            });
+
+                            return;
+                          }
+
+                          updateCollaborator.mutate({
+                            username:
+                              collaborator.discord.username ?? undefined,
+                            role: event.target.value as
+                              | "CONTRIBUTOR"
+                              | "EDITOR",
+                            track: username,
+                          });
+                        }}
+                        value={collaborator.role}
+                        className="rounded-full bg-gray-700 p-2"
+                        disabled={
+                          updateCollaborator.isPending ||
+                          deleteCollaborator.isPending ||
+                          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                          collaborator.me ||
+                          (track.data?.me.role !== "MANAGER" &&
+                            access !== "ADMIN")
+                        }
+                      >
+                        <option value="MANAGER" disabled>
+                          Manager
+                        </option>
+                        <option value="EDITOR">Editor</option>
+                        <option value="CONTRIBUTOR">Contributor</option>
+                        <option value="_delete">Delete</option>
+                      </select>
                     </div>
                   </div>
                 );

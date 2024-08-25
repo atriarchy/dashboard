@@ -305,6 +305,7 @@ export const trackRouter = createTRPCRouter({
                 role: collaborator.role,
                 acceptedInvite: collaborator.acceptedInvite,
                 avatar: collaborator.user.image,
+                me: collaborator.user.profile.userId === ctx.session.user.id,
               };
             }
 

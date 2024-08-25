@@ -13,6 +13,7 @@ import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import {
+  faChevronDown,
   faGlobe,
   faMagnifyingGlass,
   faPlus,
@@ -50,6 +51,9 @@ export function CreateCollaborator({
     | undefined
   >(undefined);
   const [skipInvite, setSkipInvite] = useState(false);
+  const [username, setUsername] = useState("");
+  const [discordUserId, setDiscordUserId] = useState("");
+  const [advanced, setAdvanced] = useState(false);
 
   const initalFocusRef = useRef(null);
 
@@ -69,6 +73,9 @@ export function CreateCollaborator({
       setSearch("");
       setResults(undefined);
       setSkipInvite(false);
+      setUsername("");
+      setDiscordUserId("");
+      setAdvanced(false);
     },
     onError: error => {
       toast.error(error.message);
@@ -95,6 +102,9 @@ export function CreateCollaborator({
             setSearch("");
             setResults(undefined);
             setSkipInvite(false);
+            setUsername("");
+            setDiscordUserId("");
+            setAdvanced(false);
           }}
           initialFocus={initalFocusRef}
         >
@@ -133,6 +143,9 @@ export function CreateCollaborator({
                         setSearch("");
                         setResults(undefined);
                         setSkipInvite(false);
+                        setUsername("");
+                        setDiscordUserId("");
+                        setAdvanced(false);
                       }}
                       aria-label="Close"
                     >
@@ -164,14 +177,14 @@ export function CreateCollaborator({
                       >
                         {query.isPending || addCollaborator.isPending
                           ? "Loading..."
-                          : "Create"}
+                          : "Search"}
                       </button>
                     </form>
-                    {results && (
-                      <div className="mt-2 flex w-full flex-col items-center justify-start">
-                        {(results.atriarchy.length > 0 ||
-                          results.discord.length > 0) &&
-                          access === "ADMIN" && (
+                    {results &&
+                      (results.atriarchy.length > 0 ||
+                      results.discord.length > 0 ? (
+                        <div className="mt-2 flex w-full flex-col items-center justify-start">
+                          {access === "ADMIN" && (
                             <div className="flex w-full items-center justify-start gap-2">
                               <input
                                 id="skipInvite"
@@ -187,109 +200,198 @@ export function CreateCollaborator({
                               </label>
                             </div>
                           )}
-                        {results?.atriarchy.map(user => (
-                          <div
-                            key={user.username}
-                            className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
-                          >
-                            <div className="flex items-center justify-start gap-2">
-                              <FontAwesomeIcon
-                                icon={faGlobe}
-                                className="mr-2 text-xl"
-                              />
+                          {results?.atriarchy.map(user => (
+                            <div
+                              key={user.username}
+                              className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
+                            >
                               <div className="flex items-center justify-start gap-2">
-                                {user.avatar && (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img
-                                    src={user.avatar}
-                                    alt="Profile Picture"
-                                    className="h-8 w-8 rounded-full"
-                                  />
-                                )}
-                                <div className="flex flex-col items-start justify-start">
-                                  <div className="flex items-center justify-start gap-2">
-                                    <h2 className="text-lg font-bold">
-                                      {user.name}
-                                    </h2>
+                                <FontAwesomeIcon
+                                  icon={faGlobe}
+                                  className="mr-2 text-xl"
+                                />
+                                <div className="flex items-center justify-start gap-2">
+                                  {user.avatar && (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      src={user.avatar}
+                                      alt="Profile Picture"
+                                      className="h-8 w-8 rounded-full"
+                                    />
+                                  )}
+                                  <div className="flex flex-col items-start justify-start">
+                                    <div className="flex items-center justify-start gap-2">
+                                      <h2 className="text-lg font-bold">
+                                        {user.name}
+                                      </h2>
+                                    </div>
+                                    <p className="text-sm text-gray-400">
+                                      @{user.username}
+                                    </p>
                                   </div>
-                                  <p className="text-sm text-gray-400">
-                                    @{user.username}
-                                  </p>
                                 </div>
                               </div>
+                              <button
+                                onClick={() => {
+                                  addCollaborator.mutate({
+                                    username: user.username,
+                                    track: track,
+                                    role: "CONTRIBUTOR",
+                                    skipInvite:
+                                      access === "ADMIN"
+                                        ? skipInvite
+                                        : undefined,
+                                  });
+                                }}
+                                className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                                disabled={
+                                  addCollaborator.isPending || query.isPending
+                                }
+                              >
+                                <FontAwesomeIcon icon={faPlus} />
+                                <span>Add</span>
+                              </button>
                             </div>
-                            <button
-                              onClick={() => {
-                                addCollaborator.mutate({
-                                  username: user.username,
-                                  track: track,
-                                  role: "CONTRIBUTOR",
-                                  skipInvite:
-                                    access === "ADMIN" ? skipInvite : undefined,
-                                });
-                              }}
-                              className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                              disabled={
-                                addCollaborator.isPending || query.isPending
-                              }
+                          ))}
+                          {results?.discord.map(user => (
+                            <div
+                              key={user.id}
+                              className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
                             >
-                              <FontAwesomeIcon icon={faPlus} />
-                              <span>Add</span>
-                            </button>
-                          </div>
-                        ))}
-                        {results?.discord.map(user => (
-                          <div
-                            key={user.id}
-                            className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
-                          >
-                            <div className="flex items-center justify-start gap-2">
-                              <FontAwesomeIcon
-                                icon={faDiscord}
-                                className="mr-2 text-xl"
-                              />
                               <div className="flex items-center justify-start gap-2">
-                                {user.avatar && (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img
-                                    src={user.avatar}
-                                    alt="Profile Picture"
-                                    className="h-8 w-8 rounded-full"
-                                  />
-                                )}
-                                <div className="flex flex-col items-start justify-start">
-                                  <div className="flex items-center justify-start gap-2">
-                                    <h2 className="text-lg font-bold">
-                                      {user.name}
-                                    </h2>
+                                <FontAwesomeIcon
+                                  icon={faDiscord}
+                                  className="mr-2 text-xl"
+                                />
+                                <div className="flex items-center justify-start gap-2">
+                                  {user.avatar && (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                      src={user.avatar}
+                                      alt="Profile Picture"
+                                      className="h-8 w-8 rounded-full"
+                                    />
+                                  )}
+                                  <div className="flex flex-col items-start justify-start">
+                                    <div className="flex items-center justify-start gap-2">
+                                      <h2 className="text-lg font-bold">
+                                        {user.name}
+                                      </h2>
+                                    </div>
+                                    <p className="text-sm text-gray-400">
+                                      {user.username}
+                                    </p>
                                   </div>
-                                  <p className="text-sm text-gray-400">
-                                    {user.username}
-                                  </p>
                                 </div>
                               </div>
+                              <button
+                                onClick={() => {
+                                  addCollaborator.mutate({
+                                    discord: user.id,
+                                    track: track,
+                                    role: "CONTRIBUTOR",
+                                    skipInvite:
+                                      access === "ADMIN"
+                                        ? skipInvite
+                                        : undefined,
+                                  });
+                                }}
+                                className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                                disabled={
+                                  addCollaborator.isPending || query.isPending
+                                }
+                              >
+                                <FontAwesomeIcon icon={faPlus} />
+                                <span>Add</span>
+                              </button>
                             </div>
-                            <button
-                              onClick={() => {
-                                addCollaborator.mutate({
-                                  discord: user.id,
-                                  track: track,
-                                  role: "CONTRIBUTOR",
-                                  skipInvite:
-                                    access === "ADMIN" ? skipInvite : undefined,
-                                });
-                              }}
-                              className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                              disabled={
-                                addCollaborator.isPending || query.isPending
-                              }
-                            >
-                              <FontAwesomeIcon icon={faPlus} />
-                              <span>Add</span>
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">No results.</span>
+                      ))}
+                    <button
+                      type="button"
+                      className="flex w-fit items-center justify-center gap-2 text-sm text-gray-400"
+                      onClick={() => setAdvanced(!advanced)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className={`transition duration-300 ${
+                          advanced ? "rotate-180" : ""
+                        }`}
+                      />
+                      <span>Advanced</span>
+                    </button>
+                    {advanced && (
+                      <>
+                        <form
+                          onSubmit={async e => {
+                            e.preventDefault();
+
+                            addCollaborator.mutate({
+                              username: username,
+                              track: track,
+                              role: "CONTRIBUTOR",
+                              skipInvite:
+                                access === "ADMIN" ? skipInvite : undefined,
+                            });
+                          }}
+                          className="flex items-end justify-center gap-2"
+                        >
+                          <TextInput
+                            id="username"
+                            label="Atriarchy Username"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            placeholder="Atriarchy Username"
+                            maxLength={64}
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="h-full w-fit rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                            disabled={
+                              addCollaborator.isPending || query.isPending
+                            }
+                          >
+                            Add
+                          </button>
+                        </form>
+                        <form
+                          onSubmit={async e => {
+                            e.preventDefault();
+
+                            addCollaborator.mutate({
+                              username: username,
+                              track: track,
+                              role: "CONTRIBUTOR",
+                              skipInvite:
+                                access === "ADMIN" ? skipInvite : undefined,
+                            });
+                          }}
+                          className="flex items-end justify-center gap-2"
+                        >
+                          <TextInput
+                            id="discord"
+                            label="Discord User ID"
+                            value={discordUserId}
+                            onChange={e => setDiscordUserId(e.target.value)}
+                            placeholder="Discord User ID"
+                            maxLength={64}
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="h-full w-fit rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                            disabled={
+                              addCollaborator.isPending || query.isPending
+                            }
+                          >
+                            Add
+                          </button>
+                        </form>
+                      </>
                     )}
                   </div>
                 </DialogPanel>

@@ -22,9 +22,9 @@ export function CreateTrack({ project }: { project: string }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
   const [advanced, setAdvanced] = useState(false);
+  const [username, setUsername] = useState("");
 
   const initalFocusRef = useRef(null);
 
