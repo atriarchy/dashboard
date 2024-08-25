@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck, providersCheck } from "@/server/api/routers/access";
 import { env } from "process";
 import { getPublicUrl } from "@/utils/url";
+import { slugify } from "@/utils/string";
 
 export const trackRouter = createTRPCRouter({
   getMyTracks: protectedProcedure
@@ -89,12 +90,7 @@ export const trackRouter = createTRPCRouter({
           );
         }
       } else {
-        const usernameCheck =
-          input.title
-            .toLowerCase()
-            .replace(/ /g, "_")
-            .replace(/\W/g, "")
-            .slice(0, 64) || "_";
+        const usernameCheck = slugify(input.title).slice(0, 64) || "_";
 
         let index = 1;
 
