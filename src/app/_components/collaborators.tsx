@@ -43,21 +43,10 @@ export function Collaborators({
       )}
       {track.data && (
         <>
-          <div className="mb-8 flex flex-col items-start justify-start gap-2">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              {track.data.title}
-            </h1>
-            {track.data.description && (
-              <p className="text-lg">{track.data.description}</p>
-            )}
-            {track.data.manager && (
-              <span className="text-sm text-gray-400">
-                Project Lead:{" "}
-                {track.data.manager.type === "ATRIARCHY"
-                  ? `${track.data.manager.name} (@${track.data.manager.username})`
-                  : `${track.data.manager.discord.username} (Discord)`}
-              </span>
-            )}
+          <div className="flex items-start justify-start gap-4">
+            <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
+              Collaborators
+            </h2>
             {(track.data.me.role === "MANAGER" || access === "ADMIN") && (
               <CreateCollaborator
                 refetch={() => track.refetch()}
@@ -129,7 +118,7 @@ export function Collaborators({
                         disabled={
                           updateCollaborator.isPending ||
                           deleteCollaborator.isPending ||
-                          collaborator.me ||
+                          collaborator.role === "MANAGER" ||
                           (track.data?.me.role !== "MANAGER" &&
                             access !== "ADMIN")
                         }

@@ -88,7 +88,7 @@ const FileUpload = ({
           </div>
         )}
         <div
-          className={`pointer-events-none flex items-center justify-center gap-4 ${fileUrl && direction === "column" ? "w-full flex-row" : "w-fit flex-col"}`}
+          className={`pointer-events-none flex items-center justify-center gap-4 ${fileUrl && direction === "column" ? "w-full" : "w-fit flex-col"}`}
         >
           {!fileUrl && (
             <FontAwesomeIcon icon={faCloudArrowUp} className="text-6xl" />

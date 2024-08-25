@@ -41,6 +41,9 @@ export default async function AgreementsPage({
             }}
           />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
+            <h1 className="mb-8 bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+              {project.title}
+            </h1>
             <Agreements access={access} project={params.project} />
           </div>
         </div>

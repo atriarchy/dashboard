@@ -183,7 +183,7 @@ export function CreateCollaborator({
                     {results &&
                       (results.atriarchy.length > 0 ||
                       results.discord.length > 0 ? (
-                        <div className="mt-2 flex w-full flex-col items-center justify-start">
+                        <div className="mt-2 flex w-full flex-col items-center justify-start gap-2">
                           {access === "ADMIN" && (
                             <div className="flex w-full items-center justify-start gap-2">
                               <input
@@ -363,7 +363,7 @@ export function CreateCollaborator({
                             e.preventDefault();
 
                             addCollaborator.mutate({
-                              username: username,
+                              discord: discordUserId,
                               track: track,
                               role: "CONTRIBUTOR",
                               skipInvite:
@@ -378,7 +378,6 @@ export function CreateCollaborator({
                             value={discordUserId}
                             onChange={e => setDiscordUserId(e.target.value)}
                             placeholder="Discord User ID"
-                            maxLength={64}
                             required
                           />
                           <button
