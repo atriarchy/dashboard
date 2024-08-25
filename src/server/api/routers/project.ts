@@ -111,7 +111,7 @@ export const projectRouter = createTRPCRouter({
           discordChannelType: input.discordChannelId
             ? discordChannelType
             : undefined,
-          status: input.status || "DRAFT",
+          status: input.status ?? "DRAFT",
         },
       });
 

@@ -37,25 +37,25 @@ export function ProjectForm(props: ProjectFormProps) {
 
   const { id } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState(props.title || "");
-  const [status, setStatus] = useState(props.status || ProjectStatus.DRAFT);
-  const [username, setUsername] = useState(props.username || "");
-  const [description, setDescription] = useState(props.description || "");
+  const [title, setTitle] = useState(props.title ?? "");
+  const [status, setStatus] = useState(props.status ?? ProjectStatus.DRAFT);
+  const [username, setUsername] = useState(props.username ?? "");
+  const [description, setDescription] = useState(props.description ?? "");
   const [deadline, setDeadline] = useState(props.deadline);
   const [discordChannelId, setDiscordChannelId] = useState(
-    props.discordChannelId || ""
+    props.discordChannelId ?? ""
   );
   const [thumbnail, setThumbnail] = useState<File | undefined>();
 
   const initalFocusRef = useRef(null);
 
   const reset = () => {
-    setTitle(props.title || "");
-    setUsername(props.username || "");
-    setDescription(props.description || "");
-    setDeadline(props.deadline || "");
-    setStatus(props.status || ProjectStatus.DRAFT);
-    setDiscordChannelId(props.discordChannelId || "");
+    setTitle(props.title ?? "");
+    setUsername(props.username ?? "");
+    setDescription(props.description ?? "");
+    setDeadline(props.deadline ?? "");
+    setStatus(props.status ?? ProjectStatus.DRAFT);
+    setDiscordChannelId(props.discordChannelId ?? "");
     setThumbnail(undefined);
   };
 
@@ -155,16 +155,16 @@ export function ProjectForm(props: ProjectFormProps) {
                         if (mutation.isPending) return;
 
                         mutation.mutate({
-                          // @ts-ignore
+                          // @ts-expect-error id is expected for resource updates
                           id,
                           title,
                           username,
                           status,
-                          description: description || undefined,
+                          description: description,
                           deadline: deadline
                             ? new Date(deadline).toISOString()
                             : undefined,
-                          discordChannelId: discordChannelId || undefined,
+                          discordChannelId: discordChannelId,
                           thumbnail: thumbnail
                             ? {
                                 fileType: thumbnail.type,

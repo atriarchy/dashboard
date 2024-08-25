@@ -21,8 +21,8 @@ type Options = {
 
 export async function getUploadURL(options: Options) {
   const file = options.file;
-  const metadata = options.metadata || {};
-  const expiresIn = options.expiresIn || 60;
+  const metadata = options.metadata ?? {};
+  const expiresIn = options.expiresIn ?? 60;
   const key = !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
     ? crypto.randomBytes(32).toString("hex")
     : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`;
