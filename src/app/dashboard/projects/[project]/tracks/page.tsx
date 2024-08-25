@@ -50,6 +50,7 @@ export default async function TracksPage({
                     id: project.id,
                     title: project.title,
                     username: project.username,
+                    status: project.status,
                     description: project.description,
                     deadline: project.deadline
                       ? formatDateToDatetimeLocal(project.deadline)

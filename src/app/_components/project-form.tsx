@@ -18,11 +18,13 @@ import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
 import FileUpload from "./primitives/file-upload";
-import type { Project } from "@prisma/client";
+import { ProjectStatus, type Project } from "@prisma/client";
+import { normalize } from "@/utils/string";
 
 export type ProjectFormProps = {
   id?: Project["id"];
   title?: Project["title"];
+  status?: Project["status"];
   username?: Project["username"];
   description?: Project["description"];
   deadline?: string;
@@ -36,6 +38,7 @@ export function ProjectForm(props: ProjectFormProps) {
   const { id } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(props.title || "");
+  const [status, setStatus] = useState(props.status || ProjectStatus.DRAFT);
   const [username, setUsername] = useState(props.username || "");
   const [description, setDescription] = useState(props.description || "");
   const [deadline, setDeadline] = useState(props.deadline);
@@ -51,6 +54,7 @@ export function ProjectForm(props: ProjectFormProps) {
     setUsername(props.username || "");
     setDescription(props.description || "");
     setDeadline(props.deadline || "");
+    setStatus(props.status || ProjectStatus.DRAFT);
     setDiscordChannelId(props.discordChannelId || "");
     setThumbnail(undefined);
   };
@@ -155,6 +159,7 @@ export function ProjectForm(props: ProjectFormProps) {
                           id,
                           title,
                           username,
+                          status,
                           description: description || undefined,
                           deadline: deadline
                             ? new Date(deadline).toISOString()
@@ -230,6 +235,29 @@ export function ProjectForm(props: ProjectFormProps) {
                           className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
                           placeholder="Deadline"
                         />
+                      </div>
+                      <div className="flex w-full flex-col items-center justify-start gap-2">
+                        <label
+                          htmlFor="status"
+                          className="text-md w-full font-semibold"
+                        >
+                          Status
+                        </label>
+                        <select
+                          id="status"
+                          name="status"
+                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                          value={status}
+                          onChange={e =>
+                            setStatus(e.target.value as ProjectStatus)
+                          }
+                        >
+                          {Object.keys(ProjectStatus).map(statusOption => (
+                            <option key={statusOption} value={statusOption}>
+                              {normalize(statusOption)}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <TextInput
                         id="discordChannelId"
