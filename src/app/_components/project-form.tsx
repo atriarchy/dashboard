@@ -182,7 +182,10 @@ export function ProjectForm(props: ProjectFormProps) {
                         onChange={e => {
                           setTitle(e.target.value);
                           setUsername(
-                            e.target.value.toLowerCase().replace(/\s/g, "_")
+                            e.target.value
+                              .toLowerCase()
+                              .replace(/\s/g, "-")
+                              .replace(/[^a-z0-9-_]/g, "")
                           );
                         }}
                         placeholder="Title"

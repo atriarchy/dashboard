@@ -8,7 +8,11 @@ const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB
 const projectValidation = z.object({
   title: z.string().min(1).max(64),
-  username: z.string().min(1).max(64),
+  username: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-zA-Z0-9-_]+$/),
   description: z.string().min(1).max(1024).optional(),
   deadline: z.string().datetime().optional(),
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "RELEASED"]).optional(),
@@ -48,12 +52,6 @@ export const projectRouter = createTRPCRouter({
 
       if (username) {
         throw new Error("Slug already exists.");
-      }
-
-      if (input.username && !/^\w{1,64}$/.test(input.username)) {
-        throw new Error(
-          "Slug can only contain letters, numbers, and underscores."
-        );
       }
 
       let discordChannelType;
@@ -262,12 +260,6 @@ export const projectRouter = createTRPCRouter({
 
       if (username && username.id !== input.id) {
         throw new Error("Slug already exists.");
-      }
-
-      if (input.username && !/^\w{1,64}$/.test(input.username)) {
-        throw new Error(
-          "Slug can only contain letters, numbers, and underscores."
-        );
       }
 
       if (input.discordChannelId) {
