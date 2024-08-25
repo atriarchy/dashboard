@@ -474,4 +474,155 @@ export const collaboratorRouter = createTRPCRouter({
 
       throw new Error("Username or Discord ID is required.");
     }),
+
+  getMyInvites: protectedProcedure.query(async ({ ctx }) => {
+    const invites = await ctx.db.trackCollaborator.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        acceptedInvite: false,
+      },
+      include: {
+        track: {
+          include: {
+            project: true,
+          },
+        },
+      },
+    });
+
+    return invites.map(invite => ({
+      username: invite.track.username,
+      title: invite.track.title,
+      project: invite.track.project.username,
+    }));
+  }),
+
+  acceptInvite: protectedProcedure
+    .input(
+      z.object({
+        track: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.track,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const collaborator = track.collaborators.find(
+        c => c.userId === ctx.session.user.id
+      );
+
+      if (!collaborator?.userId) {
+        throw new Error("User not found.");
+      }
+
+      if (collaborator.acceptedInvite) {
+        throw new Error("Invite already accepted.");
+      }
+
+      const find = await ctx.db.trackCollaborator.findFirst({
+        where: {
+          trackId: track.id,
+          userId: collaborator.userId,
+        },
+      });
+
+      if (!find) {
+        throw new Error("Collaborator not found.");
+      }
+
+      await ctx.db.trackCollaborator.update({
+        where: {
+          id: find.id,
+        },
+        data: {
+          acceptedInvite: true,
+        },
+      });
+
+      return;
+    }),
+
+  declineInvite: protectedProcedure
+    .input(
+      z.object({
+        track: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.track,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const collaborator = track.collaborators.find(
+        c => c.userId === ctx.session.user.id
+      );
+
+      if (!collaborator?.userId) {
+        throw new Error("User not found.");
+      }
+
+      if (collaborator.acceptedInvite) {
+        throw new Error("Invite already accepted.");
+      }
+
+      const find = await ctx.db.trackCollaborator.findFirst({
+        where: {
+          trackId: track.id,
+          userId: collaborator.userId,
+        },
+      });
+
+      if (!find) {
+        throw new Error("Collaborator not found.");
+      }
+
+      await ctx.db.trackCollaborator.delete({
+        where: {
+          id: find.id,
+        },
+      });
+
+      return;
+    }),
 });

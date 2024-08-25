@@ -3,7 +3,7 @@
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
-import { CreateCollaborator } from "./create-collaborator";
+import { CreateCollaborator } from "@/app/_components/create-collaborator";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import toast from "react-hot-toast";
 

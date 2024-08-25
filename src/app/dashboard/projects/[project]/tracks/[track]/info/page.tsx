@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
+import { InviteBanner } from "@/app/_components/invite-banner";
 
 export default async function InfoPage({
   params,
@@ -55,6 +56,9 @@ export default async function InfoPage({
                 <p className="text-lg">{track.description}</p>
               )}
             </div>
+            {track.me.role !== "VIEWER" && !track.me.acceptedInvite && (
+              <InviteBanner username={track.username} />
+            )}
             {/* TODO: Add info page. */}
           </div>
         </div>

@@ -289,6 +289,7 @@ export const trackRouter = createTRPCRouter({
       }
 
       let myRole: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER" = "VIEWER";
+      let myAcceptedInvite;
 
       const collaborators = (
         await Promise.all(
@@ -296,6 +297,7 @@ export const trackRouter = createTRPCRouter({
             if (collaborator.user?.profile) {
               if (collaborator.user.profile.userId === ctx.session.user.id) {
                 myRole = collaborator.role;
+                myAcceptedInvite = collaborator.acceptedInvite;
               }
 
               return {
@@ -362,6 +364,7 @@ export const trackRouter = createTRPCRouter({
         collaborators: collaborators,
         me: {
           role: myRole as "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER",
+          acceptedInvite: myAcceptedInvite,
         },
         manager: manager,
       };
