@@ -179,7 +179,12 @@ export function ProjectForm(props: ProjectFormProps) {
                         id="title"
                         label="Title"
                         value={title}
-                        onChange={e => setTitle(e.target.value)}
+                        onChange={e => {
+                          setTitle(e.target.value);
+                          setUsername(
+                            e.target.value.toLowerCase().replace(/\s/g, "_")
+                          );
+                        }}
                         placeholder="Title"
                         maxLength={64}
                         required
