@@ -268,32 +268,6 @@ export const projectRouter = createTRPCRouter({
         throw new Error("Slug already exists.");
       }
 
-      let discordChannelType;
-      if (input.discordChannelId) {
-        const request = await fetch(
-          "https://discord.com/api/v10/channels/" + input.discordChannelId,
-          {
-            headers: {
-              Authorization: `Bot ${env.DISCORD_TOKEN}`,
-            },
-          }
-        );
-
-        if (!request.ok) {
-          throw new Error("Discord channel not found.");
-        }
-
-        const data = (await request.json()) as {
-          type: number;
-        };
-
-        if (!discordChannelTypes.includes(data.type)) {
-          throw new Error("Invalid Discord channel type.");
-        }
-
-        discordChannelType = data.type;
-      }
-
       const project = await ctx.db.project.update({
         where: { id: input.id },
         data: {
@@ -302,8 +276,6 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           deadline: input.deadline,
           status: input.status,
-          discordChannelId: input.discordChannelId,
-          discordChannelType,
         },
       });
 
