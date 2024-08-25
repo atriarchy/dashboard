@@ -75,7 +75,7 @@ export function Agreements({
                       disabled={sign.isPending}
                     >
                       <FontAwesomeIcon icon={faPenNib} />
-                      <span>{sign.isPending ? "Loading..." : "Sign"}</span>
+                      <span>Sign</span>
                     </button>
                   )}
                 </div>

@@ -17,7 +17,7 @@ import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
-import FileUpload from "./primitives/file-upload";
+import FileUpload from "@/app/_components/primitives/file-upload";
 import { ProjectStatus, type Project } from "@prisma/client";
 import { humanize, slugify } from "@/utils/string";
 

@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -34,6 +35,12 @@ enum TrackCollaboratorRole {
     MANAGER
     EDITOR
     CONTRIBUTOR
+}
+
+enum TrackType {
+    ORIGINAL
+    PARODY
+    COVER
 }
 
 enum TrackMusicStatus {
@@ -102,21 +109,22 @@ model ProfileLink {
 }
 
 model Project {
-    id                 String            @id @default(cuid())
-    username           String            @unique
-    title              String
-    description        String?
-    deadline           DateTime?
-    status             ProjectStatus
-    thumbnail          ProjectThumbnail?
-    agreements         Agreement[]
-    tracks             Track[]
-    discordChannelId   String?           @unique
-    discordChannelType Int?
-    createdAt          DateTime          @default(now())
-    updatedAt          DateTime          @default(now()) @updatedAt
-    closedAt           DateTime?
-    releasedAt         DateTime?
+    id                      String            @id @default(cuid())
+    username                String            @unique
+    title                   String
+    description             String?
+    deadline                DateTime?
+    status                  ProjectStatus
+    thumbnail               ProjectThumbnail?
+    agreements              Agreement[]
+    tracks                  Track[]
+    discordChannelId        String?           @unique
+    discordChannelType      Int?
+    discordInvitesChannelId String?           @unique
+    createdAt               DateTime          @default(now())
+    updatedAt               DateTime          @default(now()) @updatedAt
+    closedAt                DateTime?
+    releasedAt              DateTime?
 }
 
 model ProjectThumbnail {
@@ -139,18 +147,22 @@ model Track {
     collaborators    TrackCollaborator[]
     musicStatus      TrackMusicStatus
     visualStatus     TrackVisualStatus
+    type             TrackType           @default(ORIGINAL)
     createdAt        DateTime            @default(now())
     updatedAt        DateTime            @default(now()) @updatedAt
 }
 
 model TrackCollaborator {
-    id             String                @id @default(cuid())
-    track          Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
-    trackId        String
-    user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId         String
-    acceptedInvite Boolean               @default(false)
-    role           TrackCollaboratorRole
+    id              String                @id @default(cuid())
+    track           Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId         String
+    user            User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId          String?
+    discordUserId   String?
+    discordUsername String?
+    discordAvatar   String?
+    acceptedInvite  Boolean               @default(false)
+    role            TrackCollaboratorRole
 }
 
 model Agreement {

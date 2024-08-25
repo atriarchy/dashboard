@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck, providersCheck } from "@/server/api/routers/access";
 import { env } from "process";
 import { getPublicUrl } from "@/utils/url";
+import { slugify } from "@/utils/string";
 
 export const trackRouter = createTRPCRouter({
   getMyTracks: protectedProcedure
@@ -89,12 +90,7 @@ export const trackRouter = createTRPCRouter({
           );
         }
       } else {
-        const usernameCheck =
-          input.title
-            .toLowerCase()
-            .replace(/ /g, "_")
-            .replace(/\W/g, "")
-            .slice(0, 64) || "_";
+        const usernameCheck = slugify(input.title).slice(0, 64) || "_";
 
         let index = 1;
 
@@ -256,5 +252,121 @@ export const trackRouter = createTRPCRouter({
       });
 
       return { username: username };
+    }),
+
+  getTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(64),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        return null;
+      }
+
+      let myRole: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER" = "VIEWER";
+      let myAcceptedInvite;
+
+      const collaborators = (
+        await Promise.all(
+          track.collaborators.map(async collaborator => {
+            if (collaborator.user?.profile) {
+              if (collaborator.user.profile.userId === ctx.session.user.id) {
+                myRole = collaborator.role;
+                myAcceptedInvite = collaborator.acceptedInvite;
+              }
+
+              return {
+                type: "ATRIARCHY" as const,
+                username: collaborator.user.profile.username,
+                name: collaborator.user.profile.name,
+                role: collaborator.role,
+                acceptedInvite: collaborator.acceptedInvite,
+                avatar: collaborator.user.image,
+                me: collaborator.user.profile.userId === ctx.session.user.id,
+              };
+            }
+
+            if (collaborator.discordUserId) {
+              return {
+                type: "DISCORD" as const,
+                discord: {
+                  userId: collaborator.discordUserId,
+                  username: collaborator.discordUsername,
+                  avatar: collaborator.discordAvatar,
+                },
+                role: collaborator.role,
+                acceptedInvite: collaborator.acceptedInvite,
+              };
+            }
+
+            await ctx.db.trackCollaborator.delete({
+              where: {
+                id: collaborator.id,
+              },
+            });
+
+            return null;
+          })
+        )
+      )
+        .filter(c => c !== null)
+        .sort((a, b) => {
+          if (a.role === b.role) return 0;
+          if (a.role === "MANAGER") return -1;
+          if (b.role === "MANAGER") return 1;
+          if (a.role === "EDITOR") return -1;
+          if (b.role === "EDITOR") return 1;
+          if (a.role === "CONTRIBUTOR") return -1;
+          if (b.role === "CONTRIBUTOR") return 1;
+          if (a.role === "VIEWER") return -1;
+          if (b.role === "VIEWER") return 1;
+          return 0;
+        });
+
+      const manager = collaborators.find(c => c.role === "MANAGER");
+
+      return {
+        username: track.username,
+        title: track.title,
+        description: track.description,
+        musicStatus: track.musicStatus,
+        visualStatus: track.visualStatus,
+        project: {
+          username: track.project.username,
+          title: track.project.title,
+          description: track.project.description,
+        },
+        collaborators: collaborators,
+        me: {
+          role: myRole as "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER",
+          acceptedInvite: myAcceptedInvite,
+        },
+        manager: manager,
+      };
     }),
 });

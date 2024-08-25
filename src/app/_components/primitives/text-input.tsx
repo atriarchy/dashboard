@@ -22,7 +22,7 @@ const TextInput = ({
   onChange,
   placeholder = "",
   maxLength,
-  className = "w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900",
+  className = "w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 grow",
   icon,
   readOnly = false,
   required = false,
