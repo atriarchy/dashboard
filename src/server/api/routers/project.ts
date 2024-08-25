@@ -6,6 +6,10 @@ import { getUploadURL } from "@/server/s3";
 
 const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB
+const discordChannelTypes = [
+  0, // GUILD_TEXT
+  15, // GUILD_FORUM
+];
 const projectValidation = z.object({
   title: z.string().min(1).max(64),
   username: z
@@ -84,7 +88,7 @@ export const projectRouter = createTRPCRouter({
           type: number;
         };
 
-        if (data.type !== 0 && data.type !== 15) {
+        if (!discordChannelTypes.includes(data.type)) {
           throw new Error("Invalid Discord channel type.");
         }
 
@@ -262,29 +266,6 @@ export const projectRouter = createTRPCRouter({
         throw new Error("Slug already exists.");
       }
 
-      if (input.discordChannelId) {
-        const request = await fetch(
-          "https://discord.com/api/v10/channels/" + input.discordChannelId,
-          {
-            headers: {
-              Authorization: `Bot ${env.DISCORD_TOKEN}`,
-            },
-          }
-        );
-
-        if (!request.ok) {
-          throw new Error("Discord channel not found.");
-        }
-
-        const data = (await request.json()) as {
-          type: number;
-        };
-
-        if (data.type !== 0) {
-          throw new Error("Invalid Discord channel type.");
-        }
-      }
-
       const project = await ctx.db.project.update({
         where: { id: input.id },
         data: {
@@ -293,7 +274,6 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           deadline: input.deadline,
           status: input.status,
-          discordChannelId: input.discordChannelId,
         },
       });
 
@@ -314,6 +294,9 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
+      await ctx.db.projectThumbnail.deleteMany({
+        where: { projectId: input.id },
+      });
       await ctx.db.projectThumbnail.create({
         data: {
           projectId: input.id,

@@ -261,14 +261,16 @@ export function ProjectForm(props: ProjectFormProps) {
                           ))}
                         </select>
                       </div>
-                      <TextInput
-                        id="discordChannelId"
-                        label="Discord Channel ID"
-                        value={discordChannelId}
-                        onChange={e => setDiscordChannelId(e.target.value)}
-                        placeholder="Discord Channel ID"
-                        required
-                      />
+                      {!id && (
+                        <TextInput
+                          id="discordChannelId"
+                          label="Discord Channel ID"
+                          value={discordChannelId}
+                          onChange={e => setDiscordChannelId(e.target.value)}
+                          placeholder="Discord Channel ID"
+                          required
+                        />
+                      )}
                       <FileUpload
                         id="thumbnail"
                         label="Thumbnail"
