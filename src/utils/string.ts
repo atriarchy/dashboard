@@ -1,5 +1,6 @@
-export function normalize(str: string): string {
+export function humanize(str: string): string {
   return str
+    .normalize("NFD")
     .replace(/[_-]/g, " ")
     .toLowerCase()
     .split(" ")

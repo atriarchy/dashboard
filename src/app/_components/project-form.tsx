@@ -19,7 +19,7 @@ import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
 import FileUpload from "./primitives/file-upload";
 import { ProjectStatus, type Project } from "@prisma/client";
-import { normalize } from "@/utils/string";
+import { humanize } from "@/utils/string";
 
 export type ProjectFormProps = {
   id?: Project["id"];
@@ -262,7 +262,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         >
                           {Object.keys(ProjectStatus).map(statusOption => (
                             <option key={statusOption} value={statusOption}>
-                              {normalize(statusOption)}
+                              {humanize(statusOption)}
                             </option>
                           ))}
                         </select>
