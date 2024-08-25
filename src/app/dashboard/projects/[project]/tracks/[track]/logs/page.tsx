@@ -29,8 +29,6 @@ export default async function AuditLogsPage({
     );
   }
 
-  console.log(track);
-
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">

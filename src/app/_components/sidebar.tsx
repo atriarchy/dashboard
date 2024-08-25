@@ -175,7 +175,7 @@ export async function Sidebar({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={session.user.image}
-                alt="Profile Picture"
+                alt=""
                 className="h-8 w-8 rounded-full"
               />
               <span className="max-w-[120px] truncate bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text font-semibold text-white transition group-hover:text-transparent">
@@ -187,7 +187,7 @@ export async function Sidebar({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={session.user.image}
-                alt="Profile Picture"
+                alt=""
                 className="h-8 w-8 rounded-full"
               />
               <span className="max-w-[120px] truncate font-semibold text-white">

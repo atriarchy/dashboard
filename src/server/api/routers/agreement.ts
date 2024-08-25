@@ -251,7 +251,6 @@ export const agreementRouter = createTRPCRouter({
       };
 
       if (!response.ok) {
-        console.log(data);
         throw new Error("Failed to generate document.");
       }
 

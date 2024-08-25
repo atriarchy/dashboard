@@ -191,10 +191,12 @@ model TrackAuditLog {
     targetDiscordUsername String?
     targetDiscordAvatar   String?
     action                TrackAuditLogAction
-    value                 String?
-    oldValue              String?
+    value                 Json?
+    oldValue              Json?
     createdAt             DateTime            @default(now())
     updatedAt             DateTime            @default(now()) @updatedAt
+
+    @@index([trackId])
 }
 
 model Agreement {

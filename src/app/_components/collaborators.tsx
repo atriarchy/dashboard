@@ -72,7 +72,7 @@ export function Collaborators({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={collaborator.avatar}
-                          alt="Profile Picture"
+                          alt=""
                           className="h-8 w-8 rounded-full"
                         />
                       )}
@@ -150,7 +150,7 @@ export function Collaborators({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={collaborator.discord.avatar}
-                          alt="Profile Picture"
+                          alt=""
                           className="h-8 w-8 rounded-full"
                         />
                       )}

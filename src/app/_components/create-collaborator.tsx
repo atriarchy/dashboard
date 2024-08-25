@@ -215,7 +215,7 @@ export function CreateCollaborator({
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={user.avatar}
-                                      alt="Profile Picture"
+                                      alt=""
                                       className="h-8 w-8 rounded-full"
                                     />
                                   )}
@@ -268,7 +268,7 @@ export function CreateCollaborator({
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={user.avatar}
-                                      alt="Profile Picture"
+                                      alt=""
                                       className="h-8 w-8 rounded-full"
                                     />
                                   )}

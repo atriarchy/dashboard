@@ -72,8 +72,6 @@ export const searchRouter = createTRPCRouter({
         };
       }[];
 
-      console.log(discordResultsData);
-
       const discordResultsDataFormatted = (
         await Promise.all(
           discordResultsData
