@@ -296,6 +296,9 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
+      await ctx.db.projectThumbnail.deleteMany({
+        where: { projectId: input.id },
+      });
       await ctx.db.projectThumbnail.create({
         data: {
           projectId: input.id,
