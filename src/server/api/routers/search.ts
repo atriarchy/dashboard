@@ -84,9 +84,29 @@ export const searchRouter = createTRPCRouter({
                   provider: "discord",
                   providerAccountId: result.user.id,
                 },
+                include: {
+                  user: {
+                    include: {
+                      profile: true,
+                    },
+                  },
+                },
               });
 
-              if (discordToAtriarchy) {
+              if (discordToAtriarchy?.user.profile) {
+                if (
+                  !atriarchyResultsFormatted.some(
+                    a =>
+                      a.username === discordToAtriarchy.user.profile?.username
+                  )
+                ) {
+                  atriarchyResultsFormatted.push({
+                    username: discordToAtriarchy.user.profile.username,
+                    name: discordToAtriarchy.user.profile.name,
+                    avatar: discordToAtriarchy.user.image,
+                  });
+                }
+
                 return null;
               }
 
