@@ -8,8 +8,6 @@ const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB
 const discordChannelTypes = [
   0, // GUILD_TEXT
-  11, // PUBLIC_THREAD
-  12, // PRIVATE THREAD
   15, // GUILD_FORUM
 ];
 const projectValidation = z.object({
