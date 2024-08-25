@@ -11,6 +11,7 @@ const projectValidation = z.object({
   username: z.string().min(1).max(64),
   description: z.string().min(1).max(1024).optional(),
   deadline: z.string().datetime().optional(),
+  status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "RELEASED"]).optional(),
   discordChannelId: z.string().regex(/^\d+$/).optional(),
   thumbnail: z
     .object({
@@ -112,7 +113,7 @@ export const projectRouter = createTRPCRouter({
           discordChannelType: input.discordChannelId
             ? discordChannelType
             : undefined,
-          status: "DRAFT",
+          status: input.status || "DRAFT",
         },
       });
 
@@ -299,6 +300,7 @@ export const projectRouter = createTRPCRouter({
           username: input.username,
           description: input.description,
           deadline: input.deadline,
+          status: input.status,
           discordChannelId: input.discordChannelId,
         },
       });
