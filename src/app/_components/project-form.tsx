@@ -29,7 +29,6 @@ export type ProjectFormProps = {
   description?: Project["description"];
   deadline?: string;
   discordChannelId?: Project["discordChannelId"];
-  thumbnail?: Blob;
 };
 
 export function ProjectForm(props: ProjectFormProps) {
