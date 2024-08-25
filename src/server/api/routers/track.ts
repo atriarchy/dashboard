@@ -247,7 +247,7 @@ export const trackRouter = createTRPCRouter({
           trackId: track.id,
           userId: ctx.session.user.id,
           action: "CREATE_TRACK",
-          value: JSON.stringify(track),
+          value: track,
         },
       });
 
@@ -266,10 +266,10 @@ export const trackRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           targetUserId: ctx.session.user.id,
           action: "CREATE_COLLABORATOR",
-          value: JSON.stringify({
+          value: {
             ...invite,
             acceptedInvite: false,
-          }),
+          },
         },
       });
 
@@ -278,11 +278,11 @@ export const trackRouter = createTRPCRouter({
           trackId: track.id,
           userId: ctx.session.user.id,
           action: "ACCEPT_COLLABORATOR_INVITE",
-          value: JSON.stringify(invite),
-          oldValue: JSON.stringify({
+          value: invite,
+          oldValue: {
             ...invite,
             acceptedInvite: false,
-          }),
+          },
         },
       });
 

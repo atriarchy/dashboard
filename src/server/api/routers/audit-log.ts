@@ -102,7 +102,7 @@ export const auditLogRouter = createTRPCRouter({
 
           if (auditLog.action === "CREATE_COLLABORATOR") {
             const value = auditLog.value
-              ? (JSON.parse(auditLog.value) as {
+              ? (auditLog.value as {
                   role?: string;
                 })
               : undefined;
@@ -122,13 +122,13 @@ export const auditLogRouter = createTRPCRouter({
 
           if (auditLog.action === "UPDATE_COLLABORATOR") {
             const value = auditLog.value
-              ? (JSON.parse(auditLog.value) as {
+              ? (auditLog.value as {
                   role?: string;
                 })
               : undefined;
 
             const oldValue = auditLog.oldValue
-              ? (JSON.parse(auditLog.oldValue) as {
+              ? (auditLog.oldValue as {
                   role?: string;
                 })
               : undefined;

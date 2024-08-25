@@ -286,10 +286,10 @@ export const collaboratorRouter = createTRPCRouter({
             userId: ctx.session.user.id,
             targetUserId: profileInput.user.id,
             action: "CREATE_COLLABORATOR",
-            value: JSON.stringify({
+            value: {
               ...updatedData,
               acceptedInvite: false,
-            }),
+            },
           },
         });
 
@@ -299,11 +299,11 @@ export const collaboratorRouter = createTRPCRouter({
               trackId: track.id,
               userId: profileInput.user.id,
               action: "ACCEPT_COLLABORATOR_INVITE",
-              value: JSON.stringify(updatedData),
-              oldValue: JSON.stringify({
+              value: updatedData,
+              oldValue: {
                 ...updatedData,
                 acceptedInvite: false,
-              }),
+              },
             },
           });
         }
@@ -374,10 +374,10 @@ export const collaboratorRouter = createTRPCRouter({
             targetDiscordUsername: updatedData.discordUsername,
             targetDiscordAvatar: updatedData.discordAvatar,
             action: "CREATE_COLLABORATOR",
-            value: JSON.stringify({
+            value: {
               ...updatedData,
               acceptedInvite: false,
-            }),
+            },
           },
         });
 
@@ -389,11 +389,11 @@ export const collaboratorRouter = createTRPCRouter({
               discordUsername: updatedData.discordUsername,
               discordAvatar: updatedData.discordAvatar,
               action: "ACCEPT_COLLABORATOR_INVITE",
-              value: JSON.stringify(updatedData),
-              oldValue: JSON.stringify({
+              value: updatedData,
+              oldValue: {
                 ...updatedData,
                 acceptedInvite: false,
-              }),
+              },
             },
           });
         }
@@ -520,8 +520,8 @@ export const collaboratorRouter = createTRPCRouter({
             targetDiscordUsername: updatedData.discordUsername,
             targetDiscordAvatar: updatedData.discordAvatar,
             action: "UPDATE_COLLABORATOR",
-            value: JSON.stringify(updatedData),
-            oldValue: JSON.stringify(check),
+            value: updatedData,
+            oldValue: check,
           },
         });
 
@@ -571,8 +571,8 @@ export const collaboratorRouter = createTRPCRouter({
             userId: ctx.session.user.id,
             targetUserId: profile.user.id,
             action: "UPDATE_COLLABORATOR",
-            value: JSON.stringify(updatedData),
-            oldValue: JSON.stringify(check),
+            value: updatedData,
+            oldValue: check,
           },
         });
 
@@ -726,7 +726,7 @@ export const collaboratorRouter = createTRPCRouter({
             userId: ctx.session.user.id,
             targetUserId: profile.user.id,
             action: "DELETE_COLLABORATOR",
-            oldValue: JSON.stringify(check),
+            oldValue: check,
           },
         });
 
@@ -826,8 +826,8 @@ export const collaboratorRouter = createTRPCRouter({
           trackId: track.id,
           userId: ctx.session.user.id,
           action: "ACCEPT_COLLABORATOR_INVITE",
-          value: JSON.stringify(updatedData),
-          oldValue: JSON.stringify(find),
+          value: updatedData,
+          oldValue: find,
         },
       });
 
@@ -899,7 +899,7 @@ export const collaboratorRouter = createTRPCRouter({
           trackId: track.id,
           userId: ctx.session.user.id,
           action: "DECLINE_COLLABORATOR_INVITE",
-          oldValue: JSON.stringify(find),
+          oldValue: find,
         },
       });
 
