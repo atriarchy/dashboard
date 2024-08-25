@@ -1,10 +1,10 @@
 const config = {
   "*/**/*.{js,jsx,ts,tsx}": [
-    "prettier --write --ignore-unknown",
-    "SKIP_ENV_VALIDATION=1 eslint --fix",
-    "SKIP_ENV_VALIDATION=1 eslint",
+    "npx prettier --write --ignore-unknown",
+    "SKIP_ENV_VALIDATION=1 npx eslint --fix",
+    "SKIP_ENV_VALIDATION=1 npx eslint",
   ],
-  "*/**/*.{json,css,md}": ["prettier --write"],
+  "*/**/*.{json,css,md}": ["npx prettier --write"],
 };
 
 export default config;
