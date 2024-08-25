@@ -261,6 +261,10 @@ export const collaboratorRouter = createTRPCRouter({
           },
         });
 
+        if (discordProvider?.providerAccountId === "120635167105613825") {
+          throw new Error("You can not invite Atrioc.");
+        }
+
         await sendDiscordMessage(
           `${profileInput.name} (@${profileInput.username})`,
           discordProvider?.providerAccountId,
@@ -311,6 +315,10 @@ export const collaboratorRouter = createTRPCRouter({
 
         if (data.bot || data.system) {
           throw new Error("User is a bot or system account.");
+        }
+
+        if (data.id === "120635167105613825") {
+          throw new Error("You can not invite Atrioc.");
         }
 
         await sendDiscordMessage(
