@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
 import { env } from "process";
+import { getPublicUrl } from "@/utils/url";
 
 export const collaboratorRouter = createTRPCRouter({
   addCollaborator: protectedProcedure
@@ -85,6 +86,139 @@ export const collaboratorRouter = createTRPCRouter({
         }
       }
 
+      const sendDiscordMessage = async (
+        name: string,
+        discordUserId?: string,
+        avatar?: string | null
+      ) => {
+        if (!input.skipInvite) {
+          let invitesChannel = track.project.discordInvitesChannelId;
+
+          if (!invitesChannel && track.project.discordChannelId) {
+            if (
+              track.project.discordChannelType !== 0 &&
+              track.project.discordChannelType !== 15
+            ) {
+              throw new Error("Invalid Discord channel type.");
+            }
+
+            const request = await fetch(
+              "https://discord.com/api/v10/channels/" +
+                track.project.discordChannelId +
+                "/threads",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bot ${env.DISCORD_TOKEN}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: "Invites",
+                  type: 11,
+                  parent_id: track.project.discordChannelId,
+                  message:
+                    track.project.discordChannelType === 15
+                      ? {
+                          content:
+                            "Invites to collaborate on tracks will be posted here.",
+                        }
+                      : undefined,
+                }),
+              }
+            );
+
+            if (!request.ok) {
+              throw new Error("Could not create Discord thread.");
+            }
+
+            const response = (await request.json()) as {
+              id: string;
+            };
+
+            await ctx.db.project.update({
+              where: {
+                id: track.project.id,
+              },
+              data: {
+                discordInvitesChannelId: response.id,
+              },
+            });
+
+            invitesChannel = response.id;
+          }
+
+          const manager = track.collaborators.find(c => c.role === "MANAGER");
+
+          if (!manager?.user?.profile || !manager.userId) {
+            throw new Error("Manager not found.");
+          }
+
+          const managerDiscordProvider = await ctx.db.account.findFirst({
+            where: {
+              userId: manager.userId,
+              provider: "discord",
+            },
+          });
+
+          const messageRequest = await fetch(
+            "https://discord.com/api/v10/channels/" +
+              invitesChannel +
+              "/messages",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bot ${env.DISCORD_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                content: discordUserId ? `<@${discordUserId}>` : undefined,
+                embeds: [
+                  {
+                    title: "You have been invited to collaborate!",
+                    description:
+                      "If you have any questions, please reach out to the track manager.",
+                    color: 0x171717,
+                    fields: [
+                      {
+                        name: "Track Manager",
+                        value: `[${manager.user.profile.name} \(@${manager.user.profile.username}\)](${getPublicUrl()}/@${manager.user.profile.username})\n<@${managerDiscordProvider?.providerAccountId}>`,
+                        inline: true,
+                      },
+                      {
+                        name: "Track",
+                        value: track.title,
+                        inline: true,
+                      },
+                    ],
+                    author: {
+                      name: name,
+                      icon_url: avatar ?? undefined,
+                    },
+                  },
+                ],
+                components: [
+                  {
+                    type: 1,
+                    components: [
+                      {
+                        type: 2,
+                        label: "View Invite",
+                        style: 5,
+                        url: `${getPublicUrl()}/dashboard/projects/${track.project.username}/tracks/${track.username}`,
+                      },
+                    ],
+                  },
+                ],
+              }),
+            }
+          );
+
+          if (!messageRequest.ok) {
+            throw new Error("Could not send Discord message.");
+          }
+        }
+      };
+
       if (input.username || profileInput) {
         if (!profileInput) {
           const profile = await ctx.db.profile.findFirst({
@@ -120,12 +254,25 @@ export const collaboratorRouter = createTRPCRouter({
           throw new Error("User is already a collaborator.");
         }
 
+        const discordProvider = await ctx.db.account.findFirst({
+          where: {
+            userId: profileInput.user.id,
+            provider: "discord",
+          },
+        });
+
+        await sendDiscordMessage(
+          `${profileInput.name} (@${profileInput.username})`,
+          discordProvider?.providerAccountId,
+          profileInput.user.image
+        );
+
         await ctx.db.trackCollaborator.create({
           data: {
             trackId: track.id,
             userId: profileInput.user.id,
             role: input.role,
-            acceptedInvite: false,
+            acceptedInvite: input.skipInvite,
           },
         });
 
@@ -159,6 +306,12 @@ export const collaboratorRouter = createTRPCRouter({
           username: string;
           avatar?: string;
         };
+
+        await sendDiscordMessage(
+          `${data.username} (Discord)`,
+          input.discord,
+          data.avatar
+        );
 
         await ctx.db.trackCollaborator.create({
           data: {
