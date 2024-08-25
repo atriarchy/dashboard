@@ -305,7 +305,13 @@ export const collaboratorRouter = createTRPCRouter({
           id: string;
           username: string;
           avatar?: string;
+          bot: boolean;
+          system: boolean;
         };
+
+        if (data.bot || data.system) {
+          throw new Error("User is a bot or system account.");
+        }
 
         await sendDiscordMessage(
           `${data.username} (Discord)`,

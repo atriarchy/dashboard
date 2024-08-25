@@ -110,7 +110,13 @@ export const accessRouter = createTRPCRouter({
 
         const data = (await response.json()) as {
           username: string;
+          bot: boolean;
+          system: boolean;
         };
+
+        if (data.bot || data.system) {
+          return null;
+        }
 
         return await ctx.db.access.create({
           data: {
@@ -213,7 +219,13 @@ export const accessRouter = createTRPCRouter({
 
         const data = (await response.json()) as {
           username: string;
+          bot: boolean;
+          system: boolean;
         };
+
+        if (data.bot || data.system) {
+          return null;
+        }
 
         return await ctx.db.access.update({
           where: { id: input.id },
