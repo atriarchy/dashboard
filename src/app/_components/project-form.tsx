@@ -13,28 +13,55 @@ import {
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
 import FileUpload from "./primitives/file-upload";
+import { ProjectStatus, type Project } from "@prisma/client";
+import { humanize, slugify } from "@/utils/string";
 
-export function CreateProject() {
+export type ProjectFormProps = {
+  id?: Project["id"];
+  title?: Project["title"];
+  status?: Project["status"];
+  username?: Project["username"];
+  description?: Project["description"];
+  deadline?: string;
+  discordChannelId?: Project["discordChannelId"];
+};
+
+export function ProjectForm(props: ProjectFormProps) {
   const router = useRouter();
 
+  const { id } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [username, setUsername] = useState("");
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [discordChannelId, setDiscordChannelId] = useState("");
+  const [title, setTitle] = useState(props.title ?? "");
+  const [status, setStatus] = useState(props.status ?? ProjectStatus.DRAFT);
+  const [username, setUsername] = useState(props.username ?? "");
+  const [description, setDescription] = useState(props.description ?? "");
+  const [deadline, setDeadline] = useState(props.deadline);
+  const [discordChannelId, setDiscordChannelId] = useState(
+    props.discordChannelId ?? ""
+  );
   const [thumbnail, setThumbnail] = useState<File | undefined>();
 
   const initalFocusRef = useRef(null);
 
-  const createProject = api.project.createProject.useMutation({
-    onSuccess: async ({ username, upload }) => {
-      if (upload && thumbnail) {
+  const reset = () => {
+    setTitle(props.title ?? "");
+    setUsername(props.username ?? "");
+    setDescription(props.description ?? "");
+    setDeadline(props.deadline ?? "");
+    setStatus(props.status ?? ProjectStatus.DRAFT);
+    setDiscordChannelId(props.discordChannelId ?? "");
+    setThumbnail(undefined);
+  };
+
+  const target = id ? api.project.updateProject : api.project.createProject;
+  const mutation = target.useMutation({
+    onSuccess: async ({ upload }) => {
+      if (thumbnail && upload) {
         await toast.promise(
           fetch(upload.url, {
             method: "PUT",
@@ -63,8 +90,8 @@ export function CreateProject() {
         onClick={() => setIsOpen(true)}
         className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
       >
-        <FontAwesomeIcon icon={faPlus} />
-        Add Project
+        <FontAwesomeIcon icon={id ? faPencil : faPlus} />
+        {!id && "Add Project"}
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -72,14 +99,9 @@ export function CreateProject() {
           as="div"
           className="relative z-10"
           onClose={() => {
-            if (createProject.isPending) return;
+            if (mutation.isPending) return;
             setIsOpen(false);
-            setTitle("");
-            setUsername("");
-            setDescription("");
-            setDeadline("");
-            setDiscordChannelId("");
-            setThumbnail(undefined);
+            reset();
           }}
           initialFocus={initalFocusRef}
         >
@@ -108,18 +130,15 @@ export function CreateProject() {
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
                   <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
-                    <DialogTitle as="h3">New Project</DialogTitle>
+                    <DialogTitle as="h3">
+                      {id ? "Edit" : "New"} Project
+                    </DialogTitle>
                     <button
-                      disabled={createProject.isPending}
+                      disabled={mutation.isPending}
                       onClick={() => {
-                        if (createProject.isPending) return;
+                        if (mutation.isPending) return;
                         setIsOpen(false);
-                        setTitle("");
-                        setUsername("");
-                        setDescription("");
-                        setDeadline("");
-                        setDiscordChannelId("");
-                        setThumbnail(undefined);
+                        reset();
                       }}
                       aria-label="Close"
                     >
@@ -132,17 +151,19 @@ export function CreateProject() {
                       className="flex flex-col items-start justify-start gap-2"
                       onSubmit={async e => {
                         e.preventDefault();
+                        if (mutation.isPending) return;
 
-                        if (createProject.isPending) return;
-
-                        createProject.mutate({
+                        mutation.mutate({
+                          // @ts-expect-error id is expected for resource updates
+                          id,
                           title,
                           username,
-                          description: description || undefined,
+                          status,
+                          description: description,
                           deadline: deadline
                             ? new Date(deadline).toISOString()
                             : undefined,
-                          discordChannelId: discordChannelId || undefined,
+                          discordChannelId: discordChannelId,
                           thumbnail: thumbnail
                             ? {
                                 fileType: thumbnail.type,
@@ -157,7 +178,10 @@ export function CreateProject() {
                         id="title"
                         label="Title"
                         value={title}
-                        onChange={e => setTitle(e.target.value)}
+                        onChange={e => {
+                          setTitle(e.target.value);
+                          setUsername(slugify(e.target.value));
+                        }}
                         placeholder="Title"
                         maxLength={64}
                         required
@@ -214,6 +238,29 @@ export function CreateProject() {
                           placeholder="Deadline"
                         />
                       </div>
+                      <div className="flex w-full flex-col items-center justify-start gap-2">
+                        <label
+                          htmlFor="status"
+                          className="text-md w-full font-semibold"
+                        >
+                          Status
+                        </label>
+                        <select
+                          id="status"
+                          name="status"
+                          className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                          value={status}
+                          onChange={e =>
+                            setStatus(e.target.value as ProjectStatus)
+                          }
+                        >
+                          {Object.keys(ProjectStatus).map(statusOption => (
+                            <option key={statusOption} value={statusOption}>
+                              {humanize(statusOption)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                       <TextInput
                         id="discordChannelId"
                         label="Discord Channel ID"
@@ -242,16 +289,11 @@ export function CreateProject() {
                     <div className="flex items-center justify-between gap-2">
                       <button
                         className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={mutation.isPending}
                         onClick={() => {
-                          if (createProject.isPending) return;
+                          if (mutation.isPending) return;
                           setIsOpen(false);
-                          setTitle("");
-                          setUsername("");
-                          setDescription("");
-                          setDeadline("");
-                          setDiscordChannelId("");
-                          setThumbnail(undefined);
+                          reset();
                         }}
                       >
                         Cancel
@@ -260,9 +302,9 @@ export function CreateProject() {
                         type="submit"
                         form="createProject"
                         className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
-                        disabled={createProject.isPending}
+                        disabled={mutation.isPending}
                       >
-                        {createProject.isPending ? "Loading..." : "Create"}
+                        {mutation.isPending ? "Loading..." : "Save"}
                       </button>
                     </div>
                   </div>
