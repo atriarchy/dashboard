@@ -74,40 +74,33 @@ export const searchRouter = createTRPCRouter({
 
       console.log(discordResultsData);
 
-      const discordFromAtriarchy = (
+      const discordResultsDataFormatted = (
         await Promise.all(
-          atriarchyResults.map(async result => {
-            const linkedDiscord = await ctx.db.account.findFirst({
-              where: {
-                provider: "discord",
-                userId: result.user.id,
-              },
-            });
+          discordResultsData
+            .filter(result => !result.user.bot && !result.user.system)
+            .map(async result => {
+              const discordToAtriarchy = await ctx.db.account.findFirst({
+                where: {
+                  provider: "discord",
+                  providerAccountId: result.user.id,
+                },
+              });
 
-            if (!linkedDiscord) {
-              return null;
-            }
+              if (discordToAtriarchy) {
+                return null;
+              }
 
-            return linkedDiscord.providerAccountId;
-          })
+              return {
+                id: result.user.id,
+                username: result.user.username,
+                name: result.nick ?? result.user.global_name,
+                avatar: result.user.avatar
+                  ? `https://cdn.discordapp.com/avatars/${result.user.id}/${result.user.avatar}.png`
+                  : null,
+              };
+            })
         )
       ).filter(d => d !== null);
-
-      const discordResultsDataFormatted = discordResultsData
-        .filter(
-          result =>
-            !result.user.bot &&
-            !result.user.system &&
-            !discordFromAtriarchy.includes(result.user.id)
-        )
-        .map(result => ({
-          id: result.user.id,
-          username: result.user.username,
-          name: result.nick ?? result.user.global_name,
-          avatar: result.user.avatar
-            ? `https://cdn.discordapp.com/avatars/${result.user.id}/${result.user.avatar}.png`
-            : null,
-        }));
 
       return {
         atriarchy: atriarchyResultsFormatted,
