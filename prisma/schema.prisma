@@ -63,6 +63,16 @@ enum TrackVisualStatus {
     FINISHED
 }
 
+enum TrackAuditLogAction {
+    CREATE_TRACK
+    UPDATE_TRACK
+    CREATE_COLLABORATOR
+    UPDATE_COLLABORATOR
+    DELETE_COLLABORATOR
+    ACCEPT_COLLABORATOR_INVITE
+    DECLINE_COLLABORATOR_INVITE
+}
+
 model Access {
     id                      String     @id @default(cuid())
     provider                String
@@ -148,6 +158,7 @@ model Track {
     musicStatus      TrackMusicStatus
     visualStatus     TrackVisualStatus
     type             TrackType           @default(ORIGINAL)
+    auditLogs        TrackAuditLog[]
     createdAt        DateTime            @default(now())
     updatedAt        DateTime            @default(now()) @updatedAt
 }
@@ -163,6 +174,27 @@ model TrackCollaborator {
     discordAvatar   String?
     acceptedInvite  Boolean               @default(false)
     role            TrackCollaboratorRole
+}
+
+model TrackAuditLog {
+    id                    String              @id @default(cuid())
+    track                 Track               @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId               String
+    user                  User?               @relation("User", fields: [userId], references: [id])
+    userId                String?
+    discordUserId         String?
+    discordUsername       String?
+    discordAvatar         String?
+    targetUser            User?               @relation("TargetUser", fields: [targetUserId], references: [id])
+    targetUserId          String?
+    targetDiscordUserId   String?
+    targetDiscordUsername String?
+    targetDiscordAvatar   String?
+    action                TrackAuditLogAction
+    value                 String?
+    oldValue              String?
+    createdAt             DateTime            @default(now())
+    updatedAt             DateTime            @default(now()) @updatedAt
 }
 
 model Agreement {
@@ -216,17 +248,19 @@ model Session {
 }
 
 model User {
-    id                 String              @id @default(cuid())
-    name               String?
-    email              String?             @unique
-    emailVerified      DateTime?
-    image              String?
-    accounts           Account[]
-    sessions           Session[]
-    profile            Profile?
-    agreementDocuments AgreementDocument[]
-    projectThumbnails  ProjectThumbnail[]
-    trackCollaborators TrackCollaborator[]
+    id                   String              @id @default(cuid())
+    name                 String?
+    email                String?             @unique
+    emailVerified        DateTime?
+    image                String?
+    accounts             Account[]
+    sessions             Session[]
+    profile              Profile?
+    agreementDocuments   AgreementDocument[]
+    projectThumbnails    ProjectThumbnail[]
+    trackCollaborators   TrackCollaborator[]
+    trackAuditLogs       TrackAuditLog[]     @relation("User")
+    trackAuditLogsTarget TrackAuditLog[]     @relation("TargetUser")
 }
 
 model VerificationToken {
