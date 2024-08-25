@@ -16,7 +16,7 @@
     "lint:fix": "next lint --fix",
     "lint:strict": "next lint '*/**/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier . --check",
-    "format": "prettier . --write",
+    "prettier:fix": "prettier . --write",
     "start": "next start",
     "prepare": "husky",
     "lint-staged": "lint-staged --relative"
