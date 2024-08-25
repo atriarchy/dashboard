@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 
 import { api } from "@/trpc/react";
-import { CreateProject } from "@/app/_components/create-project";
+import { ProjectForm } from "@/app/_components/project-form";
 
 export function Projects({ access }: { access?: "ADMIN" | null }) {
   const projects = api.project.getProjects.useInfiniteQuery(
@@ -13,7 +13,6 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
       getNextPageParam: lastPage => lastPage?.cursor,
     }
   );
-
   return (
     <>
       {projects.error ? (
@@ -24,7 +23,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Projects
             </h1>
-            {access === "ADMIN" && <CreateProject />}
+            {access === "ADMIN" && <ProjectForm />}
           </div>
           <div className="grid w-full grid-cols-2 gap-2">
             {projects.data?.pages.map((group, i) => (
