@@ -19,7 +19,7 @@ import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
 import FileUpload from "./primitives/file-upload";
 import { ProjectStatus, type Project } from "@prisma/client";
-import { humanize } from "@/utils/string";
+import { humanize, slugify } from "@/utils/string";
 
 export type ProjectFormProps = {
   id?: Project["id"];
@@ -181,12 +181,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         value={title}
                         onChange={e => {
                           setTitle(e.target.value);
-                          setUsername(
-                            e.target.value
-                              .toLowerCase()
-                              .replace(/\s/g, "-")
-                              .replace(/[^a-z0-9-_]/g, "")
-                          );
+                          setUsername(slugify(e.target.value));
                         }}
                         placeholder="Title"
                         maxLength={64}
