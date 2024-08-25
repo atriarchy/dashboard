@@ -154,17 +154,34 @@ export async function Sidebar({
       </Link>
       {session?.user?.name && session?.user?.image && (
         <div className="flex w-full items-center justify-between gap-2 pt-2">
-          <div className="flex items-center gap-2 overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={session.user.image}
-              alt="Profile Picture"
-              className="h-8 w-8 rounded-full"
-            />
-            <span className="max-w-[120px] truncate font-semibold text-white">
-              {profile ? `@${profile.username}` : session.user.name}
-            </span>
-          </div>
+          {profile ? (
+            <Link
+              href={`/@${profile.username}`}
+              className="group flex items-center gap-2 overflow-hidden"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={session.user.image}
+                alt="Profile Picture"
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="max-w-[120px] truncate bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text font-semibold text-white transition group-hover:text-transparent">
+                {`@${profile.username}`}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-2 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={session.user.image}
+                alt="Profile Picture"
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="max-w-[120px] truncate font-semibold text-white">
+                {session.user.name}
+              </span>
+            </div>
+          )}
           <Auth session={session} showIcon />
         </div>
       )}
