@@ -192,7 +192,7 @@ export const auditLogRouter = createTRPCRouter({
                 })
               : undefined;
 
-            const details = [`Credited as ${value?.type}`];
+            const details = [`Credited as "${value?.type}"`];
 
             if (value?.value) {
               details.push(`With value "${value.value}"`);
