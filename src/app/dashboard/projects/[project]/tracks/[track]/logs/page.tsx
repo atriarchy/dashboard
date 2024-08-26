@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
-import { Collaborators } from "@/app/_components/collaborators";
+import { AuditLogs } from "@/app/_components/audit-logs";
 
-export default async function CollaboratorPage({
+export default async function AuditLogsPage({
   params,
 }: {
   params: { project: string; track: string };
@@ -29,14 +29,12 @@ export default async function CollaboratorPage({
     );
   }
 
-  const access = await api.access.getAccess();
-
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar
-            selected="PROJECTS_TRACKS_COLLABORATORS"
+            selected="PROJECTS_TRACKS_LOGS"
             project={{
               title: track.project.title,
               username: track.project.username,
@@ -66,7 +64,7 @@ export default async function CollaboratorPage({
                 )}
               </div>
             }
-            <Collaborators username={track.username} access={access} />
+            <AuditLogs username={track.username} />
           </div>
         </div>
       </main>

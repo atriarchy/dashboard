@@ -261,13 +261,17 @@ export const collaboratorRouter = createTRPCRouter({
           },
         });
 
+        if (discordProvider?.providerAccountId === "120635167105613825") {
+          throw new Error("You can not invite Atrioc.");
+        }
+
         await sendDiscordMessage(
           `${profileInput.name} (@${profileInput.username})`,
           discordProvider?.providerAccountId,
           profileInput.user.image
         );
 
-        await ctx.db.trackCollaborator.create({
+        const updatedData = await ctx.db.trackCollaborator.create({
           data: {
             trackId: track.id,
             userId: profileInput.user.id,
@@ -275,6 +279,34 @@ export const collaboratorRouter = createTRPCRouter({
             acceptedInvite: input.skipInvite,
           },
         });
+
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: track.id,
+            userId: ctx.session.user.id,
+            targetUserId: profileInput.user.id,
+            action: "CREATE_COLLABORATOR",
+            value: {
+              ...updatedData,
+              acceptedInvite: false,
+            },
+          },
+        });
+
+        if (input.skipInvite) {
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              userId: profileInput.user.id,
+              action: "ACCEPT_COLLABORATOR_INVITE",
+              value: updatedData,
+              oldValue: {
+                ...updatedData,
+                acceptedInvite: false,
+              },
+            },
+          });
+        }
 
         return;
       }
@@ -313,13 +345,17 @@ export const collaboratorRouter = createTRPCRouter({
           throw new Error("User is a bot or system account.");
         }
 
+        if (data.id === "120635167105613825") {
+          throw new Error("You can not invite Atrioc.");
+        }
+
         await sendDiscordMessage(
           `${data.username} (Discord)`,
           input.discord,
           data.avatar
         );
 
-        await ctx.db.trackCollaborator.create({
+        const updatedData = await ctx.db.trackCollaborator.create({
           data: {
             trackId: track.id,
             discordUserId: input.discord,
@@ -329,6 +365,38 @@ export const collaboratorRouter = createTRPCRouter({
             acceptedInvite: input.skipInvite,
           },
         });
+
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: track.id,
+            userId: ctx.session.user.id,
+            targetDiscordUserId: input.discord,
+            targetDiscordUsername: updatedData.discordUsername,
+            targetDiscordAvatar: updatedData.discordAvatar,
+            action: "CREATE_COLLABORATOR",
+            value: {
+              ...updatedData,
+              acceptedInvite: false,
+            },
+          },
+        });
+
+        if (input.skipInvite) {
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              discordUserId: input.discord,
+              discordUsername: updatedData.discordUsername,
+              discordAvatar: updatedData.discordAvatar,
+              action: "ACCEPT_COLLABORATOR_INVITE",
+              value: updatedData,
+              oldValue: {
+                ...updatedData,
+                acceptedInvite: false,
+              },
+            },
+          });
+        }
 
         return;
       }
@@ -435,12 +503,25 @@ export const collaboratorRouter = createTRPCRouter({
           throw new Error("User is not a collaborator.");
         }
 
-        await ctx.db.trackCollaborator.update({
+        const updatedData = await ctx.db.trackCollaborator.update({
           where: {
             id: check.id,
           },
           data: {
             role: input.role,
+          },
+        });
+
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: track.id,
+            userId: ctx.session.user.id,
+            targetDiscordUserId: input.discord,
+            targetDiscordUsername: updatedData.discordUsername,
+            targetDiscordAvatar: updatedData.discordAvatar,
+            action: "UPDATE_COLLABORATOR",
+            value: updatedData,
+            oldValue: check,
           },
         });
 
@@ -475,12 +556,23 @@ export const collaboratorRouter = createTRPCRouter({
           throw new Error("User is not a collaborator.");
         }
 
-        await ctx.db.trackCollaborator.update({
+        const updatedData = await ctx.db.trackCollaborator.update({
           where: {
             id: check.id,
           },
           data: {
             role: input.role,
+          },
+        });
+
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: track.id,
+            userId: ctx.session.user.id,
+            targetUserId: profile.user.id,
+            action: "UPDATE_COLLABORATOR",
+            value: updatedData,
+            oldValue: check,
           },
         });
 
@@ -628,6 +720,16 @@ export const collaboratorRouter = createTRPCRouter({
           },
         });
 
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: track.id,
+            userId: ctx.session.user.id,
+            targetUserId: profile.user.id,
+            action: "DELETE_COLLABORATOR",
+            oldValue: check,
+          },
+        });
+
         return;
       }
 
@@ -710,12 +812,22 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Collaborator not found.");
       }
 
-      await ctx.db.trackCollaborator.update({
+      const updatedData = await ctx.db.trackCollaborator.update({
         where: {
           id: find.id,
         },
         data: {
           acceptedInvite: true,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "ACCEPT_COLLABORATOR_INVITE",
+          value: updatedData,
+          oldValue: find,
         },
       });
 
@@ -779,6 +891,15 @@ export const collaboratorRouter = createTRPCRouter({
       await ctx.db.trackCollaborator.delete({
         where: {
           id: find.id,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "DECLINE_COLLABORATOR_INVITE",
+          oldValue: find,
         },
       });
 

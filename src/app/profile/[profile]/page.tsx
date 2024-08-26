@@ -82,7 +82,7 @@ export default async function PublicProfile({
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={profile.avatar}
-                        alt="Profile Picture"
+                        alt=""
                         className="mb-2 h-16 w-16 rounded-full"
                       />
                     </>

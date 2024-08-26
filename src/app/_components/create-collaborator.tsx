@@ -86,7 +86,7 @@ export function CreateCollaborator({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
+        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
       >
         <FontAwesomeIcon icon={faUserPlus} />
         Add Collaborator
@@ -183,7 +183,7 @@ export function CreateCollaborator({
                     {results &&
                       (results.atriarchy.length > 0 ||
                       results.discord.length > 0 ? (
-                        <div className="mt-2 flex w-full flex-col items-center justify-start">
+                        <div className="mt-2 flex w-full flex-col items-center justify-start gap-2">
                           {access === "ADMIN" && (
                             <div className="flex w-full items-center justify-start gap-2">
                               <input
@@ -215,7 +215,7 @@ export function CreateCollaborator({
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={user.avatar}
-                                      alt="Profile Picture"
+                                      alt=""
                                       className="h-8 w-8 rounded-full"
                                     />
                                   )}
@@ -268,7 +268,7 @@ export function CreateCollaborator({
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={user.avatar}
-                                      alt="Profile Picture"
+                                      alt=""
                                       className="h-8 w-8 rounded-full"
                                     />
                                   )}
@@ -363,7 +363,7 @@ export function CreateCollaborator({
                             e.preventDefault();
 
                             addCollaborator.mutate({
-                              username: username,
+                              discord: discordUserId,
                               track: track,
                               role: "CONTRIBUTOR",
                               skipInvite:
@@ -378,7 +378,6 @@ export function CreateCollaborator({
                             value={discordUserId}
                             onChange={e => setDiscordUserId(e.target.value)}
                             placeholder="Discord User ID"
-                            maxLength={64}
                             required
                           />
                           <button

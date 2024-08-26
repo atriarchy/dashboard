@@ -242,12 +242,47 @@ export const trackRouter = createTRPCRouter({
         },
       });
 
-      await ctx.db.trackCollaborator.create({
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "CREATE_TRACK",
+          value: track,
+        },
+      });
+
+      const invite = await ctx.db.trackCollaborator.create({
         data: {
           trackId: track.id,
           userId: ctx.session.user.id,
           acceptedInvite: true,
           role: "MANAGER",
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          targetUserId: ctx.session.user.id,
+          action: "CREATE_COLLABORATOR",
+          value: {
+            ...invite,
+            acceptedInvite: false,
+          },
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "ACCEPT_COLLABORATOR_INVITE",
+          value: invite,
+          oldValue: {
+            ...invite,
+            acceptedInvite: false,
+          },
         },
       });
 

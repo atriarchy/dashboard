@@ -3,6 +3,7 @@ import {
   faCircleInfo,
   faCircleUser,
   faFile,
+  faList,
   faMusic,
   faRecordVinyl,
   faUserPlus,
@@ -28,7 +29,8 @@ export async function Sidebar({
     | "PROJECTS_TRACKS"
     | "PROJECTS_AGREEMENTS"
     | "PROJECTS_TRACKS_INFO"
-    | "PROJECTS_TRACKS_COLLABORATORS";
+    | "PROJECTS_TRACKS_COLLABORATORS"
+    | "PROJECTS_TRACKS_LOGS";
   project?: {
     title: string;
     username: string;
@@ -135,6 +137,17 @@ export async function Sidebar({
                   <FontAwesomeIcon icon={faUserPlus} fixedWidth />
                   <span>Collaborators</span>
                 </Link>
+                <Link
+                  href={`/dashboard/projects/${project.username}/tracks/${track.username}/logs`}
+                  className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+                    selected === "PROJECTS_TRACKS_LOGS"
+                      ? "bg-violet-700"
+                      : "bg-gray-700 transition hover:bg-violet-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faList} fixedWidth />
+                  <span>Audit Logs</span>
+                </Link>
               </div>
             )}
           </>
@@ -154,17 +167,34 @@ export async function Sidebar({
       </Link>
       {session?.user?.name && session?.user?.image && (
         <div className="flex w-full items-center justify-between gap-2 pt-2">
-          <div className="flex items-center gap-2 overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={session.user.image}
-              alt="Profile Picture"
-              className="h-8 w-8 rounded-full"
-            />
-            <span className="max-w-[120px] truncate font-semibold text-white">
-              {profile ? `@${profile.username}` : session.user.name}
-            </span>
-          </div>
+          {profile ? (
+            <Link
+              href={`/@${profile.username}`}
+              className="group flex items-center gap-2 overflow-hidden"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={session.user.image}
+                alt=""
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="max-w-[120px] truncate bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text font-semibold text-white transition group-hover:text-transparent">
+                {`@${profile.username}`}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-2 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={session.user.image}
+                alt=""
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="max-w-[120px] truncate font-semibold text-white">
+                {session.user.name}
+              </span>
+            </div>
+          )}
           <Auth session={session} showIcon />
         </div>
       )}

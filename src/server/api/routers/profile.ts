@@ -293,6 +293,34 @@ export const profileRouter = createTRPCRouter({
               discordAvatar: null,
             },
           });
+
+          const targetDiscordProvider = discordProviders.map(p => ({
+            targetDiscordUserId: p.discordUserId,
+          }));
+
+          await ctx.db.trackAuditLog.updateMany({
+            where: {
+              OR: discordProviders,
+            },
+            data: {
+              userId: ctx.session.user.id,
+              discordUserId: null,
+              discordUsername: null,
+              discordAvatar: null,
+            },
+          });
+
+          await ctx.db.trackAuditLog.updateMany({
+            where: {
+              OR: targetDiscordProvider,
+            },
+            data: {
+              targetUserId: ctx.session.user.id,
+              targetDiscordUserId: null,
+              targetDiscordUsername: null,
+              targetDiscordAvatar: null,
+            },
+          });
         }
       }
 

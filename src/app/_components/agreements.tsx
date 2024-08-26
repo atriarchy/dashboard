@@ -36,9 +36,9 @@ export function Agreements({
       ) : (
         <>
           <div className="flex items-start justify-start gap-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+            <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
               Agreements
-            </h1>
+            </h2>
             {access === "ADMIN" && (
               <CreateAgreement project={project} refetch={agreements.refetch} />
             )}

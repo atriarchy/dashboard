@@ -47,7 +47,7 @@ export function CreateAgreement({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
+        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
       >
         <FontAwesomeIcon icon={faPlus} />
         Add Agreement

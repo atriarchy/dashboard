@@ -29,8 +29,6 @@ export default async function InfoPage({
     );
   }
 
-  console.log(track);
-
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
@@ -48,14 +46,24 @@ export default async function InfoPage({
             }}
           />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <div className="mb-8 flex flex-col items-start justify-start gap-2">
-              <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-                {track.title}
-              </h1>
-              {track.description && (
-                <p className="text-lg">{track.description}</p>
-              )}
-            </div>
+            {
+              <div className="mb-8 flex flex-col items-start justify-start gap-2">
+                <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                  {track.title}
+                </h1>
+                {track.description && (
+                  <p className="text-lg">{track.description}</p>
+                )}
+                {track.manager && (
+                  <span className="text-sm text-gray-400">
+                    Project Lead:{" "}
+                    {track.manager.type === "ATRIARCHY"
+                      ? `${track.manager.name} (@${track.manager.username})`
+                      : `${track.manager.discord.username} (Discord)`}
+                  </span>
+                )}
+              </div>
+            }
             {track.me.role !== "VIEWER" && !track.me.acceptedInvite && (
               <InviteBanner username={track.username} />
             )}

@@ -23,7 +23,7 @@ export default async function InvitesPage() {
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar selected="INVITES" />
           <div className="flex h-full w-full flex-col items-start justify-start gap-4 p-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-4xl font-bold text-transparent">
+            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Invites
             </h1>
             <Invites />
