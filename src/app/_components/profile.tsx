@@ -180,7 +180,7 @@ export function Profile({
       {edited && <Blocker />}
       <div className="flex w-full flex-col items-start justify-start gap-2">
         {currentUsername && (
-          <div
+          <button
             className="mb-6 flex cursor-pointer items-center justify-center gap-2"
             onClick={async () => {
               try {
@@ -195,7 +195,7 @@ export function Profile({
           >
             <FontAwesomeIcon icon={faLink} fixedWidth />
             <span>@{currentUsername}</span>
-          </div>
+          </button>
         )}
 
         <form

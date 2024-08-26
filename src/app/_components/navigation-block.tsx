@@ -1,4 +1,3 @@
-// components/navigation-block.tsx
 "use client";
 
 import {
@@ -35,7 +34,7 @@ export function NavigationBlockerProvider({
   );
 }
 
-function useIsBlocked() {
+export function useIsBlocked() {
   const [isBlocked] = useContext(NavigationBlockerContext);
   return isBlocked;
 }
@@ -70,7 +69,6 @@ export function BlockLink({
       onClick={e => {
         e.preventDefault();
 
-        // Cancel navigation
         if (isBlocked && !window.confirm("Do you really want to leave?")) {
           return;
         }
