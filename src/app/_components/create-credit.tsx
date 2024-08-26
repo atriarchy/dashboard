@@ -102,11 +102,11 @@ export function CreateCredit({
   });
 
   useEffect(() => {
-    if (me === "CONTRIBUTOR" && trackQuery.data?.me.id) {
+    if (!id && me === "CONTRIBUTOR" && trackQuery.data?.me.id) {
       setUserType("COLLABORATOR");
       setUser(trackQuery.data.me.id);
     }
-  }, [me, trackQuery.data?.me.id]);
+  }, [id, me, trackQuery.data?.me.id]);
 
   return (
     <>
@@ -214,16 +214,6 @@ export function CreateCredit({
                               return;
                             }
 
-                            if (userType === "COLLABORATOR" && !user) {
-                              toast.error("Please select a collaborator.");
-                              return;
-                            }
-
-                            if (userType === "MANUAL" && !manualUser) {
-                              toast.error("Please enter a name.");
-                              return;
-                            }
-
                             if (id) {
                               updateCredit.mutate({
                                 id: id,
@@ -231,6 +221,16 @@ export function CreateCredit({
                                 value: value || undefined,
                               });
 
+                              return;
+                            }
+
+                            if (userType === "COLLABORATOR" && !user) {
+                              toast.error("Please select a collaborator.");
+                              return;
+                            }
+
+                            if (userType === "MANUAL" && !manualUser) {
+                              toast.error("Please enter a name.");
                               return;
                             }
 

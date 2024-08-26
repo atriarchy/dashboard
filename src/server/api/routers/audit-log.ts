@@ -183,6 +183,89 @@ export const auditLogRouter = createTRPCRouter({
             };
           }
 
+          if (auditLog.action === "CREATE_CREDIT") {
+            const value = auditLog.value
+              ? (auditLog.value as {
+                  type: string;
+                  value?: string;
+                  name?: string;
+                })
+              : undefined;
+
+            const details = [`Credited as ${value?.type}`];
+
+            if (value?.value) {
+              details.push(`With value "${value.value}"`);
+            }
+
+            return {
+              id: auditLog.id,
+              action: auditLog.action,
+              title: `Added credit for ${targetUser ?? value?.name ?? "someone"}`,
+              date: auditLog.createdAt,
+              details: details,
+            };
+          }
+
+          if (auditLog.action === "UPDATE_CREDIT") {
+            const oldValue = auditLog.oldValue
+              ? (auditLog.oldValue as {
+                  type: string;
+                  value?: string;
+                  name?: string;
+                })
+              : undefined;
+
+            const value = auditLog.value
+              ? (auditLog.value as {
+                  type: string;
+                  value?: string;
+                  name?: string;
+                })
+              : undefined;
+
+            const details = [];
+
+            if (oldValue && value) {
+              if (oldValue?.type !== value?.type) {
+                details.push(
+                  `Changed credit from "${oldValue.type}" to "${value.type}"`
+                );
+              }
+
+              if (oldValue?.value !== value?.value) {
+                details.push(
+                  `Changed value from ${oldValue.value ? `"${oldValue.value}"` : "empty"} to ${value.value ? `"${value.value}"` : "empty"}`
+                );
+              }
+            }
+
+            return {
+              id: auditLog.id,
+              action: auditLog.action,
+              title: `Credit updated for ${targetUser ?? value?.name ?? "someone"}`,
+              date: auditLog.createdAt,
+              details: details,
+            };
+          }
+
+          if (auditLog.action === "DELETE_CREDIT") {
+            const oldValue = auditLog.oldValue
+              ? (auditLog.oldValue as {
+                  type: string;
+                  value?: string;
+                  name?: string;
+                })
+              : undefined;
+
+            return {
+              id: auditLog.id,
+              action: auditLog.action,
+              title: `Removed credit for ${targetUser ?? oldValue?.name ?? "someone"}`,
+              date: auditLog.createdAt,
+            };
+          }
+
           return null;
         })
         .filter(a => a !== null);

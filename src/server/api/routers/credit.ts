@@ -128,7 +128,11 @@ export const creditRouter = createTRPCRouter({
             },
             collaborator: {
               include: {
-                user: true,
+                user: {
+                  include: {
+                    profile: true,
+                  },
+                },
               },
             },
           },
@@ -157,7 +161,7 @@ export const creditRouter = createTRPCRouter({
           throw new Error("Unauthorized.");
         }
 
-        await ctx.db.trackCredit.update({
+        const updatedCredit = await ctx.db.trackCredit.update({
           where: {
             id: credit.id,
           },
@@ -165,7 +169,59 @@ export const creditRouter = createTRPCRouter({
             type: input.type,
             value: input.value ? input.value : null,
           },
+          include: {
+            collaborator: {
+              include: {
+                user: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
         });
+
+        if (updatedCredit.collaborator) {
+          if (updatedCredit.collaborator.user?.profile) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: updatedCredit.trackId,
+                userId: ctx.session.user.id,
+                targetUserId: updatedCredit.collaborator.userId,
+                action: "UPDATE_CREDIT",
+                oldValue: credit,
+                value: updatedCredit,
+              },
+            });
+          }
+
+          if (updatedCredit.collaborator.discordUserId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: updatedCredit.trackId,
+                userId: ctx.session.user.id,
+                discordUserId: updatedCredit.collaborator.discordUserId,
+                targetDiscordUsername:
+                  updatedCredit.collaborator.discordUsername,
+                discordAvatar: updatedCredit.collaborator.discordAvatar,
+                action: "UPDATE_CREDIT",
+                oldValue: credit,
+                value: updatedCredit,
+              },
+            });
+          }
+        } else {
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: credit.trackId,
+              userId: ctx.session.user.id,
+              action: "UPDATE_CREDIT",
+              oldValue: credit,
+              value: updatedCredit,
+            },
+          });
+        }
 
         return;
       }
@@ -203,6 +259,13 @@ export const creditRouter = createTRPCRouter({
               id: input.collaborator,
               trackId: track.id,
             },
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
           });
 
           if (!collaborator) {
@@ -217,7 +280,7 @@ export const creditRouter = createTRPCRouter({
             throw new Error("Unauthorized.");
           }
 
-          await ctx.db.trackCredit.create({
+          const credit = await ctx.db.trackCredit.create({
             data: {
               trackId: track.id,
               collaboratorId: input.collaborator,
@@ -225,6 +288,32 @@ export const creditRouter = createTRPCRouter({
               value: input.value,
             },
           });
+
+          if (collaborator.user?.profile) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetUserId: collaborator.userId,
+                action: "CREATE_CREDIT",
+                value: credit,
+              },
+            });
+          }
+
+          if (collaborator.discordUserId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                discordUserId: collaborator.discordUserId,
+                targetDiscordUsername: collaborator.discordUsername,
+                discordAvatar: collaborator.discordAvatar,
+                action: "CREATE_CREDIT",
+                value: credit,
+              },
+            });
+          }
 
           return;
         }
@@ -237,12 +326,21 @@ export const creditRouter = createTRPCRouter({
             throw new Error("Unauthorized.");
           }
 
-          await ctx.db.trackCredit.create({
+          const credit = await ctx.db.trackCredit.create({
             data: {
               trackId: track.id,
               name: input.manual,
               type: input.type,
               value: input.value,
+            },
+          });
+
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              userId: ctx.session.user.id,
+              action: "CREATE_CREDIT",
+              value: credit,
             },
           });
 
@@ -272,7 +370,15 @@ export const creditRouter = createTRPCRouter({
               project: true,
             },
           },
-          collaborator: true,
+          collaborator: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -304,6 +410,43 @@ export const creditRouter = createTRPCRouter({
           id: credit.id,
         },
       });
+
+      if (credit.collaborator) {
+        if (credit.collaborator.user?.profile) {
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: credit.trackId,
+              userId: ctx.session.user.id,
+              targetUserId: credit.collaborator.userId,
+              action: "DELETE_CREDIT",
+              oldValue: credit,
+            },
+          });
+        }
+
+        if (credit.collaborator.discordUserId) {
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: credit.trackId,
+              userId: ctx.session.user.id,
+              discordUserId: credit.collaborator.discordUserId,
+              targetDiscordUsername: credit.collaborator.discordUsername,
+              discordAvatar: credit.collaborator.discordAvatar,
+              action: "DELETE_CREDIT",
+              oldValue: credit,
+            },
+          });
+        }
+      } else {
+        await ctx.db.trackAuditLog.create({
+          data: {
+            trackId: credit.trackId,
+            userId: ctx.session.user.id,
+            action: "DELETE_CREDIT",
+            oldValue: credit,
+          },
+        });
+      }
 
       return;
     }),
