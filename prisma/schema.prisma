@@ -155,6 +155,7 @@ model Track {
     description      String?
     discordChannelId String?             @unique
     collaborators    TrackCollaborator[]
+    credits          TrackCredit[]
     musicStatus      TrackMusicStatus
     visualStatus     TrackVisualStatus
     type             TrackType           @default(ORIGINAL)
@@ -174,6 +175,18 @@ model TrackCollaborator {
     discordAvatar   String?
     acceptedInvite  Boolean               @default(false)
     role            TrackCollaboratorRole
+    credits         TrackCredit[]
+}
+
+model TrackCredit {
+    id             String             @id @default(cuid())
+    track          Track              @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId        String
+    collaborator   TrackCollaborator? @relation(fields: [collaboratorId], references: [id])
+    collaboratorId String?
+    name           String?
+    type           String
+    value          String?
 }
 
 model TrackAuditLog {

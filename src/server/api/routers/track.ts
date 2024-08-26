@@ -337,6 +337,7 @@ export const trackRouter = createTRPCRouter({
 
               return {
                 type: "ATRIARCHY" as const,
+                id: collaborator.id,
                 username: collaborator.user.profile.username,
                 name: collaborator.user.profile.name,
                 role: collaborator.role,
@@ -349,6 +350,7 @@ export const trackRouter = createTRPCRouter({
             if (collaborator.discordUserId) {
               return {
                 type: "DISCORD" as const,
+                id: collaborator.id,
                 discord: {
                   userId: collaborator.discordUserId,
                   username: collaborator.discordUsername,

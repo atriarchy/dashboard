@@ -4,6 +4,7 @@ import { projectRouter } from "@/server/api/routers/project";
 import { agreementRouter } from "@/server/api/routers/agreement";
 import { trackRouter } from "@/server/api/routers/track";
 import { collaboratorRouter } from "@/server/api/routers/collaborator";
+import { creditRouter } from "@/server/api/routers/credit";
 import { searchRouter } from "@/server/api/routers/search";
 import { auditLogRouter } from "@/server/api/routers/audit-log";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   agreement: agreementRouter,
   track: trackRouter,
   collaborator: collaboratorRouter,
+  credit: creditRouter,
   search: searchRouter,
   auditLog: auditLogRouter,
 });

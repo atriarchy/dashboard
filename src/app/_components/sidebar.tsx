@@ -6,6 +6,7 @@ import {
   faList,
   faMusic,
   faRecordVinyl,
+  faUserPen,
   faUserPlus,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +31,8 @@ export async function Sidebar({
     | "PROJECTS_AGREEMENTS"
     | "PROJECTS_TRACKS_INFO"
     | "PROJECTS_TRACKS_COLLABORATORS"
-    | "PROJECTS_TRACKS_LOGS";
+    | "PROJECTS_TRACKS_LOGS"
+    | "PROJECTS_TRACKS_CREDITS";
   project?: {
     title: string;
     username: string;
@@ -147,6 +149,17 @@ export async function Sidebar({
                 >
                   <FontAwesomeIcon icon={faList} fixedWidth />
                   <span>Audit Logs</span>
+                </BlockLink>
+                <BlockLink
+                  href={`/dashboard/projects/${project.username}/tracks/${track.username}/credits`}
+                  className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+                    selected === "PROJECTS_TRACKS_CREDITS"
+                      ? "bg-violet-700"
+                      : "bg-gray-700 transition hover:bg-violet-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faUserPen} fixedWidth />
+                  <span>Credits</span>
                 </BlockLink>
               </div>
             )}
