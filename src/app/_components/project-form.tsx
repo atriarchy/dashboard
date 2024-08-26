@@ -163,7 +163,7 @@ export function ProjectForm(props: ProjectFormProps) {
                           deadline: deadline
                             ? new Date(deadline).toISOString()
                             : undefined,
-                          discordChannelId: discordChannelId,
+                          discordChannelId: discordChannelId || undefined,
                           thumbnail: thumbnail
                             ? {
                                 fileType: thumbnail.type,
