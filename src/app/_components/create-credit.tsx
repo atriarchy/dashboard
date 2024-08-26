@@ -33,7 +33,7 @@ export const CreditTypes = {
     Producer: "Producer",
     Engineer: "Engineer",
   },
-  "Visual Artist": {
+  Visual: {
     "Visual Artist": "Visual Artist",
     "Video Editors": "Video Editors",
   },
