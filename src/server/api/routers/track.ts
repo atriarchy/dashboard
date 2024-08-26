@@ -325,6 +325,7 @@ export const trackRouter = createTRPCRouter({
 
       let myRole: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER" = "VIEWER";
       let myAcceptedInvite;
+      let myId;
 
       const collaborators = (
         await Promise.all(
@@ -333,10 +334,12 @@ export const trackRouter = createTRPCRouter({
               if (collaborator.user.profile.userId === ctx.session.user.id) {
                 myRole = collaborator.role;
                 myAcceptedInvite = collaborator.acceptedInvite;
+                myId = collaborator.id;
               }
 
               return {
                 type: "ATRIARCHY" as const,
+                id: collaborator.id,
                 username: collaborator.user.profile.username,
                 name: collaborator.user.profile.name,
                 role: collaborator.role,
@@ -349,6 +352,7 @@ export const trackRouter = createTRPCRouter({
             if (collaborator.discordUserId) {
               return {
                 type: "DISCORD" as const,
+                id: collaborator.id,
                 discord: {
                   userId: collaborator.discordUserId,
                   username: collaborator.discordUsername,
@@ -400,6 +404,7 @@ export const trackRouter = createTRPCRouter({
         me: {
           role: myRole as "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER",
           acceptedInvite: myAcceptedInvite,
+          id: myId,
         },
         manager: manager,
       };

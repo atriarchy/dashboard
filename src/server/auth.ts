@@ -5,7 +5,9 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+import DiscordProvider, {
+  type DiscordProfile,
+} from "next-auth/providers/discord";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
@@ -38,6 +40,37 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    signIn: async ({ user, account, profile }) => {
+      if (account?.provider === "discord") {
+        const discordProfile = profile as DiscordProfile;
+
+        if (discordProfile.discriminator !== "0" || !discordProfile.verified) {
+          return false;
+        }
+
+        await db.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            email: discordProfile.email,
+          },
+        });
+
+        await db.profile.update({
+          where: {
+            userId: user.id,
+          },
+          data: {
+            email: discordProfile.email,
+          },
+        });
+
+        return true;
+      }
+
+      return false;
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
@@ -51,6 +84,21 @@ export const authOptions: NextAuthOptions = {
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
+      profile(profile: DiscordProfile) {
+        if (profile.avatar === null) {
+          const defaultAvatarNumber = parseInt(profile.discriminator) % 5;
+          profile.image_url = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
+        } else {
+          const format = profile.avatar.startsWith("a_") ? "gif" : "png";
+          profile.image_url = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`;
+        }
+        return {
+          id: profile.id,
+          name: profile.username,
+          email: profile.verified ? profile.email : undefined,
+          image: profile.image_url,
+        };
+      },
     }),
     /**
      * ...add more providers here.

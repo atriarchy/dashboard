@@ -53,7 +53,6 @@ export const searchRouter = createTRPCRouter({
       );
 
       if (!discordResults.ok) {
-        console.error(await discordResults.text());
         return {
           atriarchy: atriarchyResultsFormatted,
           discord: [],

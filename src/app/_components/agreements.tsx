@@ -44,43 +44,52 @@ export function Agreements({
             )}
           </div>
           <div className="flex w-full flex-col items-start justify-start gap-2">
-            {agreements.data?.map(agreement => (
-              <div
-                key={agreement.id}
-                className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
-              >
-                <div className="flex items-center justify-start gap-4">
-                  <FontAwesomeIcon icon={faFileContract} className="text-xl" />
-                  <div className="flex flex-col items-start justify-start">
-                    <div className="flex items-center justify-start gap-2">
-                      <h2 className="text-lg font-bold">{agreement.title}</h2>
+            {agreements.data ? (
+              agreements.data.map(agreement => (
+                <div
+                  key={agreement.id}
+                  className="flex w-full items-center justify-between gap-4 rounded-lg bg-neutral-800 p-4"
+                >
+                  <div className="flex items-center justify-start gap-4">
+                    <FontAwesomeIcon
+                      icon={faFileContract}
+                      className="text-xl"
+                    />
+                    <div className="flex flex-col items-start justify-start">
+                      <div className="flex items-center justify-start gap-2">
+                        <h2 className="text-lg font-bold">{agreement.title}</h2>
+                      </div>
+                      <p className="text-sm text-gray-400">
+                        {agreement.description}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">
-                      {agreement.description}
-                    </p>
+                  </div>
+                  <div className="flex items-center justify-start gap-2">
+                    <span className="rounded-full bg-neutral-950 px-2 py-1 text-sm">
+                      {agreement.status}
+                    </span>
+                    {agreement.status !== "COMPLETED" && (
+                      <button
+                        onClick={() => {
+                          sign.mutate({
+                            agreement: agreement.id,
+                          });
+                        }}
+                        className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                        disabled={sign.isPending}
+                      >
+                        <FontAwesomeIcon icon={faPenNib} />
+                        <span>Sign</span>
+                      </button>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center justify-start gap-2">
-                  <span className="rounded-full bg-neutral-950 px-2 py-1 text-sm">
-                    {agreement.status}
-                  </span>
-                  {agreement.status !== "COMPLETED" && (
-                    <button
-                      onClick={() => {
-                        sign.mutate({
-                          agreement: agreement.id,
-                        });
-                      }}
-                      className="flex items-center justify-start gap-2 rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
-                      disabled={sign.isPending}
-                    >
-                      <FontAwesomeIcon icon={faPenNib} />
-                      <span>Sign</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <span className="text-lg font-medium text-gray-400">
+                Loading...
+              </span>
+            )}
           </div>
         </>
       )}

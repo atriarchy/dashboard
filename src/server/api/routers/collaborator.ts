@@ -91,7 +91,7 @@ export const collaboratorRouter = createTRPCRouter({
         discordUserId?: string,
         avatar?: string | null
       ) => {
-        if (!input.skipInvite) {
+        if (!input.skipInvite && track.project.discordChannelId) {
           let invitesChannel = track.project.discordInvitesChannelId;
 
           if (!invitesChannel && track.project.discordChannelId) {

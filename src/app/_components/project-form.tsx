@@ -159,11 +159,11 @@ export function ProjectForm(props: ProjectFormProps) {
                           title,
                           username,
                           status,
-                          description: description,
+                          description: description || undefined,
                           deadline: deadline
                             ? new Date(deadline).toISOString()
                             : undefined,
-                          discordChannelId: discordChannelId,
+                          discordChannelId: discordChannelId || undefined,
                           thumbnail: thumbnail
                             ? {
                                 fileType: thumbnail.type,
@@ -268,7 +268,6 @@ export function ProjectForm(props: ProjectFormProps) {
                           value={discordChannelId}
                           onChange={e => setDiscordChannelId(e.target.value)}
                           placeholder="Discord Channel ID"
-                          required
                         />
                       )}
                       <FileUpload
