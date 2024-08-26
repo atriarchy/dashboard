@@ -16,16 +16,27 @@ import { faUserPen, faWarning } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 
+// {
+//   Group: {
+//     DatabaseValue: LabelValue,
+//   },
+// }
 export const CreditTypes = {
-  Composing: "Writing/Composing Music",
-  Lyrics: "Writing/Composing Lyrics",
-  Vocalist: "(Music) Vocalist",
-  Instrumentalist: "(Music) Instrumentalist",
-  Producer: "(Music) Producer",
-  Engineer: "(Music) Engineer",
-  "Visual Artist": "(Visual) Visual Artist",
-  "Video Editors": "(Visual) Video Editors",
-  _other: "Other",
+  Writing: {
+    Composing: "Composing",
+    Lyrics: "Lyrics",
+    "Composing and Lyrics": "Composing and Lyrics",
+  },
+  Music: {
+    Vocalist: "Vocalist",
+    Instrumentalist: "Instrumentalist",
+    Producer: "Producer",
+    Engineer: "Engineer",
+  },
+  "Visual Artist": {
+    "Visual Artist": "Visual Artist",
+    "Video Editors": "Video Editors",
+  },
 };
 
 export function CreateCredit({
@@ -45,6 +56,10 @@ export function CreateCredit({
   defaultType?: string;
   defaultValue?: string | null;
 }) {
+  const flattenCreditTypes = Object.values(CreditTypes)
+    .map(value => Object.keys(value))
+    .flat();
+
   const [isOpen, setIsOpen] = useState(false);
   const [userType, setUserType] = useState<"COLLABORATOR" | "MANUAL">(
     "COLLABORATOR"
@@ -53,15 +68,13 @@ export function CreateCredit({
   const [manualUser, setManualUser] = useState("");
   const [type, setType] = useState(
     defaultType
-      ? Object.keys(CreditTypes).includes(defaultType)
+      ? flattenCreditTypes.includes(defaultType)
         ? defaultType
         : "_other"
       : ""
   );
   const [manualType, setManualType] = useState(
-    defaultType && !Object.keys(CreditTypes).includes(defaultType)
-      ? defaultType
-      : ""
+    defaultType && !flattenCreditTypes.includes(defaultType) ? defaultType : ""
   );
   const [value, setValue] = useState(defaultValue ?? "");
 
@@ -233,7 +246,7 @@ export function CreateCredit({
                                 >
                                   <>
                                     {user === "" && (
-                                      <option value="" disabled>
+                                      <option value="" disabled hidden>
                                         Select Collaborator
                                       </option>
                                     )}
@@ -304,15 +317,26 @@ export function CreateCredit({
                             onChange={e => setType(e.target.value)}
                           >
                             {type === "" && (
-                              <option value="" disabled>
+                              <option value="" disabled hidden>
                                 Select Credit Type
                               </option>
                             )}
-                            {Object.entries(CreditTypes).map(([key, value]) => (
-                              <option key={key} value={key}>
-                                {value}
-                              </option>
-                            ))}
+                            {Object.entries(CreditTypes).map(
+                              ([key, value], i) => (
+                                <optgroup key={i} label={key}>
+                                  {Object.entries(value).map(
+                                    ([key, value], i) => (
+                                      <option key={key} value={key}>
+                                        {value}
+                                      </option>
+                                    )
+                                  )}
+                                </optgroup>
+                              )
+                            )}
+                            <optgroup label="Other">
+                              <option value="_other">Other</option>
+                            </optgroup>
                           </select>
                           {type === "_other" && (
                             <TextInput
