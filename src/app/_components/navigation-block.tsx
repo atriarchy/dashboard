@@ -69,7 +69,12 @@ export function BlockLink({
       onClick={e => {
         e.preventDefault();
 
-        if (isBlocked && !window.confirm("Do you really want to leave?")) {
+        if (
+          isBlocked &&
+          !window.confirm(
+            "You have unsaved changes. Do you really want to leave?"
+          )
+        ) {
           return;
         }
 

@@ -20,7 +20,12 @@ export function Auth({
     <button
       className="text-white transition hover:text-red-200"
       onClick={async () => {
-        if (isBlocked && !window.confirm("Do you really want to leave?")) {
+        if (
+          isBlocked &&
+          !window.confirm(
+            "You have unsaved changes. Do you really want to leave?"
+          )
+        ) {
           return;
         }
 
@@ -32,7 +37,12 @@ export function Auth({
   ) : (
     <button
       onClick={async () => {
-        if (isBlocked && !window.confirm("Do you really want to leave?")) {
+        if (
+          isBlocked &&
+          !window.confirm(
+            "You have unsaved changes. Do you really want to leave?"
+          )
+        ) {
           return;
         }
 
