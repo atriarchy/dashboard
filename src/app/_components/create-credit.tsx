@@ -283,12 +283,12 @@ export function CreateCredit({
                                   </div>
                                   <TextInput
                                     id="manualUser"
-                                    label="User"
+                                    label="Name"
                                     value={manualUser}
                                     onChange={e =>
                                       setManualUser(e.target.value)
                                     }
-                                    placeholder="Credit"
+                                    placeholder="Name"
                                     maxLength={128}
                                     required
                                   />
