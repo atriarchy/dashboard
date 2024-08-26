@@ -11,11 +11,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Access } from "@/app/_components/access";
-import Link from "next/link";
 import { Auth } from "@/app/_components/auth";
 import { api } from "@/trpc/server";
 import Image from "next/image";
 import logo from "@/assets/atriarchy-light.png";
+import { BlockLink } from "@/app/_components/navigation-block";
 
 export async function Sidebar({
   selected,
@@ -59,7 +59,7 @@ export async function Sidebar({
       </div>
 
       <div className="flex h-full w-full flex-col items-center justify-start gap-2">
-        <Link
+        <BlockLink
           href="/dashboard/projects"
           className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
             selected === "PROJECTS"
@@ -69,8 +69,8 @@ export async function Sidebar({
         >
           <FontAwesomeIcon icon={faMusic} fixedWidth />
           <span>Projects</span>
-        </Link>
-        <Link
+        </BlockLink>
+        <BlockLink
           href="/dashboard/invites"
           className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
             selected === "INVITES"
@@ -80,14 +80,14 @@ export async function Sidebar({
         >
           <FontAwesomeIcon icon={faUsers} fixedWidth />
           <span>Invites</span>
-        </Link>
+        </BlockLink>
         {project && (
           <>
             <div className="mt-8 flex w-full flex-col items-center justify-start gap-2">
               <span className="text-lm w-full font-semibold text-white">
                 {project.title}
               </span>
-              <Link
+              <BlockLink
                 href={`/dashboard/projects/${project.username}/tracks`}
                 className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                   selected === "PROJECTS_TRACKS"
@@ -97,8 +97,8 @@ export async function Sidebar({
               >
                 <FontAwesomeIcon icon={faRecordVinyl} fixedWidth />
                 <span>Tracks</span>
-              </Link>
-              <Link
+              </BlockLink>
+              <BlockLink
                 href={`/dashboard/projects/${project.username}/agreements`}
                 className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                   selected === "PROJECTS_AGREEMENTS"
@@ -108,14 +108,14 @@ export async function Sidebar({
               >
                 <FontAwesomeIcon icon={faFile} fixedWidth />
                 <span>Agreements</span>
-              </Link>
+              </BlockLink>
             </div>
             {track && (
               <div className="mt-8 flex w-full flex-col items-center justify-start gap-2">
                 <span className="text-lm w-full font-semibold text-white">
                   {track.title}
                 </span>
-                <Link
+                <BlockLink
                   href={`/dashboard/projects/${project.username}/tracks/${track.username}/info`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS_INFO"
@@ -125,8 +125,8 @@ export async function Sidebar({
                 >
                   <FontAwesomeIcon icon={faCircleInfo} fixedWidth />
                   <span>Info</span>
-                </Link>
-                <Link
+                </BlockLink>
+                <BlockLink
                   href={`/dashboard/projects/${project.username}/tracks/${track.username}/collaborators`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS_COLLABORATORS"
@@ -136,8 +136,8 @@ export async function Sidebar({
                 >
                   <FontAwesomeIcon icon={faUserPlus} fixedWidth />
                   <span>Collaborators</span>
-                </Link>
-                <Link
+                </BlockLink>
+                <BlockLink
                   href={`/dashboard/projects/${project.username}/tracks/${track.username}/logs`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS_LOGS"
@@ -147,14 +147,14 @@ export async function Sidebar({
                 >
                   <FontAwesomeIcon icon={faList} fixedWidth />
                   <span>Audit Logs</span>
-                </Link>
+                </BlockLink>
               </div>
             )}
           </>
         )}
       </div>
       {access === "ADMIN" && <Access />}
-      <Link
+      <BlockLink
         href="/dashboard/profile"
         className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
           selected === "PROFILE"
@@ -164,11 +164,11 @@ export async function Sidebar({
       >
         <FontAwesomeIcon icon={faCircleUser} fixedWidth />
         <span>Profile</span>
-      </Link>
+      </BlockLink>
       {session?.user?.name && session?.user?.image && (
         <div className="flex w-full items-center justify-between gap-2 pt-2">
           {profile ? (
-            <Link
+            <BlockLink
               href={`/@${profile.username}`}
               className="group flex items-center gap-2 overflow-hidden"
             >
@@ -181,7 +181,7 @@ export async function Sidebar({
               <span className="max-w-[120px] truncate bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text font-semibold text-white transition group-hover:text-transparent">
                 {`@${profile.username}`}
               </span>
-            </Link>
+            </BlockLink>
           ) : (
             <div className="flex items-center gap-2 overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}

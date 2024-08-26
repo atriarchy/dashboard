@@ -13,6 +13,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
 import { env } from "@/env";
+import { NavigationBlockerProvider } from "@/app/_components/navigation-block";
 
 config.autoAddCss = false;
 
@@ -42,16 +43,18 @@ export default function RootLayout({
       </Head>
       <body className="bg-neutral-900">
         <TRPCReactProvider>
-          <div>
-            <Toaster />
-          </div>
-          {children}
-          {env.NODE_ENV == "production" && (
-            <>
-              <Analytics />
-              <SpeedInsights />
-            </>
-          )}
+          <NavigationBlockerProvider>
+            <div>
+              <Toaster />
+            </div>
+            {children}
+            {env.NODE_ENV == "production" && (
+              <>
+                <Analytics />
+                <SpeedInsights />
+              </>
+            )}
+          </NavigationBlockerProvider>
         </TRPCReactProvider>
       </body>
     </html>
