@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -51,7 +51,7 @@ export function CreateCredit({
   refetch: () => void;
   track: string;
   access?: "ADMIN" | null;
-  me: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
+  me: "MANAGER" | "EDITOR" | "CONTRIBUTOR";
   id?: string;
   defaultType?: string;
   defaultValue?: string | null;
@@ -100,6 +100,13 @@ export function CreateCredit({
       toast.error(error.message);
     },
   });
+
+  useEffect(() => {
+    if (me === "CONTRIBUTOR" && trackQuery.data?.me.id) {
+      setUserType("COLLABORATOR");
+      setUser(trackQuery.data.me.id);
+    }
+  }, [me, trackQuery.data?.me.id]);
 
   return (
     <>
@@ -197,6 +204,26 @@ export function CreateCredit({
                             if (trackQuery.isPending || updateCredit.isPending)
                               return;
 
+                            if (!type) {
+                              toast.error("Please select a credit type.");
+                              return;
+                            }
+
+                            if (type === "_other" && !manualType) {
+                              toast.error("Please enter a credit type.");
+                              return;
+                            }
+
+                            if (userType === "COLLABORATOR" && !user) {
+                              toast.error("Please select a collaborator.");
+                              return;
+                            }
+
+                            if (userType === "MANUAL" && !manualUser) {
+                              toast.error("Please enter a name.");
+                              return;
+                            }
+
                             if (id) {
                               updateCredit.mutate({
                                 id: id,
@@ -207,15 +234,23 @@ export function CreateCredit({
                               return;
                             }
 
-                            updateCredit.mutate({
-                              track: track,
-                              collaborator:
-                                userType === "COLLABORATOR" ? user : manualUser,
-                              manual:
-                                userType === "MANUAL" ? manualUser : undefined,
-                              type: type === "_other" ? manualType : type,
-                              value: value || undefined,
-                            });
+                            if (userType === "COLLABORATOR") {
+                              updateCredit.mutate({
+                                track: track,
+                                collaborator: user,
+                                type: type === "_other" ? manualType : type,
+                                value: value || undefined,
+                              });
+                            }
+
+                            if (userType === "MANUAL") {
+                              updateCredit.mutate({
+                                track: track,
+                                manual: manualUser,
+                                type: type === "_other" ? manualType : type,
+                                value: value || undefined,
+                              });
+                            }
                           }}
                         >
                           {!id && (
@@ -234,7 +269,9 @@ export function CreateCredit({
                                 <option value="COLLABORATOR">
                                   Collaborator
                                 </option>
-                                <option value="MANUAL">Manual</option>
+                                {me !== "CONTRIBUTOR" && (
+                                  <option value="MANUAL">Manual</option>
+                                )}
                               </select>
                               {userType === "COLLABORATOR" && (
                                 <select
@@ -324,13 +361,11 @@ export function CreateCredit({
                             {Object.entries(CreditTypes).map(
                               ([key, value], i) => (
                                 <optgroup key={i} label={key}>
-                                  {Object.entries(value).map(
-                                    ([key, value], i) => (
-                                      <option key={key} value={key}>
-                                        {value}
-                                      </option>
-                                    )
-                                  )}
+                                  {Object.entries(value).map(([key, value]) => (
+                                    <option key={key} value={key}>
+                                      {value}
+                                    </option>
+                                  ))}
                                 </optgroup>
                               )
                             )}
