@@ -40,7 +40,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                   <Link
                     href={`/dashboard/projects/${project.username}`}
                     key={project.username}
-                    className="flex w-full break-words rounded-lg bg-neutral-800 transition-colors hover:bg-neutral-800/80 disabled:bg-neutral-800/50"
+                    className="flex w-full break-words rounded-lg bg-neutral-800 transition-colors hover:bg-neutral-700 disabled:bg-neutral-800/50"
                   >
                     {project.thumbnail && (
                       <div className="flex-shrink-0">
@@ -52,10 +52,10 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                       </div>
                     )}
                     <div
-                      className={`flex flex-1 items-center justify-between truncate bg-neutral-800 px-4 py-2 ${
+                      className={`flex flex-1 items-center justify-between truncate px-4 py-2 ${
                         project.thumbnail
                           ? "rounded-r-lg border-l border-neutral-700"
-                          : "rounded-lg border border-neutral-700"
+                          : "rounded-lg"
                       }`}
                     >
                       <div className="flex-1 truncate text-sm">
@@ -70,7 +70,9 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                           />
                         </span>
                         <p className="text-gray-400">
-                          {`${project.trackCount} track${project.trackCount !== 1 ? "s" : ""}`}
+                          {`${project.trackCount} track${
+                            project.trackCount !== 1 ? "s" : ""
+                          }`}
                         </p>
                       </div>
                     </div>
@@ -85,7 +87,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                   await projects.fetchNextPage();
                 }}
                 disabled={projects.isFetchingNextPage}
-                className="w-full rounded-lg bg-neutral-500 px-4 py-2 transition-colors hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                className="w-full rounded-lg bg-neutral-500 px-4 py-2 transition-colors hover:bg-neutral-400 disabled:bg-neutral-500/50"
               >
                 {projects.isFetchingNextPage ? "Loading..." : "Load More"}
               </button>
