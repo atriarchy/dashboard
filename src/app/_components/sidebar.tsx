@@ -48,7 +48,7 @@ export async function Sidebar({
   const profile = await api.profile.getProfile();
 
   return (
-    <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 py-4 shadow-inner">
+    <div className="flex h-full w-52 min-w-52 max-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 py-4 shadow-inner">
       {/* Logo at the top of the sidebar */}
       <div className="mb-4 flex flex-col items-center justify-center px-4">
         <Image
