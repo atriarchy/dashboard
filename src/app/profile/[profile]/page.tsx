@@ -133,13 +133,15 @@ export default async function PublicProfile({
                   </div>
                 )}
                 {profile.tracks.length > 0 && (
-                  <div className="mt-4 flex max-w-screen-sm flex-col items-center justify-start gap-4 rounded-lg bg-neutral-950 px-8 py-4">
+                  <div className="mt-4 flex max-w-screen-sm flex-col items-center justify-start gap-4 rounded-lg bg-neutral-950 px-4 py-4">
                     {profile.tracks.map((track, index) => (
                       <div
                         key={index}
-                        className="flex w-full items-center justify-start gap-8"
+                        className="flex w-full items-center justify-start gap-4"
                       >
-                        <span className="text-md">{index + 1}</span>
+                        <span className="text-md w-8 text-center">
+                          {index + 1}
+                        </span>
                         {track.thumbnail && (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img

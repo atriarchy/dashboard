@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
 import { env } from "@/env";
-import { getUploadURL } from "@/server/s3";
+import { getUploadURL, deleteObject } from "@/server/s3";
 
 const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB
@@ -316,6 +316,27 @@ export const projectRouter = createTRPCRouter({
   deleteProject: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      const project = await ctx.db.project.findFirst({
+        where: { id: input.id },
+        include: {
+          thumbnail: true,
+        },
+      });
+
+      if (!project) {
+        throw new Error("Project not found.");
+      }
+
+      if (project.thumbnail) {
+        await deleteObject(project.thumbnail.key);
+      }
+
       await ctx.db.project.delete({
         where: { id: input.id },
       });
