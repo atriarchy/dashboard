@@ -71,7 +71,7 @@ export const creditRouter = createTRPCRouter({
         if (credit.collaborator?.discordUserId) {
           return {
             id: credit.id,
-            name: credit.collaborator.discordUserId,
+            name: credit.collaborator.discordUsername,
             nameSource: "DISCORD" as const,
             type: credit.type,
             value: credit.value,
@@ -201,10 +201,10 @@ export const creditRouter = createTRPCRouter({
               data: {
                 trackId: updatedCredit.trackId,
                 userId: ctx.session.user.id,
-                discordUserId: updatedCredit.collaborator.discordUserId,
+                targetDiscordUserId: updatedCredit.collaborator.discordUserId,
                 targetDiscordUsername:
                   updatedCredit.collaborator.discordUsername,
-                discordAvatar: updatedCredit.collaborator.discordAvatar,
+                targetDiscordAvatar: updatedCredit.collaborator.discordAvatar,
                 action: "UPDATE_CREDIT",
                 oldValue: credit,
                 value: updatedCredit,
@@ -306,9 +306,9 @@ export const creditRouter = createTRPCRouter({
               data: {
                 trackId: track.id,
                 userId: ctx.session.user.id,
-                discordUserId: collaborator.discordUserId,
+                targetDiscordUserId: collaborator.discordUserId,
                 targetDiscordUsername: collaborator.discordUsername,
-                discordAvatar: collaborator.discordAvatar,
+                targetDiscordAvatar: collaborator.discordAvatar,
                 action: "CREATE_CREDIT",
                 value: credit,
               },
@@ -429,9 +429,9 @@ export const creditRouter = createTRPCRouter({
             data: {
               trackId: credit.trackId,
               userId: ctx.session.user.id,
-              discordUserId: credit.collaborator.discordUserId,
+              targetDiscordUserId: credit.collaborator.discordUserId,
               targetDiscordUsername: credit.collaborator.discordUsername,
-              discordAvatar: credit.collaborator.discordAvatar,
+              targetDiscordAvatar: credit.collaborator.discordAvatar,
               action: "DELETE_CREDIT",
               oldValue: credit,
             },

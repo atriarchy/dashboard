@@ -97,8 +97,27 @@ const FileUpload = ({
             Drag or Upload
           </div>
           {fileUrl ? (
-            <button
-              type="button"
+            // div because button can not be a descendant of button
+            <div
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => {
+                if (
+                  e.key === " " ||
+                  e.key === "Enter" ||
+                  e.key === "Spacebar"
+                ) {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (fileUrl) {
+                    URL.revokeObjectURL(fileUrl);
+                  }
+
+                  setFile(undefined);
+                  setFileUrl(undefined);
+                }
+              }}
               onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -113,7 +132,7 @@ const FileUpload = ({
               className={`w-full rounded-lg bg-red-500 px-4 py-2 transition hover:bg-red-700 ${drag ? "pointer-events-none" : "pointer-events-auto"}`}
             >
               Remove
-            </button>
+            </div>
           ) : (
             <>
               {infoLabel && (
