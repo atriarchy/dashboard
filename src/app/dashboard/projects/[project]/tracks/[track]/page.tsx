@@ -4,6 +4,7 @@ import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
 import { InviteBanner } from "@/app/_components/invite-banner";
 import { EditTrack } from "@/app/_components/edit-track";
+import IconExplicit from "@/app/_components/icons/icon-explicit";
 
 export default async function InfoPage({
   params,
@@ -60,9 +61,13 @@ export default async function InfoPage({
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {
               <div className="mb-8 flex flex-col items-start justify-start gap-2">
-                <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-                  {track.title}
+                <h1 className="flex items-center space-x-2 text-3xl font-bold">
+                  <span className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-transparent">
+                    {track.title}
+                  </span>
+                  {track.explicit && <IconExplicit />}
                 </h1>
+
                 {track.description && (
                   <p className="text-lg">{track.description}</p>
                 )}
