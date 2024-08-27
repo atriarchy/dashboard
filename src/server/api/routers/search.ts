@@ -113,7 +113,7 @@ export const searchRouter = createTRPCRouter({
                 name: result.nick ?? result.user.global_name,
                 avatar: result.user.avatar
                   ? `https://cdn.discordapp.com/avatars/${result.user.id}/${result.user.avatar}.png`
-                  : null,
+                  : `https://cdn.discordapp.com/embed/avatars/${(parseInt(result.user.id) >> 22) % 6}.png`,
               };
             })
         )

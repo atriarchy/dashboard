@@ -54,6 +54,9 @@ export const authOptions: NextAuthOptions = {
           },
           data: {
             email: discordProfile.email,
+            image: discordProfile.avatar
+              ? `https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.avatar}.${discordProfile.avatar.startsWith("a_") ? "gif" : "png"}`
+              : `https://cdn.discordapp.com/embed/avatars/${(parseInt(discordProfile.id) >> 22) % 6}.png`,
           },
         });
 
