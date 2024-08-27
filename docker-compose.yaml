@@ -19,8 +19,8 @@ services:
   s3:
     image: bitnami/minio:latest
     ports:
-      - 9005:9005
-      - 9006:9006
+      - 9000:9000
+      - 9001:9001
     environment:
       MINIO_ROOT_USER: atriarchy_key
       MINIO_ROOT_PASSWORD: atriarchy_secret
@@ -75,7 +75,7 @@ services:
       NEXT_PRIVATE_SMTP_FROM_NAME: Documenso
       NEXT_PRIVATE_SMTP_FROM_ADDRESS: no-reply@test.atriarchy.studio
       NEXT_PUBLIC_UPLOAD_TRANSPORT: s3
-      NEXT_PRIVATE_UPLOAD_ENDPOINT: http://s3:9005
+      NEXT_PRIVATE_UPLOAD_ENDPOINT: http://s3:9000
       NEXT_PRIVATE_UPLOAD_FORCE_PATH_STYLE: "true"
       NEXT_PRIVATE_UPLOAD_REGION: us-east-1
       NEXT_PRIVATE_UPLOAD_BUCKET: documenso
