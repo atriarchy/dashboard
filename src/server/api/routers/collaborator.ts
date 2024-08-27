@@ -412,7 +412,7 @@ export const collaboratorRouter = createTRPCRouter({
         username: z.string().optional(),
         discord: z.string().optional(),
         track: z.string(),
-        role: z.enum(["CONTRIBUTOR", "EDITOR"]),
+        role: z.enum(["CONTRIBUTOR", "EDITOR", "MANAGER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -482,12 +482,51 @@ export const collaboratorRouter = createTRPCRouter({
             throw new Error("User is not a collaborator.");
           }
 
-          await ctx.db.trackCollaborator.update({
+          const updatedData = await ctx.db.trackCollaborator.update({
             where: {
               id: check.id,
             },
             data: {
               role: input.role,
+            },
+          });
+
+          if (input.role === "MANAGER") {
+            const updatedManager = await ctx.db.trackCollaborator.update({
+              where: {
+                id: manager.id,
+              },
+              data: {
+                role: "EDITOR",
+              },
+            });
+
+            let managerTargetId = manager.userId;
+
+            if (!managerTargetId) {
+              managerTargetId = manager.discordUserId;
+            }
+
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetUserId: managerTargetId,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
+          }
+
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              userId: ctx.session.user.id,
+              targetUserId: userInput.id,
+              action: "UPDATE_COLLABORATOR",
+              value: updatedData,
+              oldValue: check,
             },
           });
 
@@ -513,6 +552,34 @@ export const collaboratorRouter = createTRPCRouter({
             role: input.role,
           },
         });
+
+        if (input.role === "MANAGER") {
+          const updatedManager = await ctx.db.trackCollaborator.update({
+            where: {
+              id: manager.id,
+            },
+            data: {
+              role: "EDITOR",
+            },
+          });
+
+          let managerTargetId = manager.userId;
+
+          if (!managerTargetId) {
+            managerTargetId = manager.discordUserId;
+          }
+
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              userId: ctx.session.user.id,
+              targetUserId: managerTargetId,
+              action: "UPDATE_COLLABORATOR",
+              value: updatedManager,
+              oldValue: manager,
+            },
+          });
+        }
 
         await ctx.db.trackAuditLog.create({
           data: {
@@ -566,6 +633,34 @@ export const collaboratorRouter = createTRPCRouter({
             role: input.role,
           },
         });
+
+        if (input.role === "MANAGER") {
+          const updatedManager = await ctx.db.trackCollaborator.update({
+            where: {
+              id: manager.id,
+            },
+            data: {
+              role: "EDITOR",
+            },
+          });
+
+          let managerTargetId = manager.userId;
+
+          if (!managerTargetId) {
+            managerTargetId = manager.discordUserId;
+          }
+
+          await ctx.db.trackAuditLog.create({
+            data: {
+              trackId: track.id,
+              userId: ctx.session.user.id,
+              targetUserId: managerTargetId,
+              action: "UPDATE_COLLABORATOR",
+              value: updatedManager,
+              oldValue: manager,
+            },
+          });
+        }
 
         await ctx.db.trackAuditLog.create({
           data: {

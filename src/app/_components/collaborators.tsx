@@ -96,7 +96,13 @@ export function Collaborators({
 
                       <select
                         onChange={event => {
-                          if (event.target.value === "_delete") {
+                          const tragetValue = event.target.value as
+                            | "CONTRIBUTOR"
+                            | "EDITOR"
+                            | "_manager"
+                            | "_delete";
+
+                          if (tragetValue === "_delete") {
                             deleteCollaborator.mutate({
                               username: collaborator.username,
                               track: username,
@@ -107,14 +113,15 @@ export function Collaborators({
 
                           updateCollaborator.mutate({
                             username: collaborator.username,
-                            role: event.target.value as
-                              | "CONTRIBUTOR"
-                              | "EDITOR",
+                            role:
+                              tragetValue === "_manager"
+                                ? "MANAGER"
+                                : tragetValue,
                             track: username,
                           });
                         }}
                         value={collaborator.role}
-                        className="rounded-full bg-gray-700 p-2"
+                        className="rounded-full bg-gray-700"
                         disabled={
                           updateCollaborator.isPending ||
                           deleteCollaborator.isPending ||
@@ -123,9 +130,10 @@ export function Collaborators({
                             access !== "ADMIN")
                         }
                       >
-                        <option value="MANAGER" disabled>
+                        <option value="MANAGER" disabled hidden>
                           Manager
                         </option>
+                        <option value="_manager">Transfer Manager</option>
                         <option value="EDITOR">Editor</option>
                         <option value="CONTRIBUTOR">Contributor</option>
                         <option value="_delete">Delete</option>
