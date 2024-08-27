@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           return false;
         }
 
-        await db.user.update({
+        await db.user.updateMany({
           where: {
             id: user.id,
           },
@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        await db.profile.update({
+        await db.profile.updateMany({
           where: {
             userId: user.id,
           },
