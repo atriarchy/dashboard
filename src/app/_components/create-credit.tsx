@@ -51,7 +51,7 @@ export function CreateCredit({
   refetch: () => void;
   track: string;
   access?: "ADMIN" | null;
-  me: "MANAGER" | "EDITOR" | "CONTRIBUTOR";
+  me: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
   id?: string;
   defaultType?: string;
   defaultValue?: string | null;
@@ -102,11 +102,16 @@ export function CreateCredit({
   });
 
   useEffect(() => {
-    if (!id && me === "CONTRIBUTOR" && trackQuery.data?.me.id) {
+    if (
+      !id &&
+      me === "CONTRIBUTOR" &&
+      access !== "ADMIN" &&
+      trackQuery.data?.me.id
+    ) {
       setUserType("COLLABORATOR");
       setUser(trackQuery.data.me.id);
     }
-  }, [id, me, trackQuery.data?.me.id]);
+  }, [access, id, me, trackQuery.data?.me.id]);
 
   return (
     <>
@@ -269,7 +274,9 @@ export function CreateCredit({
                                 <option value="COLLABORATOR">
                                   Collaborator
                                 </option>
-                                {me !== "CONTRIBUTOR" && (
+                                {(me === "MANAGER" ||
+                                  me === "EDITOR" ||
+                                  access === "ADMIN") && (
                                   <option value="MANUAL">Manual</option>
                                 )}
                               </select>

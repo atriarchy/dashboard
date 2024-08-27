@@ -44,7 +44,7 @@ export function Credits({
             <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
               Credits
             </h2>
-            {me !== "VIEWER" && (
+            {(me !== "VIEWER" || access === "ADMIN") && (
               <CreateCredit
                 refetch={() => credits.refetch()}
                 track={username}
