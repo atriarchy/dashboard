@@ -1,10 +1,13 @@
 "use client";
 
 import clsx from "clsx";
+import { type IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface BadgeProps {
   text: string;
   color: string;
+  icon?: IconDefinition;
   dark?: boolean;
   pill?: boolean;
   flat?: boolean;
@@ -13,6 +16,7 @@ interface BadgeProps {
 const Badge = ({
   text,
   color,
+  icon,
   dark = false,
   pill = false,
   flat = false,
@@ -30,7 +34,12 @@ const Badge = ({
     [`bg-${color}-100 text-${color}-700`]: flat,
   });
 
-  return <span className={clsx(baseClasses, colorClasses)}>{text}</span>;
+  return (
+    <span className={clsx(baseClasses, colorClasses)}>
+      {icon && <FontAwesomeIcon icon={icon} className="mr-1 text-xs" />}
+      {text}
+    </span>
+  );
 };
 
 export default Badge;
