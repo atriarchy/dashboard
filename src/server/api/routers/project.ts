@@ -124,6 +124,7 @@ export const projectRouter = createTRPCRouter({
           username: project.username,
         };
       }
+
       const { url, key } = await getUploadURL({
         file: {
           type: input.thumbnail.fileType,

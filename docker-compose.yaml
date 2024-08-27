@@ -25,6 +25,8 @@ services:
       MINIO_ROOT_USER: atriarchy_key
       MINIO_ROOT_PASSWORD: atriarchy_secret
       MINIO_DEFAULT_BUCKETS: atriarchy:download,documenso:download
+      MINIO_API_PORT_NUMBER: 9005
+      MINIO_CONSOLE_PORT_NUMBER: 9006
     volumes:
       - s3:/bitnami/minio/data
 
