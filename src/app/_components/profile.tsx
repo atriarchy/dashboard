@@ -16,6 +16,7 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
 import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
+import { set } from "zod";
 
 export type ProfileType = {
   id: string;
@@ -169,6 +170,7 @@ export function Profile({
         router.push("/dashboard");
       }
       setCurrentUsername(data.username);
+      setEdited(false);
     },
     onError: error => {
       toast.error(error.message);

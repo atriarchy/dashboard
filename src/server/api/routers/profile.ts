@@ -5,6 +5,7 @@ import {
 } from "@/server/api/trpc";
 import { z } from "zod";
 import { accessCheck, providersCheck } from "@/server/api/routers/access";
+import { env } from "@/env";
 
 export const profileRouter = createTRPCRouter({
   getPublicProfile: publicProcedure
@@ -23,6 +24,57 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
+      const tracks = await ctx.db.track.findMany({
+        where: {
+          credits: {
+            some: {
+              collaborator: {
+                user: {
+                  profile: {
+                    username: {
+                      equals: input.username,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          project: {
+            status: "RELEASED",
+          },
+        },
+        include: {
+          project: {
+            select: {
+              title: true,
+              thumbnail: true,
+            },
+          },
+          credits: {
+            include: {
+              collaborator: {
+                include: {
+                  user: {
+                    include: {
+                      profile: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          project: {
+            releasedAt: {
+              sort: "desc",
+              nulls: "last",
+            },
+          },
+        },
+      });
+
       if (!profile) {
         return null;
       }
@@ -36,6 +88,53 @@ export const profileRouter = createTRPCRouter({
           url: link.url,
         })),
         avatar: profile.user.image,
+        tracks: tracks.map(track => {
+          const credits = track.credits
+            .sort((a, b) => {
+              if (a.type === b.type) return 0;
+              if (a.type === "Vocalist") return -1;
+              if (b.type === "Vocalist") return 1;
+              if (a.type === "Producer") return -1;
+              if (b.type === "Producer") return 1;
+              return 0;
+            })
+            .map(credit =>
+              credit.collaborator
+                ? credit.collaborator.user?.profile
+                  ? credit.collaborator.user.profile.username !==
+                    profile.username
+                    ? {
+                        name: credit.collaborator.user.profile.name,
+                        username: credit.collaborator.user.profile.username,
+                      }
+                    : undefined
+                  : {
+                      name: credit.collaborator.discordUsername ?? "Unknown",
+                      username: null,
+                    }
+                : {
+                    name: credit.name ?? "Unknown",
+                    username: null,
+                  }
+            )
+            .filter(c => c !== undefined)
+            .slice(0, 4);
+
+          credits.unshift({
+            name: profile.name,
+            username: profile.username,
+          });
+
+          return {
+            title: track.title,
+            album: track.project.title,
+            thumbnail: track.project.thumbnail
+              ? `${env.FILE_STORAGE_CDN_URL}/${track.project.thumbnail.key}`
+              : undefined,
+            credits: credits,
+            creditsCount: track.credits.length,
+          };
+        }),
         canEdit: ctx.session?.user.id === profile.userId,
       };
     }),

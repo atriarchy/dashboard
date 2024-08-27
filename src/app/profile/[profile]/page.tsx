@@ -69,6 +69,8 @@ export default async function PublicProfile({
     }
   }
 
+  console.log(profile);
+
   return (
     <HydrateClient>
       <main className="min-h-dvh w-dvw overflow-y-auto bg-neutral-900 text-gray-200">
@@ -127,6 +129,52 @@ export default async function PublicProfile({
                           <FontAwesomeIcon icon={faYoutube} fixedWidth />
                         )}
                       </Link>
+                    ))}
+                  </div>
+                )}
+                {profile.tracks.length > 0 && (
+                  <div className="mt-4 flex max-w-screen-sm flex-col items-center justify-start gap-4 rounded-lg bg-neutral-950 px-8 py-4">
+                    {profile.tracks.map((track, index) => (
+                      <div
+                        key={index}
+                        className="flex w-full items-center justify-start gap-8"
+                      >
+                        <span className="text-md">{index + 1}</span>
+                        {track.thumbnail && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={track.thumbnail}
+                            alt=""
+                            className="h-16 w-16 rounded-lg"
+                          />
+                        )}
+                        <div className="flex flex-col items-start justify-start gap-1">
+                          <h2 className="text-lg font-bold">
+                            {track.title} (from {track.album})
+                          </h2>
+                          <p className="text-md text-gray-400">
+                            {track.credits.map((credit, index) => (
+                              <>
+                                {credit.username ? (
+                                  <Link
+                                    key={index}
+                                    href={`/@${credit.username}`}
+                                    className="hover:underline"
+                                  >
+                                    {credit.name}
+                                  </Link>
+                                ) : (
+                                  <span key={index}>{credit.name}</span>
+                                )}
+                                {index < track.credits.length - 1 && ", "}
+                              </>
+                            ))}
+                            {track.creditsCount > 5 && (
+                              <span>, and {track.creditsCount - 5} more</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}
