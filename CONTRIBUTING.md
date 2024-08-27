@@ -6,16 +6,13 @@ Hey there! Welcome to the Atriarchy Release Dashboard! Here's some things to kee
 
 If you're looking to work on an issue but have a question about it or are generally unsure about how to approach it, reach out in that specific issue and folks will be able to help.
 
-For general questions about the project unrelated to a specific issue, please start a [discussion](https://github.com/orgs/atriarchy/discussions) (or file an issue if you believe what you're asking is something actionable in code).
+For general questions about the project unrelated to a specific issue, please start a [discussion](https://github.com/atriarchy/dashboard/discussions) (or file an [issue](https://github.com/atriarchy/dashboard/issues/new/choose) if you believe what you're asking is something actionable in code).
 
 ## Development
 
 ### Dev Environment
 
-- To start a local dev environment, follow this [guide](https://github.com/alveusgg/alveusgg#development-setup).
-- To setup a production instance of the website, follow this [guide](https://github.com/alveusgg/alveusgg#production-deployment)
-- Overview of architecture, refer to [systems overview](https://github.com/alveusgg/alveusgg#systems-overview).
-- More detailed overview the architecture, refer to [#9](https://github.com/alveusgg/alveusgg/issues/9).
+- To start a local dev environment, follow this [guide](https://github.com/atriarchy/dashboard#development-setup)
 
 ### Commit Messages
 
