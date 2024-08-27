@@ -360,7 +360,9 @@ export const collaboratorRouter = createTRPCRouter({
             trackId: track.id,
             discordUserId: input.discord,
             discordUsername: data.username,
-            discordAvatar: data.avatar ?? null,
+            discordAvatar: data.avatar
+              ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${data.avatar.startsWith("a_") ? "gif" : "png"}`
+              : `https://cdn.discordapp.com/embed/avatars/${(parseInt(data.id) >> 22) % 6}.png`,
             role: input.role,
             acceptedInvite: input.skipInvite,
           },
