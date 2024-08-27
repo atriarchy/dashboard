@@ -48,9 +48,9 @@ export async function Sidebar({
   const profile = await api.profile.getProfile();
 
   return (
-    <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 p-4 shadow-inner">
+    <div className="flex h-full min-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 py-4 shadow-inner">
       {/* Logo at the top of the sidebar */}
-      <div className="mb-4 flex flex-col items-center justify-center">
+      <div className="mb-4 flex flex-col items-center justify-center px-4">
         <Image
           src={logo}
           alt="Logo"
@@ -59,8 +59,7 @@ export async function Sidebar({
           objectFit="contain"
         />
       </div>
-
-      <div className="flex h-full w-full flex-col items-center justify-start gap-2">
+      <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
         <BlockLink
           href="/dashboard/projects"
           className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
@@ -118,7 +117,7 @@ export async function Sidebar({
                   {track.title}
                 </span>
                 <BlockLink
-                  href={`/dashboard/projects/${project.username}/tracks/${track.username}/info`}
+                  href={`/dashboard/projects/${project.username}/tracks/${track.username}`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS_INFO"
                       ? "bg-violet-700"
@@ -166,20 +165,22 @@ export async function Sidebar({
           </>
         )}
       </div>
-      {access === "ADMIN" && <Access />}
-      <BlockLink
-        href="/dashboard/profile"
-        className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
-          selected === "PROFILE"
-            ? "bg-violet-700"
-            : "bg-gray-700 transition hover:bg-violet-500"
-        }`}
-      >
-        <FontAwesomeIcon icon={faCircleUser} fixedWidth />
-        <span>Profile</span>
-      </BlockLink>
+      <div className="mt-8 flex w-full flex-col items-center justify-start gap-2 px-4">
+        {access === "ADMIN" && <Access />}
+        <BlockLink
+          href="/dashboard/profile"
+          className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+            selected === "PROFILE"
+              ? "bg-violet-700"
+              : "bg-gray-700 transition hover:bg-violet-500"
+          }`}
+        >
+          <FontAwesomeIcon icon={faCircleUser} fixedWidth />
+          <span>Profile</span>
+        </BlockLink>
+      </div>
       {session?.user?.name && session?.user?.image && (
-        <div className="flex w-full items-center justify-between gap-2 pt-2">
+        <div className="flex w-full items-center justify-between gap-2 px-4 pt-2">
           {profile ? (
             <BlockLink
               href={`/@${profile.username}`}

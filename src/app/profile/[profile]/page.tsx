@@ -69,8 +69,6 @@ export default async function PublicProfile({
     }
   }
 
-  console.log(profile);
-
   return (
     <HydrateClient>
       <main className="min-h-dvh w-dvw overflow-y-auto bg-neutral-900 text-gray-200">
