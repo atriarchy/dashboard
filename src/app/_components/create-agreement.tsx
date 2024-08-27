@@ -124,13 +124,13 @@ export function CreateAgreement({
                             agreementUrl.pathname.split("/")[2] ?? "";
                         } catch {}
 
-                        if (!templateId || isNaN(Number(templateId))) {
+                        if (!templateId || isNaN(parseInt(templateId))) {
                           toast.error("Invalid template URL or ID");
                           return;
                         }
 
                         createAgreement.mutate({
-                          agreement: Number(templateId),
+                          agreement: parseInt(templateId),
                           project,
                           title,
                           description: description || undefined,

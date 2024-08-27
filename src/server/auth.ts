@@ -86,7 +86,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.DISCORD_CLIENT_SECRET,
       profile(profile: DiscordProfile) {
         if (profile.avatar === null) {
-          const defaultAvatarNumber = parseInt(profile.discriminator) % 5;
+          const defaultAvatarNumber = (parseInt(profile.id) >> 22) % 6;
           profile.image_url = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
         } else {
           const format = profile.avatar.startsWith("a_") ? "gif" : "png";
