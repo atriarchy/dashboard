@@ -23,6 +23,7 @@ export function CreateTrack({ project }: { project: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [explicit, setExplicit] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -57,6 +58,7 @@ export function CreateTrack({ project }: { project: string }) {
             setTitle("");
             setUsername("");
             setDescription("");
+            setExplicit(false);
             setAdvanced(false);
           }}
           initialFocus={initalFocusRef}
@@ -72,7 +74,6 @@ export function CreateTrack({ project }: { project: string }) {
           >
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
           </TransitionChild>
-
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
               <TransitionChild
@@ -95,6 +96,7 @@ export function CreateTrack({ project }: { project: string }) {
                         setTitle("");
                         setUsername("");
                         setDescription("");
+                        setExplicit(false);
                         setAdvanced(false);
                       }}
                       aria-label="Close"
@@ -118,6 +120,7 @@ export function CreateTrack({ project }: { project: string }) {
                             ? username || undefined
                             : undefined,
                           description: description || undefined,
+                          explicit: advanced ? explicit : false,
                         });
                       }}
                     >
@@ -174,15 +177,29 @@ export function CreateTrack({ project }: { project: string }) {
                         <span>Advanced</span>
                       </button>
                       {advanced && (
-                        <TextInput
-                          id="username"
-                          label="Slug"
-                          value={username}
-                          onChange={e => setUsername(e.target.value)}
-                          placeholder="Slug"
-                          maxLength={64}
-                          required
-                        />
+                        <>
+                          <TextInput
+                            id="username"
+                            label="Slug"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            placeholder="Slug"
+                            maxLength={64}
+                            required
+                          />
+                          <select
+                            id="explicit"
+                            name="Is this track explicit?"
+                            className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                            value={explicit ? "EXPLICIT" : "CLEAN"}
+                            onChange={e =>
+                              setExplicit(e.target.value === "EXPLICIT")
+                            }
+                          >
+                            <option value="CLEAN">Clean</option>
+                            <option value="EXPLICIT">Explicit</option>
+                          </select>
+                        </>
                       )}
                     </form>
                     <div className="flex items-center justify-between gap-2">
@@ -195,6 +212,7 @@ export function CreateTrack({ project }: { project: string }) {
                           setTitle("");
                           setUsername("");
                           setDescription("");
+                          setExplicit(false);
                           setAdvanced(false);
                         }}
                       >

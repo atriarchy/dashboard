@@ -50,6 +50,7 @@ export const trackRouter = createTRPCRouter({
         username: z.string().min(1).max(64).optional(),
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
+        explicit: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -239,6 +240,7 @@ export const trackRouter = createTRPCRouter({
           discordChannelId: discordChannelId,
           musicStatus: "IDEA",
           visualStatus: "SEARCHING",
+          explicit: input.explicit,
         },
       });
 
@@ -393,6 +395,7 @@ export const trackRouter = createTRPCRouter({
         username: track.username,
         title: track.title,
         description: track.description,
+        explicit: track.explicit,
         musicStatus: track.musicStatus,
         visualStatus: track.visualStatus,
         project: {
@@ -408,5 +411,81 @@ export const trackRouter = createTRPCRouter({
         },
         manager: manager,
       };
+    }),
+
+  updateTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(64),
+        title: z.string().min(1).max(64),
+        description: z.string().min(1).max(1024).optional(),
+        explicit: z.boolean(),
+        musicStatus: z.enum([
+          "IDEA",
+          "DEMO",
+          "WRITING",
+          "PRODUCTION",
+          "RECORDING",
+          "MIX_MASTER",
+          "ABANDONED",
+          "FINISHED",
+        ]),
+        visualStatus: z.enum([
+          "SEARCHING",
+          "CONCEPT",
+          "WORKING",
+          "POLISHING",
+          "ABANDONED",
+          "FINISHED",
+        ]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Track not found.");
+      }
+
+      const newData = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          title: input.title,
+          description: input.description,
+          musicStatus: input.musicStatus,
+          visualStatus: input.visualStatus,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: track,
+          value: newData,
+        },
+      });
     }),
 });

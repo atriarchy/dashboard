@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 
@@ -43,4 +47,13 @@ export async function getUploadURL(options: Options) {
   );
 
   return { url, key };
+}
+
+export async function deleteObject(key: string) {
+  await s3.send(
+    new DeleteObjectCommand({
+      Bucket: env.FILE_STORAGE_BUCKET,
+      Key: key,
+    })
+  );
 }

@@ -156,15 +156,26 @@ model Track {
     projectId        String
     title            String
     description      String?
+    explicit         Boolean             @default(false)
     discordChannelId String?             @unique
     collaborators    TrackCollaborator[]
     credits          TrackCredit[]
     musicStatus      TrackMusicStatus
     visualStatus     TrackVisualStatus
     type             TrackType           @default(ORIGINAL)
+    song             TrackSong?
     auditLogs        TrackAuditLog[]
     createdAt        DateTime            @default(now())
     updatedAt        DateTime            @default(now()) @updatedAt
+}
+
+model TrackSong {
+    id      String @id @default(cuid())
+    track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId String @unique
+    user    User   @relation(fields: [userId], references: [id])
+    userId  String
+    key     String
 }
 
 model TrackCollaborator {
@@ -279,6 +290,7 @@ model User {
     trackCollaborators   TrackCollaborator[]
     trackAuditLogs       TrackAuditLog[]     @relation("User")
     trackAuditLogsTarget TrackAuditLog[]     @relation("TargetUser")
+    trackSongs           TrackSong[]
 }
 
 model VerificationToken {

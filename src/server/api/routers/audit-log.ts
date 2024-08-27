@@ -96,8 +96,63 @@ export const auditLogRouter = createTRPCRouter({
           }
 
           if (auditLog.action === "UPDATE_TRACK") {
-            // TODO
-            return null;
+            const value = auditLog.value
+              ? (auditLog.value as {
+                  title?: string;
+                  description?: string;
+                  musicStatus?: string;
+                  visualStatus?: string;
+                })
+              : undefined;
+
+            const oldValue = auditLog.oldValue
+              ? (auditLog.oldValue as {
+                  title?: string;
+                  description?: string;
+                  musicStatus?: string;
+                  visualStatus?: string;
+                })
+              : undefined;
+
+            const details = [];
+
+            if (oldValue && value) {
+              if (oldValue.title !== value.title) {
+                details.push(
+                  `Changed title from ${
+                    oldValue.title ? `"${oldValue.title}"` : "empty"
+                  } to ${value.title ? `"${value.title}"` : "empty"}`
+                );
+              }
+
+              if (oldValue.description !== value.description) {
+                details.push(
+                  `Changed description from "${
+                    oldValue.description ? `"${oldValue.description}` : "empty"
+                  }" to "${value.description ? `"${value.description}` : "empty"}"`
+                );
+              }
+
+              if (oldValue.musicStatus !== value.musicStatus) {
+                details.push(
+                  `Changed music status from "${
+                    oldValue.musicStatus
+                      ? `"${humanize(oldValue.musicStatus)}"`
+                      : "empty"
+                  }" to "${value.musicStatus ? `"${humanize(value.musicStatus)}"` : "empty"}"`
+                );
+              }
+
+              if (oldValue.visualStatus !== value.visualStatus) {
+                details.push(
+                  `Changed visual status from "${
+                    oldValue.visualStatus
+                      ? `"${humanize(oldValue.visualStatus)}"`
+                      : "empty"
+                  }" to "${value.visualStatus ? `"${humanize(value.visualStatus)}"` : "empty"}"`
+                );
+              }
+            }
           }
 
           if (auditLog.action === "CREATE_COLLABORATOR") {
