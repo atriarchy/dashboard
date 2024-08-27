@@ -6,7 +6,7 @@ import { getPublicUrl } from "@/utils/url";
 import { slugify } from "@/utils/string";
 
 export const trackRouter = createTRPCRouter({
-  getMyTracks: protectedProcedure
+  getTracks: protectedProcedure
     .input(
       z.object({
         project: z.string().min(1).max(64),
@@ -40,6 +40,7 @@ export const trackRouter = createTRPCRouter({
         description: track.description,
         musicStatus: track.musicStatus,
         visualStatus: track.visualStatus,
+        explicit: track.explicit,
       }));
     }),
 

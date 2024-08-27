@@ -170,9 +170,17 @@ export const projectRouter = createTRPCRouter({
           access !== "ADMIN"
             ? { status: { in: ["ACTIVE", "CLOSED", "RELEASED"] } }
             : undefined,
-        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+        orderBy: [
+          { deadline: "asc" }, // Sort by nearest deadline first
+          { updatedAt: "desc" }, // Sort by most recently modified
+        ],
         include: {
           thumbnail: true,
+          _count: {
+            select: {
+              tracks: true,
+            },
+          },
         },
       });
 
@@ -193,6 +201,7 @@ export const projectRouter = createTRPCRouter({
           thumbnail: project.thumbnail
             ? `${env.FILE_STORAGE_CDN_URL}/${project.thumbnail.key}`
             : undefined,
+          trackCount: project._count.tracks,
         })),
       };
     }),
