@@ -71,7 +71,7 @@ export default async function PublicProfile({
 
   return (
     <HydrateClient>
-      <main className="min-h-dvh w-dvw overflow-y-auto bg-neutral-900 text-gray-200">
+      <main className="min-h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="mx-auto flex min-h-dvh w-full max-w-screen-lg flex-col items-center justify-between gap-4 p-4">
           {profile ? (
             <>
@@ -137,7 +137,7 @@ export default async function PublicProfile({
                         key={index}
                         className="flex w-full items-center justify-start gap-4"
                       >
-                        <span className="text-md w-8 text-center">
+                        <span className="text-md min-w-8 text-center">
                           {index + 1}
                         </span>
                         {track.thumbnail && (
@@ -182,7 +182,7 @@ export default async function PublicProfile({
               {profile.canEdit ? (
                 <Link
                   href="/dashboard/profile"
-                  className="flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
+                  className="sticky bottom-4 flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
                 >
                   <FontAwesomeIcon icon={faUserPen} fixedWidth />
                   <span>Edit</span>
@@ -191,7 +191,7 @@ export default async function PublicProfile({
                 isAdmin && (
                   <Link
                     href={`/dashboard/profile/${profile.username}`}
-                    className="flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
+                    className="sticky bottom-4 flex items-center justify-center gap-2 rounded-full bg-gray-700 px-4 py-2 font-semibold transition hover:bg-violet-500"
                   >
                     <FontAwesomeIcon icon={faUserPen} fixedWidth />
                     <span>Edit as Admin</span>
