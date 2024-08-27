@@ -180,26 +180,26 @@ export function CreateCollaborator({
                           : "Search"}
                       </button>
                     </form>
+                    {access === "ADMIN" && (
+                      <div className="flex w-full items-center justify-start gap-2">
+                        <input
+                          id="skipInvite"
+                          type="checkbox"
+                          checked={skipInvite}
+                          onChange={e => setSkipInvite(e.target.checked)}
+                        />
+                        <label
+                          htmlFor="skipInvite"
+                          className="text-md w-full font-semibold"
+                        >
+                          Skip Invite (Admin)
+                        </label>
+                      </div>
+                    )}
                     {results &&
                       (results.atriarchy.length > 0 ||
                       results.discord.length > 0 ? (
                         <div className="mt-2 flex w-full flex-col items-center justify-start gap-2">
-                          {access === "ADMIN" && (
-                            <div className="flex w-full items-center justify-start gap-2">
-                              <input
-                                id="skipInvite"
-                                type="checkbox"
-                                checked={skipInvite}
-                                onChange={e => setSkipInvite(e.target.checked)}
-                              />
-                              <label
-                                htmlFor="skipInvite"
-                                className="text-md w-full font-semibold"
-                              >
-                                Skip Invite (Admin)
-                              </label>
-                            </div>
-                          )}
                           {results?.atriarchy.map(user => (
                             <div
                               key={user.username}
