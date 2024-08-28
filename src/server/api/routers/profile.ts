@@ -144,12 +144,12 @@ export const profileRouter = createTRPCRouter({
               )
               .filter(
                 (c, i, a) =>
-                  c !== undefined &&
                   i ===
-                    a.findIndex(
-                      f => f?.name === c.name && f?.username === c.username
-                    )
+                  a.findIndex(
+                    f => f?.name === c?.name && f?.username === c?.username
+                  )
               )
+              .filter(c => c !== undefined)
               .slice(0, 4);
 
             credits.unshift({
