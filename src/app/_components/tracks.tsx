@@ -109,7 +109,7 @@ export function Tracks({
                                 key={i}
                                 alt={collaborator.username ?? "Collaborator"}
                                 src={collaborator.avatar}
-                                className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800 transition group-hover:ring-neutral-700`}
+                                className={`relative inline-block h-6 w-6 rounded-full bg-neutral-800 ring-2 ring-neutral-800 transition group-hover:bg-neutral-700 group-hover:ring-neutral-700`}
                                 style={{
                                   zIndex: track.collaborators.length - i,
                                 }}
