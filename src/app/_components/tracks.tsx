@@ -45,7 +45,7 @@ export function Tracks({ project }: { project: string }) {
             </h2>
             <CreateTrack project={project} />
           </div>
-          <div className="grid w-full grid-cols-3 gap-2">
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
             {tracks.data?.map((track, index) => (
               <Fragment key={index}>
                 <Link

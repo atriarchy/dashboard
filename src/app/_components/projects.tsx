@@ -33,7 +33,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
             </h1>
             {access === "ADMIN" && <ProjectForm />}
           </div>
-          <div className="grid w-full grid-cols-3 gap-2">
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
             {projects.data?.pages.map((group, i) => (
               <Fragment key={i}>
                 {group?.data.map(project => (
