@@ -49,12 +49,13 @@ export const collaboratorRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
       if (
-        (manager.user.id !== ctx.session.user.id && access !== "ADMIN") ||
+        ((!manager.user || manager.user.id !== ctx.session.user.id) &&
+          access !== "ADMIN") ||
         (input.skipInvite && access !== "ADMIN")
       ) {
         throw new Error("Unauthorized.");
@@ -149,16 +150,24 @@ export const collaboratorRouter = createTRPCRouter({
 
           const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-          if (!manager?.user?.profile || !manager.userId) {
+          if (!manager) {
             throw new Error("Manager not found.");
           }
 
-          const managerDiscordProvider = await ctx.db.account.findFirst({
-            where: {
-              userId: manager.userId,
-              provider: "discord",
-            },
-          });
+          const managerDiscordProvider = manager.userId
+            ? (
+                await ctx.db.account.findFirst({
+                  where: {
+                    userId: manager.userId,
+                    provider: "discord",
+                  },
+                })
+              )?.providerAccountId
+            : manager.discordUserId;
+
+          if (!managerDiscordProvider) {
+            throw new Error("Manager Discord ID not found.");
+          }
 
           const messageRequest = await fetch(
             "https://discord.com/api/v10/channels/" +
@@ -181,7 +190,9 @@ export const collaboratorRouter = createTRPCRouter({
                     fields: [
                       {
                         name: "Track Manager",
-                        value: `[${manager.user.profile.name} \(@${manager.user.profile.username}\)](${getPublicUrl()}/@${manager.user.profile.username})\n<@${managerDiscordProvider?.providerAccountId}>`,
+                        value: manager.user?.profile
+                          ? `[${manager.user.profile.name} \(@${manager.user.profile.username}\)](${getPublicUrl()}/@${manager.user.profile.username})\n<@${managerDiscordProvider}>`
+                          : `<@${managerDiscordProvider}>`,
                         inline: true,
                       },
                       {
@@ -449,11 +460,14 @@ export const collaboratorRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
-      if (manager.user.id !== ctx.session.user.id && access !== "ADMIN") {
+      if (
+        (!manager.user || manager.user.id !== ctx.session.user.id) &&
+        access !== "ADMIN"
+      ) {
         throw new Error("Unauthorized.");
       }
 
@@ -501,22 +515,41 @@ export const collaboratorRouter = createTRPCRouter({
               },
             });
 
-            let managerTargetId = manager.userId;
-
-            if (!managerTargetId) {
-              managerTargetId = manager.discordUserId;
+            if (manager.userId) {
+              await ctx.db.trackAuditLog.create({
+                data: {
+                  trackId: track.id,
+                  userId: ctx.session.user.id,
+                  targetUserId: manager.userId,
+                  action: "UPDATE_COLLABORATOR",
+                  value: updatedManager,
+                  oldValue: manager,
+                },
+              });
+            } else if (manager.discordUserId) {
+              await ctx.db.trackAuditLog.create({
+                data: {
+                  trackId: track.id,
+                  userId: ctx.session.user.id,
+                  targetDiscordUserId: manager.discordUserId,
+                  targetDiscordUsername: manager.discordUsername,
+                  targetDiscordAvatar: manager.discordAvatar,
+                  action: "UPDATE_COLLABORATOR",
+                  value: updatedManager,
+                  oldValue: manager,
+                },
+              });
+            } else {
+              await ctx.db.trackAuditLog.create({
+                data: {
+                  trackId: track.id,
+                  userId: ctx.session.user.id,
+                  action: "UPDATE_COLLABORATOR",
+                  value: updatedManager,
+                  oldValue: manager,
+                },
+              });
             }
-
-            await ctx.db.trackAuditLog.create({
-              data: {
-                trackId: track.id,
-                userId: ctx.session.user.id,
-                targetUserId: managerTargetId,
-                action: "UPDATE_COLLABORATOR",
-                value: updatedManager,
-                oldValue: manager,
-              },
-            });
           }
 
           await ctx.db.trackAuditLog.create({
@@ -563,22 +596,41 @@ export const collaboratorRouter = createTRPCRouter({
             },
           });
 
-          let managerTargetId = manager.userId;
-
-          if (!managerTargetId) {
-            managerTargetId = manager.discordUserId;
+          if (manager.userId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetUserId: manager.userId,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
+          } else if (manager.discordUserId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetDiscordUserId: manager.discordUserId,
+                targetDiscordUsername: manager.discordUsername,
+                targetDiscordAvatar: manager.discordAvatar,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
+          } else {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
           }
-
-          await ctx.db.trackAuditLog.create({
-            data: {
-              trackId: track.id,
-              userId: ctx.session.user.id,
-              targetUserId: managerTargetId,
-              action: "UPDATE_COLLABORATOR",
-              value: updatedManager,
-              oldValue: manager,
-            },
-          });
         }
 
         await ctx.db.trackAuditLog.create({
@@ -644,22 +696,41 @@ export const collaboratorRouter = createTRPCRouter({
             },
           });
 
-          let managerTargetId = manager.userId;
-
-          if (!managerTargetId) {
-            managerTargetId = manager.discordUserId;
+          if (manager.userId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetUserId: manager.userId,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
+          } else if (manager.discordUserId) {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                targetDiscordUserId: manager.discordUserId,
+                targetDiscordUsername: manager.discordUsername,
+                targetDiscordAvatar: manager.discordAvatar,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
+          } else {
+            await ctx.db.trackAuditLog.create({
+              data: {
+                trackId: track.id,
+                userId: ctx.session.user.id,
+                action: "UPDATE_COLLABORATOR",
+                value: updatedManager,
+                oldValue: manager,
+              },
+            });
           }
-
-          await ctx.db.trackAuditLog.create({
-            data: {
-              trackId: track.id,
-              userId: ctx.session.user.id,
-              targetUserId: managerTargetId,
-              action: "UPDATE_COLLABORATOR",
-              value: updatedManager,
-              oldValue: manager,
-            },
-          });
         }
 
         await ctx.db.trackAuditLog.create({
@@ -721,11 +792,14 @@ export const collaboratorRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
-      if (manager.user.id !== ctx.session.user.id && access !== "ADMIN") {
+      if (
+        (!manager.user || manager.user.id !== ctx.session.user.id) &&
+        access !== "ADMIN"
+      ) {
         throw new Error("Unauthorized.");
       }
 
