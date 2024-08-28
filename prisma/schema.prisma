@@ -158,6 +158,7 @@ model Track {
     description      String?
     explicit         Boolean             @default(false)
     discordChannelId String?             @unique
+    order            Int?
     collaborators    TrackCollaborator[]
     credits          TrackCredit[]
     musicStatus      TrackMusicStatus
