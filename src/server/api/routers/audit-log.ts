@@ -153,6 +153,14 @@ export const auditLogRouter = createTRPCRouter({
                 );
               }
             }
+
+            return {
+              id: auditLog.id,
+              action: auditLog.action,
+              title: user ? `Track updated by ${user}` : "Track updated",
+              date: auditLog.createdAt,
+              details: details,
+            };
           }
 
           if (auditLog.action === "CREATE_COLLABORATOR") {
@@ -317,6 +325,15 @@ export const auditLogRouter = createTRPCRouter({
               id: auditLog.id,
               action: auditLog.action,
               title: `Removed credit for ${targetUser ?? oldValue?.name ?? "someone"}`,
+              date: auditLog.createdAt,
+            };
+          }
+
+          if (auditLog.action === "UPLOAD_SONG") {
+            return {
+              id: auditLog.id,
+              action: auditLog.action,
+              title: user ? `Song uploaded by ${user}` : "Song uploaded",
               date: auditLog.createdAt,
             };
           }

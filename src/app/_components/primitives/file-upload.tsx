@@ -82,7 +82,7 @@ const FileUpload = ({
       >
         {fileUrl && (
           <div
-            className={`pointer-events-noneflex items-center justify-center ${direction === "row" ? "h-32 w-32" : "h-16 w-full"}`}
+            className={`flex items-center justify-center ${direction === "row" ? "h-32 w-32" : "h-16 w-full"}`}
           >
             {preview(fileUrl)}
           </div>
