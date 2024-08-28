@@ -80,34 +80,32 @@ export function Credits({
                     <p className="text-sm">{credit.value}</p>
                   </div>
                 </div>
-                {(access === "ADMIN" ||
-                  me === "MANAGER" ||
-                  me === "EDITOR" ||
-                  credit.me) &&
-                  me !== "VIEWER" && (
-                    <div className="flex items-center justify-start gap-2">
-                      <CreateCredit
-                        id={credit.id}
-                        refetch={() => credits.refetch()}
-                        track={username}
-                        access={access}
-                        me={me}
-                        defaultType={credit.type}
-                        defaultValue={credit.value}
-                      />
-                      <button
-                        onClick={() =>
-                          deleteCredit.mutate({
-                            id: credit.id,
-                          })
-                        }
-                        className="w-fit rounded-lg bg-red-500 p-2 transition hover:bg-red-500/50 disabled:bg-red-500/50"
-                        disabled={deleteCredit.isPending}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                {access === "ADMIN" ||
+                  ((me === "MANAGER" || me === "EDITOR" || credit.me) &&
+                    me !== "VIEWER" && (
+                      <div className="flex items-center justify-start gap-2">
+                        <CreateCredit
+                          id={credit.id}
+                          refetch={() => credits.refetch()}
+                          track={username}
+                          access={access}
+                          me={me}
+                          defaultType={credit.type}
+                          defaultValue={credit.value}
+                        />
+                        <button
+                          onClick={() =>
+                            deleteCredit.mutate({
+                              id: credit.id,
+                            })
+                          }
+                          className="w-fit rounded-lg bg-red-500 p-2 transition hover:bg-red-500/50 disabled:bg-red-500/50"
+                          disabled={deleteCredit.isPending}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
               </div>
             ))}
           </div>
