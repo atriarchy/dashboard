@@ -46,14 +46,25 @@ export function Tracks({ project }: { project: string }) {
             <CreateTrack project={project} />
           </div>
           <div className="grid w-full grid-cols-3 gap-2">
-            {tracks.data?.map((track, i) => (
-              <Fragment key={i}>
+            {tracks.data?.map((track, index) => (
+              <Fragment key={index}>
                 <Link
                   href={`/dashboard/projects/${project}/tracks/${track.username}`}
                   key={track.username}
                   className="flex w-full break-words rounded-lg bg-neutral-800 transition-colors hover:bg-neutral-700 disabled:bg-neutral-800/50"
                 >
-                  <div className="flex flex-1 items-center justify-between truncate rounded-lg px-4 py-2">
+                  {track.order && (
+                    <div className="flex w-8 flex-shrink-0 items-center justify-center rounded-l-lg bg-neutral-700">
+                      <span className="text-lg font-bold text-neutral-100">
+                        {track.order}
+                      </span>
+                    </div>
+                  )}
+                  <div
+                    className={`flex flex-1 items-center justify-between truncate ${
+                      track.order ? "rounded-r-lg border-l" : "rounded-lg"
+                    } border-neutral-700 px-4 py-2`}
+                  >
                     <div className="flex-1 truncate text-sm">
                       <span className="font-medium text-neutral-100">
                         {track.title}
@@ -78,6 +89,19 @@ export function Tracks({ project }: { project: string }) {
                           icon={faPaintbrush}
                           dark
                         />
+                      </div>
+                      <div className="isolate mt-2 flex -space-x-1 overflow-hidden">
+                        {track.collaborators?.map((collaborator, i) =>
+                          collaborator?.avatar ? (
+                            <img
+                              key={i}
+                              alt={collaborator.username || "Collaborator"}
+                              src={collaborator.avatar}
+                              className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800`}
+                              style={{ zIndex: track.collaborators.length - i }}
+                            />
+                          ) : null
+                        )}
                       </div>
                     </div>
                   </div>

@@ -35,19 +35,58 @@ export const trackRouter = createTRPCRouter({
         where: {
           projectId: project.id,
         },
+        include: {
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
         orderBy: {
           order: "asc",
         },
       });
 
-      return tracks.map(track => ({
-        username: track.username,
-        title: track.title,
-        description: track.description,
-        musicStatus: track.musicStatus,
-        visualStatus: track.visualStatus,
-        explicit: track.explicit,
-      }));
+      return tracks.map(track => {
+        const collaborators = track.collaborators
+          .map(collaborator => {
+            if (collaborator.user?.profile) {
+              return {
+                type: "ATRIARCHY",
+                username: collaborator.user.profile.username,
+                avatar: collaborator.user.image,
+              };
+            }
+
+            if (collaborator.discordUserId) {
+              return {
+                type: "DISCORD",
+                discord: {
+                  username: collaborator.discordUsername,
+                  avatar: collaborator.discordAvatar,
+                },
+              };
+            }
+
+            return null;
+          })
+          .filter(c => c !== null);
+
+        return {
+          username: track.username,
+          title: track.title,
+          description: track.description,
+          musicStatus: track.musicStatus,
+          visualStatus: track.visualStatus,
+          explicit: track.explicit,
+          collaborators: collaborators,
+          order: track.order,
+        };
+      });
     }),
 
   createTrack: protectedProcedure
