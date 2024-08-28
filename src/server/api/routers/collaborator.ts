@@ -478,7 +478,11 @@ export const collaboratorRouter = createTRPCRouter({
             },
           });
 
-          if (!check || check.role === "MANAGER") {
+          if (
+            !check ||
+            check.role === "MANAGER" ||
+            (!check.acceptedInvite && input.role === "MANAGER")
+          ) {
             throw new Error("User is not a collaborator.");
           }
 
@@ -540,7 +544,11 @@ export const collaboratorRouter = createTRPCRouter({
           },
         });
 
-        if (!check || check.role === "MANAGER") {
+        if (
+          !check ||
+          check.role === "MANAGER" ||
+          (!check.acceptedInvite && input.role === "MANAGER")
+        ) {
           throw new Error("User is not a collaborator.");
         }
 
@@ -621,7 +629,11 @@ export const collaboratorRouter = createTRPCRouter({
           },
         });
 
-        if (!check || check.role === "MANAGER") {
+        if (
+          !check ||
+          check.role === "MANAGER" ||
+          (!check.acceptedInvite && input.role === "MANAGER")
+        ) {
           throw new Error("User is not a collaborator.");
         }
 
