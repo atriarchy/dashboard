@@ -79,6 +79,19 @@ export function Tracks({ project }: { project: string }) {
                           dark
                         />
                       </div>
+                      <div className="mt-2 flex -space-x-1 overflow-hidden">
+                        {track.collaborators?.map(
+                          (collaborator, i) =>
+                            collaborator.avatar && (
+                              <img
+                                key={i}
+                                alt=""
+                                src={collaborator.avatar}
+                                className="inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800"
+                              />
+                            )
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Link>
