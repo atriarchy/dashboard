@@ -174,13 +174,13 @@ export function Collaborators({
                       )}
                       <select
                         onChange={event => {
-                          const tragetValue = event.target.value as
+                          const targetValue = event.target.value as
                             | "CONTRIBUTOR"
                             | "EDITOR"
                             | "_manager"
                             | "_delete";
 
-                          if (tragetValue === "_delete") {
+                          if (targetValue=== "_delete") {
                             deleteCollaborator.mutate({
                               username:
                                 collaborator.discord.username ?? undefined,
