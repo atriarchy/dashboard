@@ -84,6 +84,7 @@ export const trackRouter = createTRPCRouter({
           visualStatus: track.visualStatus,
           explicit: track.explicit,
           collaborators: collaborators,
+          order: track.order,
         };
       });
     }),
