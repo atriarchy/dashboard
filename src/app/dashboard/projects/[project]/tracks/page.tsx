@@ -24,9 +24,12 @@ export default async function TracksPage({
   }
 
   const project = await api.project.getProject({ username: params.project });
+
   if (!project) {
     return redirect(`/dashboard/projects/${params.project}`);
   }
+
+  const access = await api.access.getAccess();
 
   return (
     <HydrateClient>
@@ -63,7 +66,7 @@ export default async function TracksPage({
                 <p className="text-lg">{project.description}</p>
               )}
             </div>
-            <Tracks project={params.project} />
+            <Tracks project={params.project} access={access} />
           </div>
         </div>
       </main>
