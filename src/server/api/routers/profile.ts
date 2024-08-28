@@ -230,7 +230,11 @@ export const profileRouter = createTRPCRouter({
   updateProfile: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
         name: z.string().min(1).max(64),
         bio: z.string().min(1).max(1024).optional(),
         legalName: z.string().min(1).max(256).optional(),

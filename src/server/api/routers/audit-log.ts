@@ -7,7 +7,11 @@ export const auditLogRouter = createTRPCRouter({
   getTrackAuditLogs: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
         cursor: z.string().optional(),
       })
     )

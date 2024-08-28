@@ -72,6 +72,7 @@ const Combobox = ({ items, label }: ComboboxProps) => {
               >
                 <div className="flex items-center">
                   {item.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={item.imageUrl}
                       alt=""

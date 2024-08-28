@@ -153,7 +153,7 @@ export function EditTrack({
                         });
                       }}
                     >
-                      {currentMusicStatus === "FINISHED" && (
+                      {musicStatus === "FINISHED" && (
                         <div className="flex w-full items-center justify-start gap-4 rounded-lg bg-yellow-300 p-4 text-black">
                           <FontAwesomeIcon
                             icon={faWarning}
