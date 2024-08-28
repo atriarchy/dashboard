@@ -45,13 +45,13 @@ export function Tracks({ project }: { project: string }) {
             </h2>
             <CreateTrack project={project} />
           </div>
-          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid w-full grid-cols-3 gap-2">
             {tracks.data?.map((track, index) => (
               <Fragment key={index}>
                 <Link
                   href={`/dashboard/projects/${project}/tracks/${track.username}`}
                   key={track.username}
-                  className="flex w-full break-words rounded-lg bg-neutral-800 transition-colors hover:bg-neutral-700 disabled:bg-neutral-800/50"
+                  className="group flex w-full break-words rounded-lg bg-neutral-800 transition hover:bg-neutral-700"
                 >
                   {track.order && (
                     <div className="flex w-8 flex-shrink-0 items-center justify-center rounded-l-lg bg-neutral-700">
@@ -93,11 +93,12 @@ export function Tracks({ project }: { project: string }) {
                       <div className="isolate mt-2 flex -space-x-1 overflow-hidden">
                         {track.collaborators?.map((collaborator, i) =>
                           collaborator?.avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               key={i}
-                              alt={collaborator.username || "Collaborator"}
+                              alt={collaborator.username ?? "Collaborator"}
                               src={collaborator.avatar}
-                              className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800`}
+                              className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800 transition group-hover:ring-neutral-700`}
                               style={{ zIndex: track.collaborators.length - i }}
                             />
                           ) : null

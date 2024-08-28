@@ -12,7 +12,11 @@ export const trackRouter = createTRPCRouter({
   getTracks: protectedProcedure
     .input(
       z.object({
-        project: z.string().min(1).max(64),
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -90,8 +94,17 @@ export const trackRouter = createTRPCRouter({
   createTrack: protectedProcedure
     .input(
       z.object({
-        project: z.string().min(1).max(64),
-        username: z.string().min(1).max(64).optional(),
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/)
+          .optional(),
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         explicit: z.boolean(),
@@ -338,7 +351,11 @@ export const trackRouter = createTRPCRouter({
   getTrack: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -465,7 +482,11 @@ export const trackRouter = createTRPCRouter({
   updateTrack: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         explicit: z.boolean(),
@@ -564,7 +585,11 @@ export const trackRouter = createTRPCRouter({
   getMaxSongFileSize: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -615,7 +640,11 @@ export const trackRouter = createTRPCRouter({
   updateSong: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
         explicit: z.boolean(),
         song: z.object({
           fileType: z.string(),

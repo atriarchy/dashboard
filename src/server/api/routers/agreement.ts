@@ -8,7 +8,11 @@ export const agreementRouter = createTRPCRouter({
   createAgreement: protectedProcedure
     .input(
       z.object({
-        project: z.string().min(1).max(64),
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         agreement: z.number(),
@@ -91,7 +95,11 @@ export const agreementRouter = createTRPCRouter({
   getAgreements: protectedProcedure
     .input(
       z.object({
-        project: z.string().min(1).max(64),
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
       })
     )
     .query(async ({ ctx, input }) => {

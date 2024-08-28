@@ -121,7 +121,7 @@ export function Collaborators({
                           });
                         }}
                         value={collaborator.role}
-                        className="rounded-full bg-gray-700"
+                        className="rounded-full bg-gray-700 p-2"
                         disabled={
                           updateCollaborator.isPending ||
                           deleteCollaborator.isPending ||
@@ -210,7 +210,7 @@ export function Collaborators({
                             access !== "ADMIN")
                         }
                       >
-                        <option value="MANAGER" disabled>
+                        <option value="MANAGER" disabled hidden>
                           Manager
                         </option>
                         <option value="_manager">Transfer Manager</option>

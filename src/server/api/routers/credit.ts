@@ -6,7 +6,11 @@ export const creditRouter = createTRPCRouter({
   getTrackCredits: protectedProcedure
     .input(
       z.object({
-        username: z.string().min(1).max(64),
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -100,13 +104,21 @@ export const creditRouter = createTRPCRouter({
         }),
         z.object({
           collaborator: z.string(),
-          track: z.string().min(1).max(64),
+          track: z
+            .string()
+            .min(1)
+            .max(64)
+            .regex(/^[a-z0-9-]+$/),
           type: z.string().min(1).max(128),
           value: z.string().min(1).max(1024).optional(),
         }),
         z.object({
           manual: z.string(),
-          track: z.string().min(1).max(64),
+          track: z
+            .string()
+            .min(1)
+            .max(64)
+            .regex(/^[a-z0-9-]+$/),
           type: z.string().min(1).max(128),
           value: z.string().min(1).max(1024).optional(),
         }),
