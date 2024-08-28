@@ -139,17 +139,6 @@ export async function Sidebar({
                   <span>Collaborators</span>
                 </BlockLink>
                 <BlockLink
-                  href={`/dashboard/projects/${project.username}/tracks/${track.username}/logs`}
-                  className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
-                    selected === "PROJECTS_TRACKS_LOGS"
-                      ? "bg-violet-700"
-                      : "bg-gray-700 transition hover:bg-violet-500"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faList} fixedWidth />
-                  <span>Audit Logs</span>
-                </BlockLink>
-                <BlockLink
                   href={`/dashboard/projects/${project.username}/tracks/${track.username}/credits`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS_CREDITS"
@@ -159,6 +148,17 @@ export async function Sidebar({
                 >
                   <FontAwesomeIcon icon={faUserPen} fixedWidth />
                   <span>Credits</span>
+                </BlockLink>
+                <BlockLink
+                  href={`/dashboard/projects/${project.username}/tracks/${track.username}/logs`}
+                  className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+                    selected === "PROJECTS_TRACKS_LOGS"
+                      ? "bg-violet-700"
+                      : "bg-gray-700 transition hover:bg-violet-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faList} fixedWidth />
+                  <span>Audit Logs</span>
                 </BlockLink>
               </div>
             )}

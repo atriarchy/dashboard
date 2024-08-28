@@ -121,7 +121,7 @@ export function Collaborators({
                           });
                         }}
                         value={collaborator.role}
-                        className="rounded-full bg-gray-700 p-2"
+                        className="rounded-full bg-gray-700"
                         disabled={
                           updateCollaborator.isPending ||
                           deleteCollaborator.isPending ||
