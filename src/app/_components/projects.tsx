@@ -44,6 +44,7 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
                   >
                     {project.thumbnail && (
                       <div className="flex-shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={project.thumbnail}
                           alt={project.title}

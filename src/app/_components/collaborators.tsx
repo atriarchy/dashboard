@@ -96,13 +96,13 @@ export function Collaborators({
 
                       <select
                         onChange={event => {
-                          const tragetValue = event.target.value as
+                          const targetValue = event.target.value as
                             | "CONTRIBUTOR"
                             | "EDITOR"
                             | "_manager"
                             | "_delete";
 
-                          if (tragetValue === "_delete") {
+                          if (targetValue === "_delete") {
                             deleteCollaborator.mutate({
                               username: collaborator.username,
                               track: username,
@@ -114,9 +114,9 @@ export function Collaborators({
                           updateCollaborator.mutate({
                             username: collaborator.username,
                             role:
-                              tragetValue === "_manager"
+                              targetValue === "_manager"
                                 ? "MANAGER"
-                                : tragetValue,
+                                : targetValue,
                             track: username,
                           });
                         }}
@@ -174,7 +174,13 @@ export function Collaborators({
                       )}
                       <select
                         onChange={event => {
-                          if (event.target.value === "_delete") {
+                          const targetValue = event.target.value as
+                            | "CONTRIBUTOR"
+                            | "EDITOR"
+                            | "_manager"
+                            | "_delete";
+
+                          if (targetValue === "_delete") {
                             deleteCollaborator.mutate({
                               username:
                                 collaborator.discord.username ?? undefined,
@@ -187,9 +193,10 @@ export function Collaborators({
                           updateCollaborator.mutate({
                             username:
                               collaborator.discord.username ?? undefined,
-                            role: event.target.value as
-                              | "CONTRIBUTOR"
-                              | "EDITOR",
+                            role:
+                              targetValue === "_manager"
+                                ? "MANAGER"
+                                : targetValue,
                             track: username,
                           });
                         }}
@@ -198,8 +205,7 @@ export function Collaborators({
                         disabled={
                           updateCollaborator.isPending ||
                           deleteCollaborator.isPending ||
-                          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                          collaborator.me ||
+                          collaborator.role === "MANAGER" ||
                           (track.data?.me.role !== "MANAGER" &&
                             access !== "ADMIN")
                         }
@@ -207,6 +213,7 @@ export function Collaborators({
                         <option value="MANAGER" disabled>
                           Manager
                         </option>
+                        <option value="_manager">Transfer Manager</option>
                         <option value="EDITOR">Editor</option>
                         <option value="CONTRIBUTOR">Contributor</option>
                         <option value="_delete">Delete</option>
