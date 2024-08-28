@@ -4,7 +4,7 @@ import { accessCheck, providersCheck } from "@/server/api/routers/access";
 import { env } from "process";
 import { getPublicUrl } from "@/utils/url";
 import { slugify } from "@/utils/string";
-import { getUploadURL } from "@/server/s3";
+import { deleteObject, getUploadURL } from "@/server/s3";
 
 const allowedFileTypes = ["audio/wav", "audio/mpeg"];
 
@@ -51,7 +51,10 @@ export const trackRouter = createTRPCRouter({
           },
         },
         orderBy: {
-          order: "asc",
+          order: {
+            sort: "asc",
+            nulls: "last",
+          },
         },
       });
 
@@ -566,9 +569,17 @@ export const trackRouter = createTRPCRouter({
       }
 
       if (input.musicStatus !== "FINISHED") {
-        await ctx.db.trackSong.deleteMany({
+        const oldTrackSong = await ctx.db.trackSong.findFirst({
           where: { trackId: track.id },
         });
+
+        if (oldTrackSong) {
+          await deleteObject(oldTrackSong.key);
+
+          await ctx.db.trackSong.delete({
+            where: { id: oldTrackSong.id },
+          });
+        }
       }
 
       const newData = await ctx.db.track.update({
@@ -728,9 +739,17 @@ export const trackRouter = createTRPCRouter({
         },
       });
 
-      await ctx.db.trackSong.deleteMany({
+      const oldTrackSong = await ctx.db.trackSong.findFirst({
         where: { trackId: track.id },
       });
+
+      if (oldTrackSong) {
+        await deleteObject(oldTrackSong.key);
+
+        await ctx.db.trackSong.delete({
+          where: { id: oldTrackSong.id },
+        });
+      }
 
       await ctx.db.trackSong.create({
         data: {
@@ -771,5 +790,43 @@ export const trackRouter = createTRPCRouter({
           url: url,
         },
       };
+    }),
+
+  reorderTracks: protectedProcedure
+    .input(
+      z.object({
+        tracks: z.array(
+          z.object({
+            username: z
+              .string()
+              .min(1)
+              .max(64)
+              .regex(/^[a-z0-9-]+$/),
+            order: z.number().nullable(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      await Promise.all(
+        input.tracks.map(async track => {
+          await ctx.db.track.update({
+            where: {
+              username: track.username,
+            },
+            data: {
+              order: track.order,
+            },
+          });
+        })
+      );
+
+      return;
     }),
 });
