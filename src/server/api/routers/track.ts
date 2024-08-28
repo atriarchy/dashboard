@@ -540,13 +540,15 @@ export const trackRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
       const editors = track.collaborators.filter(c => c.role === "EDITOR");
 
-      const accessRoles = [manager, ...editors].map(c => c.userId);
+      const accessRoles = [manager, ...editors]
+        .map(c => c.userId)
+        .filter(c => c !== null);
 
       if (
         (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") ||
@@ -622,13 +624,15 @@ export const trackRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
       const editors = track.collaborators.filter(c => c.role === "EDITOR");
 
-      const accessRoles = [manager, ...editors].map(c => c.userId);
+      const accessRoles = [manager, ...editors]
+        .map(c => c.userId)
+        .filter(c => c !== null);
 
       if (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") {
         throw new Error("Unauthorized.");
@@ -683,13 +687,15 @@ export const trackRouter = createTRPCRouter({
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
-      if (!manager?.user?.profile) {
+      if (!manager) {
         throw new Error("Manager not found.");
       }
 
       const editors = track.collaborators.filter(c => c.role === "EDITOR");
 
-      const accessRoles = [manager, ...editors].map(c => c.userId);
+      const accessRoles = [manager, ...editors]
+        .map(c => c.userId)
+        .filter(c => c !== null);
 
       if (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") {
         throw new Error("Unauthorized.");
