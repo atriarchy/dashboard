@@ -74,6 +74,7 @@ enum TrackAuditLogAction {
     DELETE_CREDIT
     ACCEPT_COLLABORATOR_INVITE
     DECLINE_COLLABORATOR_INVITE
+    UPLOAD_SONG
 }
 
 model Access {
@@ -164,6 +165,7 @@ model Track {
     visualStatus     TrackVisualStatus
     type             TrackType           @default(ORIGINAL)
     song             TrackSong?
+    maxSongFileSize  Int                 @default(62914560)
     auditLogs        TrackAuditLog[]
     createdAt        DateTime            @default(now())
     updatedAt        DateTime            @default(now()) @updatedAt

@@ -12,11 +12,12 @@ import {
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faWarning } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 
 export function EditTrack({
+  access,
   username,
   title,
   description,
@@ -24,6 +25,7 @@ export function EditTrack({
   musicStatus,
   visualStatus,
 }: {
+  access?: "ADMIN" | null;
   username: string;
   title: string;
   description: string | null;
@@ -151,6 +153,21 @@ export function EditTrack({
                         });
                       }}
                     >
+                      {currentMusicStatus === "FINISHED" && (
+                        <div className="flex w-full items-center justify-start gap-4 rounded-lg bg-yellow-300 p-4 text-black">
+                          <FontAwesomeIcon
+                            icon={faWarning}
+                            className="text-xl"
+                          />
+                          <div className="flex flex-col items-start justify-start">
+                            <h6 className="text-lg font-bold">Warning</h6>
+                            <p className="text-sm">
+                              Changing the music status will unsubmit your
+                              uploaded song.
+                            </p>
+                          </div>
+                        </div>
+                      )}
                       <TextInput
                         id="title"
                         label="Title"
@@ -160,7 +177,6 @@ export function EditTrack({
                         maxLength={64}
                         required
                       />
-
                       <div className="flex w-full flex-col items-center justify-start gap-2">
                         <label
                           htmlFor="description"
@@ -228,7 +244,9 @@ export function EditTrack({
                         <option value="RECORDING">Recording</option>
                         <option value="MIX_MASTER">Mix and Master</option>
                         <option value="ABANDONED">Abandoned</option>
-                        <option value="FINISHED">Finished</option>
+                        <option value="FINISHED" disabled={access !== "ADMIN"}>
+                          Finished
+                        </option>
                       </select>
                       <select
                         id="visualStatus"

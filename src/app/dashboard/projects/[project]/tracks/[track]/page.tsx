@@ -3,8 +3,11 @@ import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar } from "@/app/_components/sidebar";
 import { InviteBanner } from "@/app/_components/invite-banner";
-import { EditTrack } from "@/app/_components/edit-track";
+import { EditTrack } from "@/app/_components/update-track";
 import IconExplicit from "@/app/_components/icons/icon-explicit";
+import { CreateSong } from "@/app/_components/create-song";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 export default async function InfoPage({
   params,
@@ -42,6 +45,8 @@ export default async function InfoPage({
     );
   }
 
+  const access = await api.access.getAccess();
+
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
@@ -67,7 +72,6 @@ export default async function InfoPage({
                   </span>
                   {track.explicit && <IconExplicit />}
                 </h1>
-
                 {track.description && (
                   <p className="text-lg">{track.description}</p>
                 )}
@@ -84,14 +88,30 @@ export default async function InfoPage({
             {track.me.role !== "VIEWER" && !track.me.acceptedInvite && (
               <InviteBanner username={track.username} />
             )}
-            <EditTrack
-              username={track.username}
-              title={track.title}
-              description={track.description}
-              explicit={track.explicit}
-              musicStatus={track.musicStatus}
-              visualStatus={track.visualStatus}
-            />
+            {(track.me.role === "MANAGER" ||
+              track.me.role === "EDITOR" ||
+              access === "ADMIN") && (
+              <EditTrack
+                access={access}
+                username={track.username}
+                title={track.title}
+                description={track.description}
+                explicit={track.explicit}
+                musicStatus={track.musicStatus}
+                visualStatus={track.visualStatus}
+              />
+            )}
+            <CreateSong username={track.username} explicit={track.explicit} />
+            {track.songUrl && (
+              <a
+                href={track.songUrl}
+                download={track.username}
+                className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+              >
+                <FontAwesomeIcon icon={faCloudArrowDown} />
+                Download Song
+              </a>
+            )}
           </div>
         </div>
       </main>

@@ -4,6 +4,9 @@ import { accessCheck, providersCheck } from "@/server/api/routers/access";
 import { env } from "process";
 import { getPublicUrl } from "@/utils/url";
 import { slugify } from "@/utils/string";
+import { getUploadURL } from "@/server/s3";
+
+const allowedFileTypes = ["audio/wav", "audio/mpeg"];
 
 export const trackRouter = createTRPCRouter({
   getTracks: protectedProcedure
@@ -310,6 +313,7 @@ export const trackRouter = createTRPCRouter({
         },
         include: {
           project: true,
+          song: true,
           collaborators: {
             include: {
               user: {
@@ -411,6 +415,10 @@ export const trackRouter = createTRPCRouter({
           id: myId,
         },
         manager: manager,
+        songUrl:
+          access === "ADMIN" && track.song
+            ? `${env.FILE_STORAGE_CDN_URL}/${track.song.key}`
+            : undefined,
       };
     }),
 
@@ -469,6 +477,29 @@ export const trackRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      const manager = track.collaborators.find(c => c.role === "MANAGER");
+
+      if (!manager?.user?.profile) {
+        throw new Error("Manager not found.");
+      }
+
+      const editors = track.collaborators.filter(c => c.role === "EDITOR");
+
+      const accessRoles = [manager, ...editors].map(c => c.userId);
+
+      if (
+        (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") ||
+        (input.musicStatus === "FINISHED" && access !== "ADMIN")
+      ) {
+        throw new Error("Unauthorized.");
+      }
+
+      if (input.musicStatus !== "FINISHED") {
+        await ctx.db.trackSong.deleteMany({
+          where: { trackId: track.id },
+        });
+      }
+
       const newData = await ctx.db.track.update({
         where: { id: track.id },
         data: {
@@ -488,5 +519,174 @@ export const trackRouter = createTRPCRouter({
           value: newData,
         },
       });
+    }),
+
+  getMaxSongFileSize: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(64),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        return 0;
+      }
+
+      const manager = track.collaborators.find(c => c.role === "MANAGER");
+
+      if (!manager?.user?.profile) {
+        throw new Error("Manager not found.");
+      }
+
+      const editors = track.collaborators.filter(c => c.role === "EDITOR");
+
+      const accessRoles = [manager, ...editors].map(c => c.userId);
+
+      if (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      return track.maxSongFileSize;
+    }),
+
+  updateSong: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(64),
+        explicit: z.boolean(),
+        song: z.object({
+          fileType: z.string(),
+          fileSize: z.number(),
+          checksum: z.string(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Track not found.");
+      }
+
+      const manager = track.collaborators.find(c => c.role === "MANAGER");
+
+      if (!manager?.user?.profile) {
+        throw new Error("Manager not found.");
+      }
+
+      const editors = track.collaborators.filter(c => c.role === "EDITOR");
+
+      const accessRoles = [manager, ...editors].map(c => c.userId);
+
+      if (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      if (!allowedFileTypes.includes(input.song.fileType)) {
+        throw new Error("Invalid file type.");
+      }
+
+      if (input.song.fileSize > track.maxSongFileSize) {
+        throw new Error("File size too large.");
+      }
+
+      const { url, key } = await getUploadURL({
+        file: {
+          type: input.song.fileType,
+          size: input.song.fileSize,
+          checksum: input.song.checksum,
+        },
+        metadata: {
+          userId: ctx.session.user.id,
+        },
+      });
+
+      await ctx.db.trackSong.deleteMany({
+        where: { trackId: track.id },
+      });
+
+      await ctx.db.trackSong.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          key: key,
+        },
+      });
+
+      const newData = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          musicStatus: "FINISHED",
+          explicit: input.explicit,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: track,
+          value: newData,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPLOAD_SONG",
+        },
+      });
+
+      return {
+        upload: {
+          url: url,
+        },
+      };
     }),
 });
