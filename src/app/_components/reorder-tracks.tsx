@@ -39,7 +39,7 @@ export function ReorderTracks({
       | "_null"
     )[]
   >([
-    ...tracks.slice(0, nullIndex > -1 ? nullIndex : 0),
+    ...tracks.slice(0, nullIndex > -1 ? nullIndex : tracks.length),
     "_null",
     ...tracks.slice(nullIndex > -1 ? nullIndex : 0),
   ]);
