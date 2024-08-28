@@ -45,7 +45,7 @@ export function Tracks({ project }: { project: string }) {
             </h2>
             <CreateTrack project={project} />
           </div>
-          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid w-full grid-cols-3 gap-2">
             {tracks.data?.map((track, index) => (
               <Fragment key={index}>
                 <Link
@@ -96,17 +96,8 @@ export function Tracks({ project }: { project: string }) {
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               key={i}
-                              alt={collaborator.username}
-                              src={collaborator.avatar}
-                              className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800 transition group-hover:ring-neutral-700`}
-                              style={{ zIndex: track.collaborators.length - i }}
-                            />
-                          ) : collaborator?.discord?.avatar ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              key={i}
                               alt={collaborator.username ?? "Collaborator"}
-                              src={collaborator.discord.avatar}
+                              src={collaborator.avatar}
                               className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800 transition group-hover:ring-neutral-700`}
                               style={{ zIndex: track.collaborators.length - i }}
                             />
