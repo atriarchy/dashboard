@@ -90,17 +90,17 @@ export function Tracks({ project }: { project: string }) {
                           dark
                         />
                       </div>
-                      <div className="mt-2 flex -space-x-1 overflow-hidden">
-                        {track.collaborators?.map(
-                          (collaborator, i) =>
-                            collaborator?.avatar && (
-                              <img
-                                key={i}
-                                alt={collaborator.username || "Collaborator"}
-                                src={collaborator.avatar}
-                                className="inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800"
-                              />
-                            )
+                      <div className="isolate mt-2 flex -space-x-1 overflow-hidden">
+                        {track.collaborators?.map((collaborator, i) =>
+                          collaborator?.avatar ? (
+                            <img
+                              key={i}
+                              alt={collaborator.username || "Collaborator"}
+                              src={collaborator.avatar}
+                              className={`relative inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800`}
+                              style={{ zIndex: track.collaborators.length - i }}
+                            />
+                          ) : null
                         )}
                       </div>
                     </div>
