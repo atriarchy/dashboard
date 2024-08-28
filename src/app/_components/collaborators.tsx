@@ -194,9 +194,9 @@ export function Collaborators({
                             username:
                               collaborator.discord.username ?? undefined,
                             role:
-                              tragetValue === "_manager"
+                              targetValue === "_manager"
                                 ? "MANAGER"
-                                : tragetValue,
+                                : targetValue,
                             track: username,
                           });
                         }}
