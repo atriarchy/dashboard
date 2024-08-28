@@ -182,7 +182,7 @@ export function Collaborators({
 
                           if (targetValue === "_delete") {
                             deleteCollaborator.mutate({
-                              username:
+                              discord:
                                 collaborator.discord.username ?? undefined,
                               track: username,
                             });
@@ -191,8 +191,7 @@ export function Collaborators({
                           }
 
                           updateCollaborator.mutate({
-                            username:
-                              collaborator.discord.username ?? undefined,
+                            discord: collaborator.discord.username ?? undefined,
                             role:
                               targetValue === "_manager"
                                 ? "MANAGER"
