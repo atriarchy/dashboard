@@ -63,20 +63,30 @@ export const trackRouter = createTRPCRouter({
                 type: "ATRIARCHY",
                 username: collaborator.user.profile.username,
                 avatar: collaborator.user.image,
+                role: collaborator.role,
               };
             }
 
             if (collaborator.discordUserId) {
               return {
                 type: "DISCORD",
-                username: collaborator.discordUsername,
-                avatar: collaborator.discordAvatar,
+                discord: {
+                  username: collaborator.discordUsername,
+                  avatar: collaborator.discordAvatar,
+                },
+                role: collaborator.role,
               };
             }
 
             return null;
           })
-          .filter(c => c !== null);
+          .filter(c => c !== null)
+          .sort((a, b) => {
+            // Prioritize the MANAGER role
+            if (a.role === "MANAGER") return -1;
+            if (b.role === "MANAGER") return 1;
+            return 0;
+          });
 
         return {
           username: track.username,
