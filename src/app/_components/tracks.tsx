@@ -82,10 +82,10 @@ export function Tracks({ project }: { project: string }) {
                       <div className="mt-2 flex -space-x-1 overflow-hidden">
                         {track.collaborators?.map(
                           (collaborator, i) =>
-                            collaborator.avatar && (
+                            collaborator?.avatar && (
                               <img
                                 key={i}
-                                alt=""
+                                alt={collaborator.username || "Collaborator"}
                                 src={collaborator.avatar}
                                 className="inline-block h-6 w-6 rounded-full ring-2 ring-neutral-800"
                               />
