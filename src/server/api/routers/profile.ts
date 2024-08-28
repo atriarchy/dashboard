@@ -142,7 +142,14 @@ export const profileRouter = createTRPCRouter({
                       username: null,
                     }
               )
-              .filter(c => c !== undefined)
+              .filter(
+                (c, i, a) =>
+                  c !== undefined &&
+                  i ===
+                    a.findIndex(
+                      f => f?.name === c.name && f?.username === c.username
+                    )
+              )
               .slice(0, 4);
 
             credits.unshift({
@@ -157,7 +164,7 @@ export const profileRouter = createTRPCRouter({
                 ? `${env.FILE_STORAGE_CDN_URL}/${track.project.thumbnail.key}`
                 : undefined,
               credits: credits,
-              creditsCount: track.credits.length,
+              creditsCount: credits.length,
             };
           });
         })
