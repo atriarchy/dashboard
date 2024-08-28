@@ -154,8 +154,7 @@ export function CreateSong({
                           <div className="flex flex-col items-start justify-start">
                             <h6 className="text-lg font-bold">Warning</h6>
                             <p className="text-sm">
-                              We recommend uploading a .wav file for the best
-                              quality.
+                              We prefer .wav files for the best quality.
                             </p>
                           </div>
                         </div>
