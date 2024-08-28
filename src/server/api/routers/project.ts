@@ -171,8 +171,20 @@ export const projectRouter = createTRPCRouter({
             ? { status: { in: ["ACTIVE", "CLOSED", "RELEASED"] } }
             : undefined,
         orderBy: [
-          { deadline: "asc" }, // Sort by nearest deadline first
-          { updatedAt: "desc" }, // Sort by most recently modified
+          {
+            releasedAt: {
+              // put released stuff at the end, with newer stuff at beginning
+              sort: "desc",
+              nulls: "first",
+            },
+          },
+          {
+            deadline: {
+              // projects with upcoming deadlines at beginning
+              sort: "asc",
+              nulls: "last",
+            },
+          },
         ],
         include: {
           thumbnail: true,
