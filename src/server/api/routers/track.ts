@@ -32,6 +32,9 @@ export const trackRouter = createTRPCRouter({
         where: {
           projectId: project.id,
         },
+        orderBy: {
+          order: "asc",
+        },
       });
 
       return tracks.map(track => ({
