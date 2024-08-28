@@ -65,10 +65,8 @@ export const trackRouter = createTRPCRouter({
             if (collaborator.discordUserId) {
               return {
                 type: "DISCORD",
-                discord: {
-                  username: collaborator.discordUsername,
-                  avatar: collaborator.discordAvatar,
-                },
+                username: collaborator.discordUsername,
+                avatar: collaborator.discordAvatar,
               };
             }
 
