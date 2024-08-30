@@ -1,0 +1,12 @@
+<% user = collaborator.user %>
+<%= link_to user, id: dom_id(collaborator), class: "clicky flex w-full min-w-0 flex-row gap-4 items-center" do %>
+  <%= user_avatar(user, class: "rounded-lg w-20") %>
+  <div class="flex flex-col w-full min-w-0 py-3 gap-4">
+    <span class="font-bold w-full whitespace-nowrap truncate text-2xl md:text-3xl lg:text-4xl">
+      <%= user.name %>
+    </span>
+    <span class="text-2xl">
+      <%= collaborator.role.humanize %>
+    </span>
+  </div>
+<% end %>

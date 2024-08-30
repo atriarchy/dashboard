@@ -1,0 +1,51 @@
+<% content_for :title, "Projects" %>
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between">
+    <div class="flex flex-row gap-4 items-center">
+      <%= nav_button %>
+      <h1 class="font-bold text-4xl">Projects</h1>
+    </div>
+
+    <% if Current.user.admin? %>
+      <%= link_to new_project_path,
+        "aria-label": t("project.new"),
+        class: "btn clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium" do %>
+        <%= icon(:plus, class: "size-6") %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="w-full flex flex-col gap-8 items-center" data-controller="search">
+  <input type="search" autocomplete="off" placeholder="<%= t("projects") %>" data-action="search#search" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 text-black">
+  <div id="projects" class="flex flex-row w-full flex-wrap justify-center gap-4 md:gap-4">
+    <% @projects.each do |project| %>
+      <%= link_to project,
+        id: dom_id(project),
+        data: { "search-target": "searchable", searchable: project.name },
+        class: "clicky flex flex-col min-w-0 w-80 gap-4 pb-4 items-center rounded-lg bg-slate-800 transition-colors hover:bg-gray-800/80 hover:shadow-md" do %>
+        <%= project_cover(project, class: "rounded-t-lg min-w-80 w-full aspect-square") %>
+        <div class="flex flex-col gap-4 justify-between w-full h-full px-2 min-w-0">
+          <div class="flex flex-col pga-2">
+            <span class="font-bold w-full text-lg md:text-2xl truncate lg:text-4xl whitespace-nowrap">
+              <%= project.name %>
+            </span>
+            <span class="whitespace-nowrap">
+              <%= t("project.track", count: project.tracks.count) %>
+            </span>
+          </div>
+
+          <div class="flex flex-row w-full h-10 min-h-0 px-3 items-center justify-between">
+            <%= user_avatar(project.user, class: "aspect-square -ml-3 h-full rounded-full") %>
+            <div class="flex flex-row h-full -mr-3">
+              <% project.collaborators.limit(5).each do |collaborator| %>
+                <% user = collaborator.user %>
+                <%= user_avatar(user, class: "aspect-square h-full rounded-full -ml-3 rounded-full shadow-md") %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

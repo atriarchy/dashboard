@@ -1,0 +1,49 @@
+<% content_for :sidebar_card do %>
+  <hr>
+  <div class="flex flex-col min-w-0 w-full text-center items-center">
+    <%= link_to @track.project, class: "flex flex-col w-full min-w-0 clicky gap-2 w-36" do %>
+      <%= project_cover(@track.project, class: "w-full") %>
+      <span class="font-bold">
+        <%= @track.project.name %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex min-w-0 flex-row gap-2">
+      <%= nav_button project_path(@project) %>
+      <span class="font-bold truncate text-4xl">
+        <%= @track.name %>
+      </span>
+    </div>
+    <div class="flex flex-row gap-2">
+      <%# link_to project_track_collaborators_path(@project, @track), class: "clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium" do %>
+        <%# icon(:user_group, class: "size-6") %>
+      <%# end %>
+      <% if Current.user.admin? %>
+        <%= link_to edit_project_track_path(@project, @track),
+              "aria-label": t("project.track.edit"),
+              class: "clicky rounded-lg py-2 px-3 bg-purple-400 inline-block font-medium" do %>
+          <%= icon(:pencil, class: "size-6") %>
+        <% end %>
+        <%= destroy_btn([@project, @track], t("confirm_delete", thing: @project.name),
+                        "aria-label": t("project.track.delete"),
+                        class: "clicky rounded-lg py-2 px-3 bg-red-400") do %>
+          <%= icon(:trash, class: "size-6") %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<h1 class="text-4xl font-bold mb-3">
+  <%= t("collaborators") %>
+</h1>
+
+<div class="flex flex-col justify-center gap-2">
+  <% @track.collaborators.each do |collaborator| %>
+    <%= render collaborator %>
+  <% end %>
+</div>

@@ -1,0 +1,30 @@
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex flex-row gap-2">
+      <%= nav_button user_path(@user) %>
+      <h1 class="font-bold text-4xl">Editing user</h1>
+    </div>
+    <% if notice.present? %>
+      <span class="py-2 px-3 bg-green-50 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></span>
+    <% end %>
+  </div>
+<% end %>
+
+<% content_for :sidebar_card do %>
+  <hr>
+  <%= link_to user_path(@user), class: "clicky flex flex-col min-w-0 gap-1 w-full text-center items-center" do %>
+    <%= user_avatar(@user, class: "rounded-full w-24") %>
+    <div class="flex flex-col min-w-0 w-full items-center gap-2">
+      <span class="font-bold w-full truncate text-xl">
+        <%= @user.name %>
+      </span>
+      <%= user_role(@user) %>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="w-full flex flex-col items-center">
+  <div class="max-w-96">
+    <%= render "form", user: @user %>
+  </div>
+</div>

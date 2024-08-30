@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+aca30:
+  user: aca30
+  expires_at: 2030-01-01 00:00:00
+
+ask:
+  user: ask
+  expires_at: 2030-01-01 00:00:00

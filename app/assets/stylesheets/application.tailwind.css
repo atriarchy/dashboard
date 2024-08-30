@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 motion-safe:transition-transform motion-safe:active:scale-95 ease-in-out text-white h-10 px-6 py-2.5 font-semibold;
+  }
+}
+
+.clicky {
+  @apply motion-safe:transition-transform motion-safe:active:scale-95 ease-in-out;
+}

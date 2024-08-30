@@ -1,0 +1,54 @@
+<%= turbo_frame_tag "new_invite" do %>
+  <%= form_with(model: invite, class: "flex flex-row w-fit mx-auto gap-4 items-center") do |form| %>
+    <% if invite.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(invite.errors.count, "error") %> prohibited this invite from being saved:</h2>
+        <ul>
+          <% invite.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="flex flex-row gap-2 justify-center">
+      <% if defined? discord_user %>
+        <%= form.fields_for(:discord) do |form| %>
+          <%= form.hidden_field :id, value: discord_user[:id] %>
+          <%= form.hidden_field :avatar_url, value: discord_user[:avatar_url] %>
+          <%= form.hidden_field :username, value: discord_user[:username] %>
+          <div>
+            <div class="h-10 w-44 flex flex-row items-center gap-2 bg-white shadow rounded-md border border-gray-400 outline-none px-2 py-1 text-black">
+              <%= image_tag discord_user[:avatar_url], class: "rounded-full h-full inline-block" %>
+              <span class="text-lg"><%= discord_user[:username] %></span>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <%= form.fields_for(:discord) do |form| %>
+          <div>
+            <%= form.text_field :username, required: true, placeholder: t("invite.discord_username"), class: "h-10 w-44 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 w-full text-black" %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if Current.user.admin? %>
+        <div class="w-24">
+          <%= form.select :role, select_enum(User.roles), {}, class: "h-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 w-full text-black" %>
+        </div>
+      <% end %>
+
+      <div class="flex flex-col mt-auto">
+        <% if defined? discord_user %>
+          <%= form.button(type: "submit", data: { turbo_frame: "_top" }, class: "btn clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium") do %>
+            <%= icon(:envelope, class: "size-6") %>
+          <% end %>
+        <% else %>
+          <%= form.button(type: "submit", class: "btn clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium") do %>
+            <%= icon(:plus, class: "size-6") %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

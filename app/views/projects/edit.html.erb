@@ -1,0 +1,29 @@
+<% content_for :sidebar_card do %>
+  <hr>
+  <div class="flex flex-col w-full text-center items-center">
+    <%= link_to @project, class: "flex flex-col clicky gap-2 w-36" do %>
+      <%= project_cover(@project, class: "w-full") %>
+      <span class="font-bold">
+        <%= @project.name %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex flex-row gap-2">
+      <%= nav_button project_path(@project) %>
+      <h1 class="font-bold text-4xl"><%= t("project.edit") %></h1>
+    </div>
+    <% if notice.present? %>
+      <span class="py-2 px-3 bg-green-50 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></span>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="w-full flex flex-col items-center">
+  <div class="max-w-96">
+    <%= render "form", project: @project %>
+  </div>
+</div>

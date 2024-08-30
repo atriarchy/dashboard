@@ -1,0 +1,52 @@
+<% content_for :sidebar_card do %>
+  <hr>
+  <div class="flex flex-col min-w-0 w-full text-center items-center">
+    <%= link_to @project, class: "flex flex-col w-full min-w-0 clicky gap-2 w-36" do %>
+      <%= project_cover(@project, class: "w-full") %>
+      <span class="font-bold">
+        <%= @project.name %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex min-w-0 flex-row gap-2">
+      <%= nav_button(projects_path) %>
+      <div class="flex min-w-0 flex-col">
+        <h1 class="font-bold truncate text-4xl max-md:hidden"><%= @project.name %></h1>
+      </div>
+    </div>
+    <div class="flex flex-row min-w-0 items-center gap-2">
+      <%= project_status(@project) %>
+      <% if Current.user.admin? %>
+        <%= link_to new_project_track_path(@project),
+          "aria-label": t("project.track.new"),
+          class: "clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium" do %>
+          <%= icon(:plus, class: "size-6") %>
+        <% end %>
+        <%= link_to edit_project_path(@project),
+          "aria-label": t("project.edit"),
+          class: "clicky rounded-lg py-2 px-3 bg-purple-400 inline-block font-medium" do %>
+          <%= icon(:pencil, class: "size-6") %>
+        <% end %>
+        <%= destroy_btn(@project, t("confirm_delete", thing: @project.name),
+                        "aria-label": t("project.delete"),
+                        class: "clicky rounded-lg py-2 px-3 bg-red-400") do %>
+          <%= icon(:trash, class: "size-6") %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="w-full flex flex-col gap-8 items-center" data-controller="search">
+  <input type="search" autocomplete="off" data-action="search#search" placeholder="<%= t("project.tracks") %>" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 text-black">
+  <div id="tracks" class="w-full flex flex-col items-center rounded-lg">
+    <% @project.tracks.each do |track| %>
+      <%= render track %>
+      <hr>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<aside data-reveal-target="item" class="flex flex-col gap-4 h-full min-w-0 w-52 bg-neutral-800 px-4 max-sm:hidden">
+  <%= link_to root_path, class: "clicky" do %>
+    <%= image_tag asset_path("atriarchy-light.png"), class: "w-full mt-4" %>
+  <% end %>
+  <nav class="flex flex-col gap-2 items-center w-full font-bold text-white">
+    <% if Current.user %>
+      <%= nav_link("projects") do %>
+        <%= icon(:musical_note, class: "size-6") %>
+        <span><%= t("navigation.projects") %></span>
+      <% end %>
+      <%= nav_link("invites") do %>
+        <%= icon(:user_plus, class: "size-6") %>
+        <span><%= t("navigation.invites") %></span>
+      <% end %>
+      <%= nav_link("users") do %>
+        <%= icon(:key, class: "size-6") %>
+        <span><%= t("navigation.access") %></span>
+      <% end %>
+    <% end %>
+  </nav>
+  <%= yield :sidebar_card %>
+  <% if Current.user %>
+    <div class="flex flex-col min-w-0 w-full justify-end h-full mb-4">
+      <div class="clicky flex flex-col sm:flex-row gap-2 min-h-0 min-w-0 justify-center items-center">
+        <%= link_to Current.user do %>
+          <%= user_avatar(Current.user, class: "w-full max-w-24 aspect-square rounded-full") %>
+        <% end %>
+        <div class="flex flex-col max-sm:items-center w-full">
+          <%= link_to Current.user do %>
+            <span class="text-xl w-full font-bold truncate"><%= Current.user.name %></span>
+          <% end %>
+          <%= destroy_btn session_path, t("sessions.confirm_logout"), class: "clicky flex flex-row max-sm:items-center w-full text-white hover:text-red-300" do %>
+            <%= icon(:arrow_left_end_on_rectangle, class: "size-6") %>
+            <span><%= t("sessions.logout") %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</aside>

@@ -1,0 +1,12 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+no_strings:
+  project: dwta
+  user: mikeshardest
+  slug: no-strings
+  name: No Strings
+  description: ""
+  status: finished
+  song_type: original
+  explicit: true
+  order: 0

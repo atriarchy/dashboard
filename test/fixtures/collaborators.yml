@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+no_strings_ask:
+  user: ask
+  track: no_strings
+  role: contributor
+
+no_strings_beautifulpanda:
+  user: beautifulpanda
+  track: no_strings
+  role: contributor
+
+no_strings_fin_14:
+  user: fin_14
+  track: no_strings
+  role: contributor
+
+no_strings_mikeshardest:
+  user: mikeshardest
+  track: no_strings
+  role: contributor
+
+no_strings_peythemusician:
+  user: peythemusician
+  track: no_strings
+  role: contributor
+
+no_strings_shastass:
+  user: shastass
+  track: no_strings
+  role: contributor

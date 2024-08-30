@@ -1,0 +1,47 @@
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex flex-row min-w-0 gap-2">
+      <%= nav_button users_path %>
+      <h1 class="font-bold truncate text-4xl">
+        <%= @user.name %>
+      </h1>
+    </div>
+    <div class="flex flex-row gap-2">
+      <% if Current.user.admin? || @user.me? %>
+        <%= link_to edit_user_path(@user), "aria-label": t("user.edit"), class: "rounded-lg py-2 px-3 bg-purple-400 inline-block font-medium" do %>
+          <%= icon(:pencil, class: "size-6") %>
+        <% end %>
+        <%= destroy_btn(@user, t("confirm_delete", thing: @user.name), "aria-label": t("user.delete"), class: "rounded-lg py-2 px-3 bg-red-400") do %>
+          <%= icon(:trash, class: "size-6") %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% content_for :sidebar_card do %>
+  <hr>
+  <div class="flex flex-col min-w-0 gap-1 w-full text-center items-center">
+    <%= user_avatar(@user, class: "rounded-full w-24") %>
+    <div class="flex flex-col min-w-0 w-full items-center gap-2">
+      <h1 class="font-bold truncate w-full text-xl">
+        <%= @user.name %>
+      </h1>
+      <%= user_role(@user) %>
+    </div>
+  </div>
+<% end %>
+
+<div class="flex flex-row flex-wrap gap-24 w-full justify-center">
+  <div data-controller="search" class="flex flex-col w-full gap-4 min-w-0">
+    <h1 class="font-bold text-4xl my-4"><%= t("project.tracks") %></h1>
+    <input type="search" autocomplete="off" placeholder="<%= t("project.tracks") %>" data-action="search#search" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 text-black">
+    <div class="flex min-w-0 w-full flex-col gap-2">
+      <% @user.all_tracks.each do |track| %>
+        <div data-search-target="searchable" data-searchable="<%= track.project.name + track.name %>">
+          <%= render track %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

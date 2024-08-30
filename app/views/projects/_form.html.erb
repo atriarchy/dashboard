@@ -1,0 +1,56 @@
+<%= form_with(model: project, data: { controller: "slugify describe" }, class: "contents") do |form| %>
+  <% if project.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+        <% project.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div data-controller="preview" class="my-5 flex flex-col sm:flex-row gap-4 items-center justify-center">
+    <%= project_cover(project, data: { "preview-target": "output" }, class: "size-36 sm:size-24") %>
+    <div>
+      <%= form.label :cover %>
+      <%= form.file_field :cover,
+        accept: accepted_formats(Project::COVER_FORMATS),
+        data: { action: "preview#preview" },
+        class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    </div>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true, data: { "action": "describe#describe slugify#input" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.text_field :description, required: true, data: { "describe-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :deadline %>
+    <%= form.date_field :deadline, value: project.deadline || Time.now + 1.month, required: true, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5 flex flex-col">
+    <%= form.label :status %>
+    <%= form.select :status, select_enum(Project.statuses), {}, class: "shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <details class="my-5">
+    <summary class="font-medium cursor-pointer"><%= t("project.advanced") %></summary>
+    <div class="my-5">
+      <%= form.label :slug %>
+      <%= form.text_field :slug, data: { "slugify-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    </div>
+  </details>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>

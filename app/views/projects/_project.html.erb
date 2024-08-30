@@ -1,0 +1,23 @@
+<%= link_to project, id: dom_id(project), class: "clicky h-28 max-sm:h-24 w-full flex flex-row gap-4 items-center rounded-lg bg-gray-600 px-2 py-2 transition-colors hover:bg-gray-800/80 hover:shadow-md" do %>
+  <%= project_cover(project, class: "rounded-lg aspect-ratio h-full") %>
+  <div class="flex flex-col justify-between w-full h-full py-3 min-w-0">
+    <span class="font-bold w-full text-lg md:text-2xl truncate lg:text-4xl whitespace-nowrap">
+      <%= project.name %>
+    </span>
+
+    <div class="flex flex-row w-full items-center">
+      <span class="whitespace-nowrap">
+        <%= t("project.track", count: project.tracks.count) %>
+      </span>
+      <div class="flex flex-row h-10 min-h-0 w-full gap-6 items-center max-md:hidden">
+        <%= user_avatar(project.user, class: "aspect-square h-full rounded-full hover:z-20 -mr-3") %>
+        <div class="flex flex-row h-full">
+          <% project.collaborators.limit(5).each do |collaborator| %>
+            <% user = collaborator.user %>
+            <%= user_avatar(user, class: "aspect-square h-full rounded-full -mr-3 rounded-full shadow-md") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

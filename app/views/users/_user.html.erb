@@ -1,0 +1,11 @@
+<%= link_to user_path(user), id: dom_id(user), class: "clicky w-full flex flex-row gap-4 px-2 py-2 items-center rounded-lg bg-gray-600 transition-colors hover:bg-gray-800/80 hover:shadow-md" do %>
+  <%= user_avatar(user, class: "rounded-full aspect-square w-24 h-24") %>
+  <div class="flex flex-col min-w-0 gap-2">
+    <span class="text-4xl truncate w-full">
+      <%= user.name %>
+    </span>
+    <div class="w-fit">
+      <%= user_role(user) %>
+    </div>
+  </div>
+<% end %>

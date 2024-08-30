@@ -1,0 +1,44 @@
+<%= form_with(model: user, class: "contents") do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+        <% user.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div data-controller="preview" class="my-5 flex flex-col sm:flex-row gap-4 items-center justify-center">
+    <%= user_avatar(user, data: { "preview-target": "output" }, class: "rounded-full size-36 sm:size-24") %>
+    <div>
+      <%= form.label :avatar %>
+      <%= form.file_field :avatar,
+        accept: accepted_formats(User::AVATAR_FORMATS),
+        data: { action: "preview#preview" },
+        class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    </div>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <% if Current.user.admin? %>
+    <div class="my-5">
+      <%= form.label :role %>
+      <%= form.select :role, select_enum(User.roles), {}, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :discord_id, t("user.discord_id") %>
+    <%= form.text_field :discord_id, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>

@@ -1,0 +1,25 @@
+<% content_for :title, "Users" %>
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between">
+    <div class="flex flex-row gap-4 items-center">
+      <%= nav_button %>
+      <h1 class="font-bold text-4xl">Users</h1>
+    </div>
+    <% if Current.user.admin? %>
+      <%= link_to new_user_path, "aria-label": t("user.new"), class: "btn clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium" do %>
+        <%= icon(:plus, class: "size-6") %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="w-full flex flex-col gap-8 items-center" data-controller="search">
+  <input type="search" autocomplete="off" data-action="search#search" placeholder="<%= t("user.name") %>" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 text-black">
+  <div id="users" class="w-full flex flex-row gap-8 flex-wrap justify-center items-center">
+    <% @users.each do |user| %>
+      <div class="w-80" data-search-target="searchable" data-searchable="<%= user.name %>">
+        <%= render user %>
+      </div>
+    <% end %>
+  </div>
+</div>

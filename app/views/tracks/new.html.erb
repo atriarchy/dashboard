@@ -1,0 +1,15 @@
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center justify-between gap-4">
+    <div class="flex flex-row gap-2">
+      <%= nav_button project_path(@project) %>
+      <h1 class="font-bold text-4xl">New track</h1>
+    </div>
+    <% if notice.present? %>
+      <span class="py-2 px-3 bg-green-50 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></span>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="w-2/3 mx-auto">
+  <%= render "form", project: @project, track: @track %>
+</div>

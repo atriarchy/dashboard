@@ -1,0 +1,49 @@
+<%= form_with(model: [project, track], data: { controller: "slugify describe", "describe-prefix-value": project.name }, class: "contents") do |form| %>
+  <% if track.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(track.errors.count, "error") %> prohibited this track from being saved:</h2>
+
+      <ul>
+        <% track.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, data: { action: "slugify#input describe#describe" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.text_field :description, data: { "describe-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5 flex flex-col">
+    <%= form.label :song_type %>
+    <%= form.select :song_type, select_enum(Track.song_types), {}, class: "shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <div class="my-5 flex flex-col">
+    <%= form.label :status %>
+    <%= form.select :status, select_enum(Track.statuses), {}, class: "shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+  </div>
+
+  <details class="my-5">
+    <summary class="font-medium cursor-pointer"><%= t("project.advanced") %></summary>
+    <div class="my-5">
+      <%= form.label :slug %>
+      <%= form.text_field :slug, data: { "slugify-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    </div>
+  </details>
+
+  <div class="flex flex-row w-full justify-end inline">
+    <%= form.button(type: "submit",
+                    "aria-label": t("project.track.save"),
+                    class: "clicky rounded-lg py-1 px-3 bg-blue-300 text-white font-medium cursor-pointer") do %>
+      <%= icon(:check, class: "size-8") %>
+    <% end %>
+  </div>
+<% end %>

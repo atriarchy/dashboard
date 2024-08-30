@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+dwta:
+  slug: dwta
+  name: "Down with the Atriarchy"
+  description: "Down with the Atriarchy"
+  deadline: "2023-11-12T05:00:00.000Z"
+  status: "released"
+  user: aca30

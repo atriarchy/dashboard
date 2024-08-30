@@ -1,0 +1,21 @@
+<%= link_to [track.project, track],
+  id: dom_id(track),
+  data: { "search-target": "searchable", searchable: track.name },
+  class: "clicky min-w-0 w-full h-20 flex flex-row gap-4 items-center bg-neutral-800 py-2 px-2 transition-colors hover:bg-neutral-800/80 hover:shadow-md" do %>
+  <%= project_cover(track.project, class: "h-full aspect-ratio rounded-lg") %>
+  <div class="flex flex-col h-full my-3 min-w-0 justify-between">
+    <span class="font-bold truncate text-xl">
+      <%= track.name %>
+    </span>
+    <div class="flex flex-row gap-2 h-5">
+      <% collaborators = track.collaborators %>
+      <%= user_avatar(collaborators.first.user, class: "h-full aspect-square rounded-full") %>
+      <div class="flex flex-row">
+        <% collaborators.drop(1).each do |collaborator| %>
+          <% user = collaborator.user %>
+          <%= user_avatar(user, class: "h-full aspect-square rounded-full hover:z-20 -mr-1") %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

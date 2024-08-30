@@ -1,0 +1,43 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+aca30:
+  name: Nate
+  role: admin
+  verified: true
+  discord_id: "210762063021211649"
+
+ask:
+  name: Ask the Story Teller
+  role: artist
+  verified: false
+  discord_id: "495586848031244299"
+
+beautifulpanda:
+  name: Beautiful Panda
+  role: artist
+  verified: false
+  discord_id: "115217340710256643"
+
+fin_14:
+  name: FiN
+  role: artist
+  verified: false
+  discord_id: "217808396659720192"
+
+mikeshardest:
+  name: Mike
+  role: artist
+  verified: false
+  discord_id: "435929848725110786"
+
+peythemusician:
+  name: Pey the Musician
+  role: artist
+  verified: false
+  discord_id: "109855028331728896"
+
+shastass:
+  name: ShastAss
+  role: artist
+  verified: false
+  discord_id: "849125981457350697"

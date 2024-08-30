@@ -1,0 +1,62 @@
+<% new_invite_form = render "form", invite: Invite.new(role: "artist") %>
+<% content_for :title, "Invites" %>
+<% content_for :header do %>
+  <div class="py-5 px-5 w-full flex flex-row items-center sm:justify-between gap-4">
+    <%= nav_button %>
+    <h1 class="font-bold text-4xl"><%= t("navigation.invites") %></h1>
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
+
+    <% if Current.user.admin? %>
+      <div class="max-sm:hidden">
+        <%= new_invite_form %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div data-controller="search" class="w-full flex flex-col gap-8">
+  <% if Current.user.admin? %>
+    <div class="sm:hidden">
+      <%= new_invite_form %>
+    </div>
+  <% end %>
+  <input type="search" autocomplete="off" data-action="search#search" placeholder="<%= t("user.name") %>" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 text-black">
+  <table id="invites">
+    <tbody>
+      <% @invites.each do |invite| %>
+        <tr class="bg-slate-800 hover:bg-slate-700" data-search-target="searchable" data-searchable="<%= invite.user.name %>">
+          <td class="pl-3 py-2">
+            <%= link_to invite.user, class: "clicky flex flex-row h-full items-center gap-3" do %>
+              <%= user_avatar(invite.user, class: "w-16 lg:w-20 aspect-square rounded-full") %>
+              <div class="flex flex-col min-w-0 w-full max-sm:gap-2 h-full justify-between">
+                <span class="text-xl lg:text-3xl font-bold truncate"><%= invite.user.name %></span>
+                <span class="max-sm:hidden lg:text-lg"><%= invite.role.humanize %></span>
+                <span class="sm:hidden text-xs whitespace-nowrap">
+                  <%= invite_status(invite) %>
+                </span>
+              </div>
+            <% end %>
+          </td>
+          <td class="py-2 max-sm:hidden whitespace-nowrap">
+            <%= invite_status(invite) %>
+          </td>
+          <td class="pr-3 py-2 items-center">
+            <% if invite.user.verified? %>
+              <%= link_to invite.user, class: "h-full" do %>
+                <%= icon(:check, class: "clicky size-8 text-green-400") %>
+              <% end %>
+            <% elsif Current.user.admin? %>
+              <%= destroy_btn(invite, t("invite.confirm_delete", name: invite.user.name),
+                              "aria-label": t("invite.delete", user: invite.user.name),
+                              class: "clicky text-red-400 w-fit") do %>
+                <%= icon(:trash, class: "size-8") %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
