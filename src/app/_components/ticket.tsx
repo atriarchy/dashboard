@@ -1,13 +1,30 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { faRobot, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleDot,
+  faRobot,
+  faUser,
+  faUserCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { TicketItemDetails } from "./ticket-item-detail";
+import { TicketItemDetails } from "@/app/_components/ticket-item-detail";
 import { humanize } from "@/utils/string";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Badge from "@/app/_components/primitives/badge";
+import { UpdateTicket } from "@/app/_components/update-ticket";
+
+export const categoryMap = {
+  PROFILE_UPDATE: { color: "blue", label: "Profile Update", icon: faUser },
+};
+
+export const statusMap = {
+  OPEN: { color: "green", label: "Open" },
+  PENDING: { color: "yellow", label: "Pending" },
+  CLOSED: { color: "red", label: "Closed" },
+};
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -56,9 +73,38 @@ export function Ticket({
 
   return (
     <>
-      <h1 className="w-full bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text px-4 pt-4 text-3xl font-bold text-transparent">
-        {localTicket.data.title}
-      </h1>
+      <div className="flex items-center justify-center gap-2 px-4 pt-4">
+        <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+          {localTicket.data.title}
+        </h1>
+        <Badge
+          text={
+            categoryMap[localTicket.data.category].label ||
+            humanize(localTicket.data.category)
+          }
+          color={categoryMap[localTicket.data.category].color || "gray"}
+          icon={categoryMap[localTicket.data.category].icon || faCircleDot}
+          dark
+          pill
+        />
+        <Badge
+          text={
+            statusMap[localTicket.data.status].label ||
+            humanize(localTicket.data.status)
+          }
+          color={statusMap[localTicket.data.status].color || "gray"}
+          icon={faCircleDot}
+          dark
+          pill
+        />
+        <UpdateTicket
+          id={localTicket.data.id}
+          ticketTitle={localTicket.data.title}
+          ticketStatus={localTicket.data.status}
+          ticketCategory={localTicket.data.category}
+          refetch={localTicket.refetch}
+        />
+      </div>
       <div className="flex w-full flex-1 flex-col items-center justify-between overflow-hidden">
         <ul role="list" className="w-full space-y-6 overflow-y-auto px-4">
           {localTicket.data.feed.map((item, index) => {
@@ -243,6 +289,7 @@ export function Ticket({
                   rows={2}
                   placeholder="Add your comment..."
                   maxLength={2048}
+                  required
                   className="block w-full resize-none border-0 bg-transparent py-1.5 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 />
               </div>

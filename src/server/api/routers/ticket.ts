@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
-import { humanize } from "@/utils/string";
 
 export const ticketRouter = createTRPCRouter({
   getTickets: protectedProcedure
@@ -38,7 +37,7 @@ export const ticketRouter = createTRPCRouter({
           id: ticket.id,
           category: ticket.category,
           title: ticket.title,
-          status: humanize(ticket.status),
+          status: ticket.status,
           createdAt: ticket.createdAt,
           updatedAt: ticket.updatedAt,
         })),
@@ -277,6 +276,77 @@ export const ticketRouter = createTRPCRouter({
             userId: ctx.session.user.id,
             action:
               input.status === "CLOSED" ? "CLOSE_TICKET" : "UPDATE_TICKET",
+            value: JSON.stringify({
+              status: updatedTicket.status,
+            }),
+          },
+        });
+      }
+
+      return;
+    }),
+
+  editTicket: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1).max(256).optional(),
+        category: z.enum(["PROFILE_UPDATE"]).optional(),
+        status: z.enum(["CLOSED", "PENDING", "OPEN"]).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      const ticket = await ctx.db.ticket.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!ticket) {
+        throw new Error("Ticket not found.");
+      }
+
+      if (!input.title && !input.category && !input.status) {
+        throw new Error("No changes.");
+      }
+
+      const updatedTicket = await ctx.db.ticket.update({
+        where: { id: ticket.id },
+        data: {
+          title: input.title,
+          category: input.category,
+          status: input.status,
+        },
+      });
+
+      await ctx.db.ticketFeedItem.create({
+        data: {
+          ticketId: updatedTicket.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TICKET",
+          value: JSON.stringify({
+            title: updatedTicket.title,
+            category: updatedTicket.category,
+            status:
+              updatedTicket.status === "CLOSED"
+                ? undefined
+                : updatedTicket.status,
+          }),
+        },
+      });
+
+      if (input.status === "CLOSED") {
+        await ctx.db.ticketFeedItem.create({
+          data: {
+            ticketId: updatedTicket.id,
+            userId: ctx.session.user.id,
+            action: "CLOSE_TICKET",
             value: JSON.stringify({
               status: updatedTicket.status,
             }),
