@@ -41,7 +41,7 @@ export function ReorderTracks({
   >([
     ...tracks.slice(0, nullIndex > -1 ? nullIndex : tracks.length),
     "_null",
-    ...tracks.slice(nullIndex > -1 ? nullIndex : 0),
+    ...tracks.slice(nullIndex > -1 ? nullIndex : tracks.length),
   ]);
 
   const initalFocusRef = useRef(null);
@@ -76,7 +76,7 @@ export function ReorderTracks({
             setItems([
               ...tracks.slice(0, nullIndex > -1 ? nullIndex : tracks.length),
               "_null",
-              ...tracks.slice(nullIndex > -1 ? nullIndex : 0),
+              ...tracks.slice(nullIndex > -1 ? nullIndex : tracks.length),
             ]);
           }}
           initialFocus={initalFocusRef}
@@ -117,7 +117,9 @@ export function ReorderTracks({
                             nullIndex > -1 ? nullIndex : tracks.length
                           ),
                           "_null",
-                          ...tracks.slice(nullIndex > -1 ? nullIndex : 0),
+                          ...tracks.slice(
+                            nullIndex > -1 ? nullIndex : tracks.length
+                          ),
                         ]);
                       }}
                       aria-label="Close"
@@ -217,7 +219,9 @@ export function ReorderTracks({
                               nullIndex > -1 ? nullIndex : tracks.length
                             ),
                             "_null",
-                            ...tracks.slice(nullIndex > -1 ? nullIndex : 0),
+                            ...tracks.slice(
+                              nullIndex > -1 ? nullIndex : tracks.length
+                            ),
                           ]);
                         }}
                       >
