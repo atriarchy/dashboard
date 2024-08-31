@@ -45,6 +45,12 @@ export function UpdateTicket({
       refetch();
     },
     onError: error => {
+      if (error.message === "No changes.") {
+        setIsOpen(false);
+        refetch();
+        return;
+      }
+
       toast.error(error.message);
     },
   });

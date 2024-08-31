@@ -316,12 +316,31 @@ export const ticketRouter = createTRPCRouter({
         throw new Error("No changes.");
       }
 
+      const oldTicket = await ctx.db.ticket.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!oldTicket) {
+        throw new Error("Ticket not found.");
+      }
+
+      if (
+        oldTicket.title === input.title &&
+        oldTicket.category === input.category &&
+        oldTicket.status === input.status
+      ) {
+        throw new Error("No changes.");
+      }
+
       const updatedTicket = await ctx.db.ticket.update({
         where: { id: ticket.id },
         data: {
-          title: input.title,
-          category: input.category,
-          status: input.status,
+          title: oldTicket.title !== input.title ? input.title : undefined,
+          category:
+            oldTicket.category !== input.category ? input.category : undefined,
+          status: oldTicket.status !== input.status ? input.status : undefined,
         },
       });
 

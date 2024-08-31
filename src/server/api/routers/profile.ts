@@ -539,7 +539,44 @@ export const profileRouter = createTRPCRouter({
         });
       }
 
-      if (oldData) {
+      const credit = await ctx.db.trackCredit.findFirst({
+        where: {
+          collaborator: {
+            userId: userId,
+          },
+        },
+      });
+
+      const oldSpotify = oldLinks?.find(link => link.type === "SPOTIFY");
+      const newSpotify = input.links?.find(link => link.type === "SPOTIFY");
+      const oldAppleMusic = oldLinks?.find(link => link.type === "APPLE_MUSIC");
+      const newAppleMusic = input.links?.find(
+        link => link.type === "APPLE_MUSIC"
+      );
+      const oldYouTubeMusic = oldLinks?.find(
+        link => link.type === "YOUTUBE_MUSIC"
+      );
+      const newYouTubeMusic = input.links?.find(
+        link => link.type === "YOUTUBE_MUSIC"
+      );
+
+      if (
+        oldData &&
+        credit &&
+        (oldData.name !== data.name ||
+          oldSpotify?.url !== newSpotify?.url ||
+          oldAppleMusic?.url !== newAppleMusic?.url ||
+          oldYouTubeMusic?.url !== newYouTubeMusic?.url ||
+          oldData.legalName !== data.legalName ||
+          (oldProData && !newProData) ||
+          (!oldProData && newProData) ||
+          (oldProData &&
+            newProData &&
+            (oldProData.member !== newProData.member ||
+              oldProData.country !== newProData.country ||
+              oldProData.name !== newProData.name ||
+              oldProData.number !== newProData.number)))
+      ) {
         let ticketCheck = await ctx.db.ticket.findFirst({
           where: {
             userId: userId,
@@ -579,21 +616,6 @@ export const profileRouter = createTRPCRouter({
             `Artist name changed from "${oldData.name}" to "${data.name}".`
           );
         }
-
-        const oldSpotify = oldLinks?.find(link => link.type === "SPOTIFY");
-        const newSpotify = input.links?.find(link => link.type === "SPOTIFY");
-        const oldAppleMusic = oldLinks?.find(
-          link => link.type === "APPLE_MUSIC"
-        );
-        const newAppleMusic = input.links?.find(
-          link => link.type === "APPLE_MUSIC"
-        );
-        const oldYouTubeMusic = oldLinks?.find(
-          link => link.type === "YOUTUBE_MUSIC"
-        );
-        const newYouTubeMusic = input.links?.find(
-          link => link.type === "YOUTUBE_MUSIC"
-        );
 
         if (oldSpotify?.url !== newSpotify?.url) {
           updatedFields.push(
