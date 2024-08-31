@@ -75,6 +75,7 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name, :discord_id, :role, :avatar).tap do |p|
         p.delete(:role) unless Current.user.admin?
+        p.delete?(:discord_id) unless Current.user.admin?
       end
     end
 end
