@@ -9,10 +9,10 @@ local:
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 amazon:
   service: S3
-  access_key_id: <%= ENV.fetch("AWS_ACCESS_KEY_ID") %>
-  secret_access_key: <%= ENV.fetch("AWS_SECRET_ACCESS_KEY") %>
+  access_key_id: <%= ENV["AWS_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
   region: us-east-1
-  bucket: trackboard
+  bucket: <%= ENV["AWS_BUCKET_NAME"] %>
   public: true
   upload:
     cache_control: "public, max-age=31536000"
@@ -27,7 +27,7 @@ amazon:
 # microsoft:
 #   service: AzureStorage
 #   storage_account_name: your_account_name
-#   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :storage_access_key) %>
+#   storage_access_key: <%= ENV["AZURE_STORAGE_STORAGE_ACCESS_KEY"] %>
 #   container: your_container_name-<%= Rails.env %>
 
 # mirror:
