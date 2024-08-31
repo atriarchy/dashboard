@@ -12,7 +12,7 @@
   <% end %>
 
   <div data-controller="preview" class="my-5 flex flex-col sm:flex-row gap-4 items-center justify-center">
-    <%= project_cover(project, data: { "preview-target": "output" }, class: "size-36 sm:size-24") %>
+    <%= project_cover(project, data: { "preview-target": "output" }, class: "rounded size-36 sm:size-24") %>
     <div>
       <%= form.label :cover %>
       <%= form.file_field :cover,
