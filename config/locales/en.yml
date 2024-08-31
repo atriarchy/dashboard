@@ -34,6 +34,7 @@ en:
     invites: Invites
     projects: Projects
     access: Access
+    toggle: Back
   projects: Projects
   project:
     new: New Project

@@ -1,6 +1,6 @@
-<aside data-reveal-target="item" class="flex flex-col gap-4 h-full min-w-0 w-52 bg-neutral-800 px-4 max-sm:hidden">
-  <%= link_to root_path, class: "clicky" do %>
-    <%= image_tag asset_path("atriarchy-light.png"), class: "w-full mt-4" %>
+<aside data-reveal-target="item" class="z-20 flex flex-col gap-4 h-full min-w-0 max-sm:w-screen max-sm:absolute sm:w-52 bg-neutral-800 px-4 max-sm:hidden">
+  <%= link_to root_path, class: "clicky w-full" do %>
+    <%= image_tag asset_path("atriarchy-light.png"), class: "w-full max-w-96 mx-auto mt-4" %>
   <% end %>
   <nav class="flex flex-col gap-2 items-center w-full font-bold text-white">
     <% if Current.user %>
@@ -16,6 +16,10 @@
         <%= icon(:key, class: "size-6") %>
         <span><%= t("navigation.access") %></span>
       <% end %>
+      <button class="sm:hidden clicky flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold transition hover:bg-violet-500" data-action="reveal#toggle">
+        <%= icon(:bars_3, class: "size-6") %>
+        <span><%= t("navigation.toggle") %></span>
+      </button>
     <% end %>
   </nav>
   <%= yield :sidebar_card %>
