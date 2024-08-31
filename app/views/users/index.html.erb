@@ -16,7 +16,7 @@
 <div class="w-full flex flex-col gap-8 items-center" data-controller="search">
   <input type="search" autocomplete="off" data-action="search#search" placeholder="<%= t("user.name") %>" class="bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white">
   <div id="users" class="w-full flex flex-row gap-2 flex-wrap justify-center items-center">
-    <% @users.each do |user| %>
+    <% @users.order(:role, :name).each do |user| %>
       <div class="w-80" data-search-target="searchable" data-searchable="<%= user.name %>">
         <%= render user %>
       </div>
