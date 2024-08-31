@@ -2,7 +2,6 @@
   <%= form_with(model: invite, class: "flex flex-row w-fit gap-4 items-center") do |form| %>
     <% if invite.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-        <h2><%= pluralize(invite.errors.count, "error") %> prohibited this invite from being saved:</h2>
         <ul>
           <% invite.errors.each do |error| %>
             <li><%= error.full_message %></li>
@@ -17,24 +16,19 @@
           <%= form.hidden_field :id, value: discord_user[:id] %>
           <%= form.hidden_field :avatar_url, value: discord_user[:avatar_url] %>
           <%= form.hidden_field :username, value: discord_user[:username] %>
-          <div>
-            <div class="h-10 w-44 flex flex-row items-center gap-2 bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white">
-              <%= image_tag discord_user[:avatar_url], class: "rounded-full h-full inline-block" %>
-              <span class="text-lg"><%= discord_user[:username] %></span>
-            </div>
+          <div class="h-10 w-44 flex flex-row items-center gap-2 bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white">
+            <%= image_tag discord_user[:avatar_url], class: "rounded-full h-full inline-block" %>
+            <span class="text-lg"><%= discord_user[:username] %></span>
           </div>
         <% end %>
       <% else %>
         <%= form.fields_for(:discord) do |form| %>
-          <div>
-            <%= form.text_field :username, required: true, placeholder: t("invite.discord_username"), class: "bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %> </div>
+          <%= form.text_field :username, required: true, placeholder: t("invite.discord_username"), class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
         <% end %>
       <% end %>
 
       <% if Current.user.admin? %>
-        <div class="w-24">
-          <%= form.select :role, select_enum(User.roles), {}, class: "bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white w-full" %>
-        </div>
+        <%= form.select :role, select_enum(User.roles), {}, class: "bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
       <% end %>
 
       <div class="flex flex-col mt-auto">

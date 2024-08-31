@@ -16,8 +16,8 @@
   </div>
 <% end %>
 
-<div data-controller="search" class="w-full max-w-[900px] mx-auto flex flex-col items-center gap-8">
-  <div class="flex flex-col gap-8">
+<div data-controller="search" class="w-full max-w-[900px] min-w-0 mx-auto flex flex-col items-center gap-8">
+  <div class="flex flex-col min-w-0 w-full gap-8">
     <% if Current.user.admin? %>
       <div class="sm:hidden w-full">
         <%= new_invite_form %>

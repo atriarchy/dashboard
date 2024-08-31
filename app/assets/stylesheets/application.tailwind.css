@@ -13,5 +13,5 @@
 }
 
 .poppy {
-  @apply motion-safe:transition-transform motion-safe:hover:scale-105 ease-in-out;
+  @apply motion-safe:transition-transform max-sm:motion-safe:active:scale-95 ease-in-out sm:motion-safe:hover:scale-105 ease-in-out;
 }
