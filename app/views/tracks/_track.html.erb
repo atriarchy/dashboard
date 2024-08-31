@@ -1,9 +1,9 @@
 <%= link_to [track.project, track],
   id: dom_id(track),
   data: { "search-target": "searchable", searchable: track.name },
-  class: "clicky min-w-0 w-full h-20 flex flex-row gap-4 items-center bg-neutral-800 py-2 px-2 transition-colors hover:bg-neutral-800/80 hover:shadow-md" do %>
-  <%= project_cover(track.project, class: "h-full aspect-ratio rounded-lg") %>
-  <div class="flex flex-col h-full my-3 min-w-0 justify-between">
+  class: "poppy min-w-0 h-24 w-full flex flex-row gap-4 items-center bg-neutral-800 py-2 px-2 transition-colors hover:bg-neutral-800/80 hover:shadow-md rounded-lg" do %>
+  <%= project_cover(track.project, class: "min-h-20 h-full aspect-ratio rounded-lg") %>
+  <div class="flex flex-col h-full my-3 min-w-0 gap-4 justify-center">
     <span class="font-bold truncate text-xl">
       <%= track.name %>
     </span>

@@ -9,6 +9,7 @@ class TracksTest < ApplicationSystemTestCase
   NEW_BTN = 'a[aria-label="New Track"]'
   EDIT_BTN = 'a[aria-label="Edit Track"]'
   DELETE_BTN = 'button[aria-label="Delete Track"]'
+  SAVE_BTN = 'button[aria-label="Save Track"]'
 
   test "anyone should be able to visit the index" do
     login_as_any do
@@ -28,7 +29,7 @@ class TracksTest < ApplicationSystemTestCase
     select "Parody", from: "track_song_type"
     select "Demo", from: "track_status"
 
-    find('button[aria-label="Save Track"]').click
+    find(SAVE_BTN).click
     click_on("Streamer Knows I'm Miserable Now")
     find('a[aria-label="Edit Track"]').click
 
@@ -57,7 +58,7 @@ class TracksTest < ApplicationSystemTestCase
     select "Original", from: "track_song_type"
     select "Finished", from: "track_status"
 
-    find('button[aria-label="Save Track"]').click
+    find(SAVE_BTN).click
     click_on("Good Day!")
     find('a[aria-label="Edit Track"]').click
 

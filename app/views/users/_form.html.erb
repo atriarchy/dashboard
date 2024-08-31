@@ -17,28 +17,32 @@
       <%= form.file_field :avatar,
         accept: accepted_formats(User::AVATAR_FORMATS),
         data: { action: "preview#preview" },
-        class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+        class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
     </div>
   </div>
 
   <div class="my-5">
     <%= form.label :name %>
-    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.text_field :name, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
   <% if Current.user.admin? %>
     <div class="my-5">
       <%= form.label :role %>
-      <%= form.select :role, select_enum(User.roles), {}, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+      <%= form.select :role, select_enum(User.roles), {}, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
     </div>
   <% end %>
 
   <div class="my-5">
     <%= form.label :discord_id, t("user.discord_id") %>
-    <%= form.text_field :discord_id, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.text_field :discord_id, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
-  <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  <div class="w-full flex flex-row justify-end">
+    <%= form.button(type: "submit",
+                    "aria-label": t("user.save"),
+                    class: "btn clicky rounded-lg py-1 px-3 bg-violet-500 inline-block font-medium") do %>
+      <%= icon(:check, class: "size-6") %>
+    <% end %>
   </div>
 <% end %>

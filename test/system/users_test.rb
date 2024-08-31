@@ -8,6 +8,7 @@ class UsersTest < ApplicationSystemTestCase
   NEW_BTN = 'a[aria-label="New User"]'
   EDIT_BTN = 'a[aria-label="Edit User"]'
   DELETE_BTN = 'button[aria-label="Delete User"]'
+  SAVE_BTN = 'button[aria-label="Save User"]'
 
   test "anyone should be able view users" do
     login_as_any do
@@ -25,7 +26,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in "Name", with: "quabey"
     select "Artist", from: "user_role"
     fill_in "Discord ID", with: "309333315738009610"
-    click_on "Create User"
+    find(SAVE_BTN).click
 
     assert_selector "h1", text: "quabey"
     find(EDIT_BTN).click
@@ -51,7 +52,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in "Name", with: "quabey"
     select "Artist", from: "user_role"
     fill_in "Discord ID", with: "309333315738009610"
-    click_on "Update User"
+    find(SAVE_BTN).click
 
     assert_selector "h1", text: "quabey"
     find(EDIT_BTN).click

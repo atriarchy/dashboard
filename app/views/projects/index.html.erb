@@ -9,7 +9,7 @@
     <% if Current.user.admin? %>
       <%= link_to new_project_path,
         "aria-label": t("project.new"),
-        class: "btn clicky rounded-lg py-2 px-3 bg-blue-400 inline-block font-medium" do %>
+        class: "btn clicky rounded-lg py-2 px-3 bg-violet-500 inline-block font-medium" do %>
         <%= icon(:plus, class: "size-6") %>
       <% end %>
     <% end %>
@@ -17,13 +17,13 @@
 <% end %>
 
 <div class="w-full flex flex-col gap-8 items-center" data-controller="search">
-  <input type="search" autocomplete="off" placeholder="<%= t("projects") %>" data-action="search#search" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 text-black">
+  <input type="search" autocomplete="off" placeholder="<%= t("projects") %>" data-action="search#search" class="bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white">
   <div id="projects" class="flex flex-row w-full flex-wrap justify-center gap-4 md:gap-4">
     <% @projects.each do |project| %>
       <%= link_to project,
         id: dom_id(project),
         data: { "search-target": "searchable", searchable: project.name },
-        class: "clicky flex flex-col min-w-0 w-80 gap-4 pb-4 items-center rounded-lg bg-slate-800 transition-colors hover:bg-gray-800/80 hover:shadow-md" do %>
+        class: "clicky flex flex-col min-w-0 w-80 gap-4 pb-4 items-center rounded-lg bg-neutral-600/25 transition-colors hover:bg-violet-400/30 hover:shadow-md" do %>
         <%= project_cover(project, class: "rounded-t-lg min-w-80 w-full aspect-square") %>
         <div class="flex flex-col gap-4 justify-between w-full h-full px-2 min-w-0">
           <div class="flex flex-col pga-2">

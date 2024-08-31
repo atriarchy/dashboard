@@ -11,3 +11,7 @@
 .clicky {
   @apply motion-safe:transition-transform motion-safe:active:scale-95 ease-in-out;
 }
+
+.poppy {
+  @apply motion-safe:transition-transform motion-safe:hover:scale-105 ease-in-out;
+}

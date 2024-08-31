@@ -1,7 +1,7 @@
 module ApplicationHelper
   def nav_link(scope, &block)
     class_name = "btn clicky flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold "
-    class_name += current_page?(controller: scope) ? "bg-violet-700" : "bg-gray-700 transition hover:bg-violet-500"
+    class_name += current_page?(controller: scope) ? "bg-violet-900" : "transition hover:bg-violet-500"
 
     link_to send("#{scope}_path"), class: class_name, &block
   end

@@ -9,6 +9,7 @@ class ProjectsTest < ApplicationSystemTestCase
   NEW_BTN = 'a[aria-label="New Project"]'
   EDIT_BTN = 'a[aria-label="Edit Project"]'
   DELETE_BTN = 'button[aria-label="Delete Project"]'
+  SAVE_BTN = 'button[aria-label="Save Project"]'
 
   test "anyone should be able to vist the index" do
     login_as_any do
@@ -29,7 +30,7 @@ class ProjectsTest < ApplicationSystemTestCase
     select "Closed", from: "project_status"
     find("summary").click
     fill_in "Slug", with: "atrionix"
-    click_on "Create Project"
+    find(SAVE_BTN).click
 
     assert_text "Atrionix"
     click_on "Atrionix"
@@ -63,7 +64,7 @@ class ProjectsTest < ApplicationSystemTestCase
     select "Active", from: "project_status"
     find("summary").click
     fill_in "Slug", with: "scuffathon-vol-1"
-    click_on "Update Project"
+    find(SAVE_BTN).click
 
     find(EDIT_BTN).click
     assert_field "project_name", with: "Scuffathon Vol. 1"

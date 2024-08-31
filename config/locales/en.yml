@@ -39,6 +39,7 @@ en:
     new: New Project
     edit: Edit Project
     delete: Delete Project
+    save: Save Project
     tracks: Tracks
     track:
       new: New Track
@@ -49,10 +50,6 @@ en:
       other: "%{count} Tracks"
       zero: No Tracks
     advanced: Advanced Settings
-  invites:
-    one: Invite
-    many: "%{count} Invites"
-    zero: "No Invites"
   invite:
     confirm_delete: Are you sure you want to delete %{name}'s invite?
     discord_user: Discord User
@@ -63,10 +60,14 @@ en:
     expires: Expires
     expired: Expired
     delete: Delete %{user}'s invite
+    zero: "No Invites"
+    one: Invite
+    other: "%{count} Invites"
   user:
     name: Username
     edit: Edit User
     new: New User
+    save: Save User
     delete: Delete User
     discord_id: Discord ID
   sessions:

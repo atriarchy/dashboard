@@ -32,10 +32,10 @@
   </div>
 <% end %>
 
-<div class="flex flex-row flex-wrap gap-24 w-full justify-center">
-  <div data-controller="search" class="flex flex-col w-full gap-4 min-w-0">
-    <h1 class="font-bold text-4xl my-4"><%= t("project.tracks") %></h1>
-    <input type="search" autocomplete="off" placeholder="<%= t("project.tracks") %>" data-action="search#search" class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 text-black">
+<div class="flex flex-row flex-wrap min-w-0 gap-24 w-full justify-center">
+  <div data-controller="search" class="flex flex-col gap-4 items-center min-w-0">
+    <h1 class="font-bold text-4xl"><%= t("project.tracks") %></h1>
+    <input type="search" autocomplete="off" placeholder="<%= t("project.tracks") %>" data-action="search#search" class="bg-neutral-600/25 block w-fit shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white">
     <div class="flex min-w-0 w-full flex-col gap-2">
       <% @user.all_tracks.each do |track| %>
         <div data-search-target="searchable" data-searchable="<%= track.project.name + track.name %>">

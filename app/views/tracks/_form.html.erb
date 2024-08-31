@@ -13,36 +13,36 @@
 
   <div class="my-5">
     <%= form.label :name %>
-    <%= form.text_field :name, data: { action: "slugify#input describe#describe" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.text_field :name, data: { action: "slugify#input describe#describe" }, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
   <div class="my-5">
     <%= form.label :description %>
-    <%= form.text_field :description, data: { "describe-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.text_field :description, data: { "describe-target": "output" }, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
   <div class="my-5 flex flex-col">
     <%= form.label :song_type %>
-    <%= form.select :song_type, select_enum(Track.song_types), {}, class: "shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.select :song_type, select_enum(Track.song_types), {}, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
   <div class="my-5 flex flex-col">
     <%= form.label :status %>
-    <%= form.select :status, select_enum(Track.statuses), {}, class: "shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+    <%= form.select :status, select_enum(Track.statuses), {}, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
   </div>
 
   <details class="my-5">
     <summary class="font-medium cursor-pointer"><%= t("project.advanced") %></summary>
     <div class="my-5">
       <%= form.label :slug %>
-      <%= form.text_field :slug, data: { "slugify-target": "output" }, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full text-black" %>
+      <%= form.text_field :slug, data: { "slugify-target": "output" }, class: "w-full bg-neutral-600/25 block shadow rounded-md outline-none border-none focus:ring-violet-400 px-3 py-2 text-white" %>
     </div>
   </details>
 
   <div class="flex flex-row w-full justify-end inline">
     <%= form.button(type: "submit",
                     "aria-label": t("project.track.save"),
-                    class: "clicky rounded-lg py-1 px-3 bg-blue-300 text-white font-medium cursor-pointer") do %>
+                    class: "clicky rounded-lg py-1 px-3 bg-violet-500 text-white font-medium cursor-pointer") do %>
       <%= icon(:check, class: "size-8") %>
     <% end %>
   </div>

@@ -13,9 +13,9 @@ module UsersHelper
   def color_role(role)
     case role
     when "artist"
-      "bg-blue-400 text-white font-bold"
-    when "admin"
       "bg-violet-400 text-white font-bold"
+    when "admin"
+      "bg-red-400 text-white font-bold"
     else
       "bg-gray-500 text-black"
     end
