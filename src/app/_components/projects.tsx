@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { api } from "@/trpc/react";
 import { ProjectForm } from "@/app/_components/project-form";
-import Badge from "./primitives/badge";
+import Badge from "@/app/_components/primitives/badge";
 
 export function Projects({ access }: { access?: "ADMIN" | null }) {
   const projects = api.project.getProjects.useInfiniteQuery(

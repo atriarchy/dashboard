@@ -7,6 +7,7 @@ import { collaboratorRouter } from "@/server/api/routers/collaborator";
 import { creditRouter } from "@/server/api/routers/credit";
 import { searchRouter } from "@/server/api/routers/search";
 import { auditLogRouter } from "@/server/api/routers/audit-log";
+import { ticketRouter } from "@/server/api/routers/ticket";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   credit: creditRouter,
   search: searchRouter,
   auditLog: auditLogRouter,
+  ticket: ticketRouter,
 });
 
 // export type definition of API

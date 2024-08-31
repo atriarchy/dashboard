@@ -77,6 +77,23 @@ enum TrackAuditLogAction {
     UPLOAD_SONG
 }
 
+enum TicketCategory {
+    PROFILE_UPDATE
+}
+
+enum TicketStatus {
+    OPEN
+    PENDING
+    CLOSED
+}
+
+enum TicketFeedItemAction {
+    CREATE_TICKET
+    UPDATE_TICKET
+    CLOSE_TICKET
+    CREATE_COMMENT
+}
+
 model Access {
     id                      String     @id @default(cuid())
     provider                String
@@ -251,6 +268,40 @@ model AgreementDocument {
     signingUrl  String
 }
 
+model Ticket {
+    id              String           @id @default(cuid())
+    user            User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId          String?
+    discordUserId   String?
+    discordUsername String?
+    discordAvatar   String?
+    status          TicketStatus     @default(OPEN)
+    category        TicketCategory
+    title           String
+    feed            TicketFeedItem[]
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @default(now()) @updatedAt
+}
+
+model TicketFeedItem {
+    id              String               @id @default(cuid())
+    ticket          Ticket               @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+    ticketId        String
+    user            User?                @relation(fields: [userId], references: [id])
+    userId          String?
+    discordUserId   String?
+    discordUsername String?
+    discordAvatar   String?
+    system          Boolean?
+    private         Boolean              @default(false)
+    action          TicketFeedItemAction
+    value           String /// @encrypted
+    createdAt       DateTime             @default(now())
+    updatedAt       DateTime             @default(now()) @updatedAt
+
+    @@index([ticketId])
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -294,6 +345,8 @@ model User {
     trackAuditLogs       TrackAuditLog[]     @relation("User")
     trackAuditLogsTarget TrackAuditLog[]     @relation("TargetUser")
     trackSongs           TrackSong[]
+    tickets              Ticket[]
+    ticketFeedItems      TicketFeedItem[]
 }
 
 model VerificationToken {

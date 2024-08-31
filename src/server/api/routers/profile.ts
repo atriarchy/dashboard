@@ -391,6 +391,12 @@ export const profileRouter = createTRPCRouter({
         );
       }
 
+      const oldData = await ctx.db.profile.findFirst({
+        where: {
+          userId: userId,
+        },
+      });
+
       const data = await ctx.db.profile.upsert({
         where: {
           userId: userId,
@@ -480,7 +486,15 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
+      let oldLinks;
+
       if (input.links) {
+        oldLinks = await ctx.db.profileLink.findMany({
+          where: {
+            profileId: data.id,
+          },
+        });
+
         await ctx.db.profileLink.createMany({
           data: input.links.map(link => ({
             profileId: data.id,
@@ -490,36 +504,183 @@ export const profileRouter = createTRPCRouter({
         });
       }
 
+      const oldProData = await ctx.db.proProfile.findFirst({
+        where: {
+          profileId: data.id,
+        },
+      });
+
+      let newProData;
+
       if (!input.pro) {
         await ctx.db.proProfile.deleteMany({
           where: {
             profileId: data.id,
           },
         });
-
-        return {
-          username: data.username,
-        };
+      } else {
+        newProData = await ctx.db.proProfile.upsert({
+          where: {
+            profileId: data.id,
+          },
+          update: {
+            member: input.pro.member,
+            country: input.pro.country,
+            name: input.pro.name,
+            number: input.pro.number,
+          },
+          create: {
+            profileId: data.id,
+            member: input.pro.member,
+            country: input.pro.country,
+            name: input.pro.name,
+            number: input.pro.number,
+          },
+        });
       }
 
-      await ctx.db.proProfile.upsert({
+      const credit = await ctx.db.trackCredit.findFirst({
         where: {
-          profileId: data.id,
-        },
-        update: {
-          member: input.pro.member,
-          country: input.pro.country,
-          name: input.pro.name,
-          number: input.pro.number,
-        },
-        create: {
-          profileId: data.id,
-          member: input.pro.member,
-          country: input.pro.country,
-          name: input.pro.name,
-          number: input.pro.number,
+          collaborator: {
+            userId: userId,
+          },
         },
       });
+
+      const oldSpotify = oldLinks?.find(link => link.type === "SPOTIFY");
+      const newSpotify = input.links?.find(link => link.type === "SPOTIFY");
+      const oldAppleMusic = oldLinks?.find(link => link.type === "APPLE_MUSIC");
+      const newAppleMusic = input.links?.find(
+        link => link.type === "APPLE_MUSIC"
+      );
+      const oldYouTubeMusic = oldLinks?.find(
+        link => link.type === "YOUTUBE_MUSIC"
+      );
+      const newYouTubeMusic = input.links?.find(
+        link => link.type === "YOUTUBE_MUSIC"
+      );
+
+      if (
+        oldData &&
+        credit &&
+        (oldData.name !== data.name ||
+          oldSpotify?.url !== newSpotify?.url ||
+          oldAppleMusic?.url !== newAppleMusic?.url ||
+          oldYouTubeMusic?.url !== newYouTubeMusic?.url ||
+          oldData.legalName !== data.legalName ||
+          (oldProData && !newProData) ||
+          (!oldProData && newProData) ||
+          (oldProData &&
+            newProData &&
+            (oldProData.member !== newProData.member ||
+              oldProData.country !== newProData.country ||
+              oldProData.name !== newProData.name ||
+              oldProData.number !== newProData.number)))
+      ) {
+        let ticketCheck = await ctx.db.ticket.findFirst({
+          where: {
+            userId: userId,
+            status: "OPEN",
+            category: "PROFILE_UPDATE",
+          },
+        });
+
+        if (!ticketCheck) {
+          ticketCheck = await ctx.db.ticket.create({
+            data: {
+              userId: userId,
+              category: "PROFILE_UPDATE",
+              title: `Profile Update: ${data.name}`,
+              status: "OPEN",
+            },
+          });
+
+          await ctx.db.ticketFeedItem.create({
+            data: {
+              ticketId: ticketCheck.id,
+              system: true,
+              action: "CREATE_TICKET",
+              value: JSON.stringify({
+                status: ticketCheck.status,
+                category: ticketCheck.category,
+                title: ticketCheck.title,
+              }),
+            },
+          });
+        }
+
+        const updatedFields = [];
+
+        if (oldData.name !== data.name) {
+          updatedFields.push(
+            `Artist name changed from "${oldData.name}" to "${data.name}".`
+          );
+        }
+
+        if (oldSpotify?.url !== newSpotify?.url) {
+          updatedFields.push(
+            `Spotify link changed from ${oldSpotify ? `"${oldSpotify.url}"` : "empty"} to ${newSpotify ? `"${newSpotify.url}"` : "empty"}.`
+          );
+        }
+
+        if (oldAppleMusic?.url !== newAppleMusic?.url) {
+          updatedFields.push(
+            `Apple Music link changed from ${oldAppleMusic ? `"${oldAppleMusic.url}"` : "empty"} to ${newAppleMusic ? `"${newAppleMusic.url}"` : "empty"}.`
+          );
+        }
+
+        if (oldYouTubeMusic?.url !== newYouTubeMusic?.url) {
+          updatedFields.push(
+            `YouTube Music link changed from ${oldYouTubeMusic ? `"${oldYouTubeMusic.url}"` : "empty"} to ${newYouTubeMusic ? `"${newYouTubeMusic.url}"` : "empty"}.`
+          );
+        }
+
+        if (oldData.legalName !== data.legalName) {
+          updatedFields.push(
+            `Legal name changed from ${oldData.legalName ? `"${oldData.legalName}"` : "empty"} to ${data.legalName ? `"${data.legalName}"` : "empty"}.`
+          );
+        }
+
+        if (!oldProData && newProData) {
+          updatedFields.push(
+            `\nPRO membership added:\nMember: Empty to "${newProData.number}".\nCountry: Empty to "${newProData.country}".\nName: Empty to "${newProData.name}".\nNumber: Empty to "${newProData.number}".`
+          );
+        }
+
+        if (oldProData && !newProData) {
+          updatedFields.push(
+            `\nPRO membership removed:\nMember: "${oldProData.number}" to empty.\nCountry: "${oldProData.country}" to empty.\nName: "${oldProData.name}" to empty.\nNumber: "${oldProData.number}" to empty.`
+          );
+        }
+
+        if (updatedFields.length > 0) {
+          updatedFields.unshift("Profile updated:");
+        }
+
+        if (
+          oldProData &&
+          newProData &&
+          (oldProData.member !== newProData.member ||
+            oldProData.country !== newProData.country ||
+            oldProData.name !== newProData.name ||
+            oldProData.number !== newProData.number)
+        ) {
+          updatedFields.push(
+            `\nPRO membership updated:\nMember: "${oldProData.member}" to "${newProData.member}".\nCountry: "${oldProData.country}" to "${newProData.country}".\nName: "${oldProData.name}" to "${newProData.name}".\nNumber: "${oldProData.number}" to "${newProData.number}".`
+          );
+        }
+
+        await ctx.db.ticketFeedItem.create({
+          data: {
+            ticketId: ticketCheck.id,
+            system: true,
+            action: "CREATE_COMMENT",
+            value: JSON.stringify({
+              message: `${updatedFields.join("\n")}`,
+            }),
+          },
+        });
+      }
 
       return {
         username: data.username,

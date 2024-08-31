@@ -6,6 +6,7 @@ import {
   faList,
   faMusic,
   faRecordVinyl,
+  faTicket,
   faUserPen,
   faUserPlus,
   faUsers,
@@ -27,6 +28,7 @@ export async function Sidebar({
     | "PROFILE"
     | "PROJECTS"
     | "INVITES"
+    | "TICKETS"
     | "PROJECTS_TRACKS"
     | "PROJECTS_AGREEMENTS"
     | "PROJECTS_TRACKS_INFO"
@@ -81,6 +83,17 @@ export async function Sidebar({
         >
           <FontAwesomeIcon icon={faUsers} fixedWidth />
           <span>Invites</span>
+        </BlockLink>
+        <BlockLink
+          href="/dashboard/tickets"
+          className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
+            selected === "TICKETS"
+              ? "bg-violet-700"
+              : "bg-gray-700 transition hover:bg-violet-500"
+          }`}
+        >
+          <FontAwesomeIcon icon={faTicket} fixedWidth />
+          <span>Tickets</span>
         </BlockLink>
         {project && (
           <>

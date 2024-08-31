@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faCloudArrowUp, faWarning } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
-import FileUpload from "./primitives/file-upload";
+import FileUpload from "@/app/_components/primitives/file-upload";
 import { computeSHA256 } from "@/app/_helpers/crypto";
 
 export function CreateSong({
