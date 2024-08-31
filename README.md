@@ -3,22 +3,22 @@
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
-Things you may want to cover:
+# Requirements
 
-* Ruby version
+- Ruby >= 3.3.0
+- SQLite3
+- Ruby Vips
 
-* System dependencies
+# Setup
 
-* Configuration
+This is the development setup process. For production use the Dockerfile.
 
-* Database creation
+```sh
+git clone https://github.com/dylhack/trackboard.git
+bundle
+bin/rails db:setup
+# Create an admin account
+ruby scripts/addadmin.rb
+bin/dev
+```
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
