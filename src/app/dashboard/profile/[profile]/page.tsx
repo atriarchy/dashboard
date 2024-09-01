@@ -27,22 +27,30 @@ export default async function AdminProfilePage({
     return redirect("/dashboard");
   }
 
-  const profile = (await api.profile.getProfile({
+  const profile = await api.profile.getProfile({
     as: params.profile,
-  })) as ProfileType | null;
+  });
 
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="PROFILE" />
+          <Sidebar
+            selected="PROFILE"
+            profile={profile}
+            session={session}
+            access={access}
+          />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {profile ? (
               <>
                 <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
                   {`${profile.name}'s Profile`}
                 </h1>
-                <Profile profile={profile} as={profile.username} />
+                <Profile
+                  profile={profile as ProfileType}
+                  as={profile.username}
+                />
               </>
             ) : (
               <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">

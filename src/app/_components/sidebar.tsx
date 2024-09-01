@@ -46,9 +46,9 @@ export function Sidebar({
     title: string;
     username: string;
   };
-  access?: string;
+  access?: string | null;
   session?: Session;
-  profile?: Profile;
+  profile?: Profile | null;
   track?: {
     title: string;
     username: string;
