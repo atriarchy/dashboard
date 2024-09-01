@@ -24,7 +24,7 @@
         id: dom_id(project),
         data: { "search-target": "searchable", searchable: project.name },
         class: "clicky flex flex-col min-w-0 w-80 gap-4 pb-4 items-center rounded-lg bg-neutral-600/25 transition-colors hover:bg-violet-400/30 hover:shadow-md" do %>
-        <%= project_cover(project, class: "rounded-t-lg w-full aspect-square") %>
+        <%= project_cover(project, class: "rounded-t-lg w-full aspect-square", style: "view-transition-name: #{dom_id(project)};") %>
         <div class="flex flex-col gap-4 justify-between w-full h-full px-2 min-w-0">
           <div class="flex flex-col pga-2">
             <span class="font-bold w-full text-lg md:text-2xl truncate lg:text-4xl whitespace-nowrap">

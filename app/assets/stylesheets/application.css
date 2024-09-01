@@ -1,1 +1,39 @@
 /* Application styles */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+main {
+  view-transition-name: main;
+}
+
+::view-transition-group(*) {
+  animation-duration: 250ms;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+::view-transition-old(main) {
+  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+}
+
+::view-transition-new(main) {
+  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in;
+}
+
+html {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}

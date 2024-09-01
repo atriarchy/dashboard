@@ -1,8 +1,8 @@
 <% content_for :sidebar_card do %>
   <hr>
-  <div class="flex flex-col min-w-0 w-full text-center items-center">
+  <div class="flex flex-col min-w-0 w-full text-center items-center" data-turbo-permanent>
     <%= link_to @project, class: "flex flex-col w-full min-w-0 clicky gap-2 w-36" do %>
-      <%= project_cover(@project, class: "w-full") %>
+      <%= project_cover(@project, class: "w-full aspect-square", style: "view-transition-name: #{dom_id(@project)}") %>
       <span class="font-bold">
         <%= @project.name %>
       </span>

@@ -35,13 +35,16 @@
     <meta property="twitter:title" content="Atriarchy Studios - Trackboard">
     <meta property="twitter:description" content=" Atriarchy Release Dashboard">
     <meta property="twitter:image" content="/atriarchy.png">
+
+    <!-- View Transitions :) -->
+    <meta name="view-transition" content="same-origin" /> 
   </head>
 
   <body class="h-screen flex flex-row bg-neutral-900 text-white" data-controller="reveal" data-reveal-hidden-class="max-sm:hidden">
     <% unless @disable_sidebar %>
       <%= render "layouts/sidebar" %>
     <% end %>
-    <div class="w-full flex flex-col overflow-y-auto">
+    <div class="w-full flex flex-col <%= "ml-52" unless @disable_sidebar %>">
       <header class="bg-neutral-800 z-10 sticky top-0">
         <%= yield :header %>
       </header>
