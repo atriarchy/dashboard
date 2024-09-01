@@ -16,7 +16,7 @@
 /config/credentials/*.key
 
 /config/credentials.yml.enc
-/config/deploy.yml
+/config/deploy.production.yml
 
 # Ignore all logfiles and tempfiles.
 /log/*
