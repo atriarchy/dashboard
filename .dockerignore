@@ -15,6 +15,9 @@
 /config/master.key
 /config/credentials/*.key
 
+/config/credentials.yml.enc
+/config/deploy.yml
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -47,4 +50,3 @@
 /.dockerignore
 /Dockerfile*
 
-config/credentials.yml.enc

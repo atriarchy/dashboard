@@ -39,5 +39,6 @@
 !/app/assets/builds/.keep
 
 config/credentials.yml.enc
+config/deploy.yml
 
 .DS_Store
