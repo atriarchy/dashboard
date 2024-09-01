@@ -20,9 +20,6 @@ registry:
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
 env:
-  clear:
-    DISCORD_CLIENT_ID: 1227322771709624433
-    DISCORD_GUILD_ID: 1277002589673885719
   secret:
     - DISCORD_CLIENT_SECRET
     - DISCORD_BOT_TOKEN
