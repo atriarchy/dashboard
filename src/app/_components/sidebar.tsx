@@ -23,6 +23,7 @@ export async function Sidebar({
   selected,
   project,
   track,
+  open,
 }: {
   selected?:
     | "PROFILE"
@@ -44,13 +45,22 @@ export async function Sidebar({
     username: string;
     access: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
   };
+  open?: boolean;
 }) {
+  const isOpen = open ?? false;
   const session = await getServerAuthSession();
   const access = await api.access.getAccess();
   const profile = await api.profile.getProfile();
+  let className =
+    "flex min-h-dvh h-screen min-w-52 flex-col items-center justify-between gap-2 overflow-y-auto bg-neutral-800 py-4 shadow-inner";
+  if (isOpen) {
+    className += " max-sm:w-screen max-sm:absolute";
+  } else {
+    className += " max-sm:hidden";
+  }
 
   return (
-    <div className="flex h-full w-52 min-w-52 max-w-52 flex-col items-center justify-between gap-2 overflow-auto bg-neutral-800 py-4 shadow-inner">
+    <aside className={className}>
       {/* Logo at the top of the sidebar */}
       <div className="mb-4 flex flex-col items-center justify-center px-4">
         <Image
@@ -225,6 +235,6 @@ export async function Sidebar({
           <Auth session={session} showIcon />
         </div>
       )}
-    </div>
+    </aside>
   );
 }
