@@ -61,7 +61,7 @@ export function Tracks({
         <span className="text-lg font-medium">{tracks.error.message}</span>
       ) : (
         <>
-          {myTracks.data && (
+          {myTracks.data && myTracks.data.length > 0 && (
             <>
               <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
                 My Tracks
