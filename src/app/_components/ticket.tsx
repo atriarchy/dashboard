@@ -15,6 +15,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import Badge from "@/app/_components/primitives/badge";
 import { UpdateTicket } from "@/app/_components/update-ticket";
+import { SidebarButton } from "@/app/_components/sidebar";
 
 export const categoryMap = {
   PROFILE_UPDATE: { color: "blue", label: "Profile Update", icon: faUser },
@@ -75,7 +76,7 @@ export function Ticket({
     <>
       <div className="flex items-center justify-center gap-2 px-4 pt-4">
         <div className="flex items-center justify-center">
-          <div id="sidebarButton" />
+          <SidebarButton />
           <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
             {localTicket.data.title}
           </h1>

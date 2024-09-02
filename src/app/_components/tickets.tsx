@@ -7,6 +7,7 @@ import { categoryMap, statusMap } from "@/app/_components/ticket";
 import { humanize } from "@/utils/string";
 import { faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import Badge from "@/app/_components/primitives/badge";
+import { SidebarButton } from "@/app/_components/sidebar";
 
 export function Tickets() {
   const tickets = api.ticket.getTickets.useInfiniteQuery(
@@ -19,7 +20,7 @@ export function Tickets() {
   return (
     <>
       <div className="flex items-center justify-center">
-        <div id="sidebarButton" />
+        <SidebarButton />
         <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
           Tickets
         </h1>

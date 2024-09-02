@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
+import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 import { Tracks } from "@/app/_components/tracks";
 import { ProjectForm } from "@/app/_components/project-form";
 import { formatDateToDatetimeLocal } from "@/utils/date";
@@ -46,7 +46,7 @@ export default async function TracksPage({
             <div className="mb-8 flex flex-col items-start justify-start gap-2">
               <div className="flex h-full w-full gap-4">
                 <div className="flex items-center justify-center">
-                  <div id="sidebarButton" />
+                  <SidebarButton />
                   <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
                     {project.title}
                   </h1>

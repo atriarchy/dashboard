@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
+import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 
 export default async function ProjectPage({
   params,
@@ -33,7 +33,7 @@ export default async function ProjectPage({
           <Sidebar />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <div className="flex items-center justify-center">
-              <div id="sidebarButton" />
+              <SidebarButton />
               <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
                 Project not found.
               </h1>

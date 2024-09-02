@@ -20,8 +20,29 @@ import { Auth } from "@/app/_components/auth";
 import Image from "next/image";
 import logo from "@/assets/atriarchy-light.png";
 import { BlockLink } from "@/app/_components/navigation-block";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useContext,
+  useState,
+} from "react";
+
+const SidebarContext = createContext<
+  [isOpen: boolean, setIsOpen: Dispatch<SetStateAction<boolean>>]
+>([
+  false,
+  () => {
+    //
+  },
+]);
+
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  const state = useState(false);
+  return (
+    <SidebarContext.Provider value={state}>{children}</SidebarContext.Provider>
+  );
+}
 
 export function Sidebar({
   selected,
@@ -30,7 +51,6 @@ export function Sidebar({
   session,
   profile,
   track,
-  open,
 }: {
   selected?:
     | "PROFILE"
@@ -55,10 +75,8 @@ export function Sidebar({
     username: string;
     access: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
   };
-  open?: boolean;
 }) {
-  const [isOpen, setIsOpen] = useState(open ?? false);
-  const [showButton, setShowButton] = useState(false);
+  const [isOpen, setIsOpen] = useContext(SidebarContext);
 
   let className =
     "z-20 flex min-h-dvh h-screen min-w-52 flex-col items-center justify-between gap-2 overflow-y-auto bg-neutral-800 py-4 shadow-inner";
@@ -67,19 +85,6 @@ export function Sidebar({
   } else {
     className += " max-sm:hidden";
   }
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const sidebarButton = document.getElementById("sidebarButton");
-      if (sidebarButton) {
-        observer.disconnect();
-        setShowButton(true);
-      }
-    });
-    observer.observe(document, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div>
@@ -270,16 +275,19 @@ export function Sidebar({
           </div>
         )}
       </aside>
-      {showButton &&
-        createPortal(
-          <button
-            className="mr-4 text-2xl sm:hidden"
-            onClick={() => setIsOpen(true)}
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>,
-          document.getElementById("sidebarButton")!
-        )}
     </div>
+  );
+}
+
+export function SidebarButton() {
+  const [isOpen, setIsOpen] = useContext(SidebarContext);
+
+  return (
+    <button
+      className="mr-4 text-2xl sm:hidden"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <FontAwesomeIcon icon={faBars} />
+    </button>
   );
 }
