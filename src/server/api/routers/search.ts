@@ -15,12 +15,12 @@ export const searchRouter = createTRPCRouter({
           OR: [
             {
               username: {
-                search: input.query,
+                search: input.query.trim().split(" ").join(" & "),
               },
             },
             {
               name: {
-                search: input.query,
+                search: input.query.trim().split(" ").join(" & "),
               },
             },
           ],

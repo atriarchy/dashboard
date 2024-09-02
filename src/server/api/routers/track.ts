@@ -48,7 +48,7 @@ export const trackRouter = createTRPCRouter({
           projectId: project.id,
           title: input.query
             ? {
-                search: input.query,
+                search: input.query.trim().split(" ").join(" & "),
               }
             : undefined,
         },
