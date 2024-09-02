@@ -55,7 +55,7 @@ export function Tracks({
               <ReorderTracks tracks={tracks.data} refetch={tracks.refetch} />
             )}
           </div>
-          <div className="grid w-full grid-cols-3 gap-2">
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
             {tracks.data ? (
               tracks.data.map(track => (
                 <Fragment key={track.username}>
