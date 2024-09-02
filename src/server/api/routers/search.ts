@@ -6,7 +6,7 @@ export const searchRouter = createTRPCRouter({
   searchAtriarchyAndDiscordUsers: protectedProcedure
     .input(
       z.object({
-        query: z.string(),
+        query: z.string().min(1),
       })
     )
     .mutation(async ({ ctx, input }) => {

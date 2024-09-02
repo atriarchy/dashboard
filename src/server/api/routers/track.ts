@@ -12,6 +12,178 @@ export const trackRouter = createTRPCRouter({
   getTracks: protectedProcedure
     .input(
       z.object({
+        query: z.string().min(1).optional(),
+        cursor: z.string().optional(),
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const length = 100;
+
+      const access = await accessCheck(ctx);
+
+      const project = await ctx.db.project.findFirst({
+        where: {
+          username: {
+            equals: input.project,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (!project || (project.status === "DRAFT" && access !== "ADMIN")) {
+        return {
+          tracks: [],
+        };
+      }
+
+      const tracks = await ctx.db.track.findMany({
+        take: length + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where: {
+          projectId: project.id,
+          title: input.query
+            ? {
+                search: input.query,
+              }
+            : undefined,
+        },
+        include: {
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          order: {
+            sort: "asc",
+            nulls: "last",
+          },
+        },
+      });
+
+      let cursor;
+
+      if (tracks.length > length) {
+        cursor = tracks.pop()?.id;
+      }
+
+      const returnTracks = tracks.map(track => {
+        const collaborators = track.collaborators
+          .map(collaborator => {
+            if (collaborator.user?.profile) {
+              return {
+                type: "ATRIARCHY",
+                username: collaborator.user.profile.username,
+                avatar: collaborator.user.image,
+                role: collaborator.role,
+              };
+            }
+
+            if (collaborator.discordUserId) {
+              return {
+                type: "DISCORD",
+                username: collaborator.discordUsername,
+                avatar: collaborator.discordAvatar,
+                role: collaborator.role,
+              };
+            }
+
+            return null;
+          })
+          .filter(c => c !== null)
+          .sort((a, b) => {
+            // Prioritize the MANAGER role
+            if (a.role === "MANAGER") return -1;
+            if (b.role === "MANAGER") return 1;
+            return 0;
+          });
+
+        return {
+          username: track.username,
+          title: track.title,
+          description: track.description,
+          musicStatus: track.musicStatus,
+          visualStatus: track.visualStatus,
+          explicit: track.explicit,
+          collaborators: collaborators,
+          order: track.order,
+        };
+      });
+
+      return {
+        cursor,
+        tracks: returnTracks,
+      };
+    }),
+
+  getAllTracks: protectedProcedure
+    .input(
+      z.object({
+        project: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      if (access !== "ADMIN") {
+        return [];
+      }
+
+      const project = await ctx.db.project.findFirst({
+        where: {
+          username: {
+            equals: input.project,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (!project) {
+        return [];
+      }
+
+      const tracks = await ctx.db.track.findMany({
+        where: {
+          projectId: project.id,
+        },
+        orderBy: {
+          order: {
+            sort: "asc",
+            nulls: "last",
+          },
+        },
+      });
+
+      return tracks.map(track => {
+        return {
+          username: track.username,
+          title: track.title,
+          description: track.description,
+          musicStatus: track.musicStatus,
+          visualStatus: track.visualStatus,
+          explicit: track.explicit,
+          order: track.order,
+        };
+      });
+    }),
+
+  getMyTracks: protectedProcedure
+    .input(
+      z.object({
         project: z
           .string()
           .min(1)
