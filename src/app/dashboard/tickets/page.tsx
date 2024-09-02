@@ -17,11 +17,14 @@ export default async function TicketsPage() {
     return redirect("/dashboard/onboarding");
   }
 
+  const access = await api.access.getAccess();
+  const profile = await api.profile.getProfile();
+
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar />
+          <Sidebar profile={profile} session={session} access={access} />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <Tickets />
           </div>
