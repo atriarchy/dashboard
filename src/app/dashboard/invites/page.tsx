@@ -22,7 +22,7 @@ export default async function InvitesPage() {
 
   return (
     <HydrateClient>
-      <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar
             selected="INVITES"
@@ -31,9 +31,12 @@ export default async function InvitesPage() {
             access={access}
           />
           <div className="flex h-full w-full flex-col items-start justify-start gap-4 p-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              Invites
-            </h1>
+            <div className="flex items-center justify-center">
+              <div id="sidebarButton" />
+              <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                Invites
+              </h1>
+            </div>
             <Invites />
           </div>
         </div>

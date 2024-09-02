@@ -18,6 +18,12 @@ export function Tickets() {
 
   return (
     <>
+      <div className="flex items-center justify-center">
+        <div id="sidebarButton" />
+        <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+          Tickets
+        </h1>
+      </div>
       {tickets.error ? (
         <span className="text-lg font-medium">{tickets.error.message}</span>
       ) : (
