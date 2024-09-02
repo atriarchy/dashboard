@@ -20,7 +20,29 @@ import { Auth } from "@/app/_components/auth";
 import Image from "next/image";
 import logo from "@/assets/atriarchy-light.png";
 import { BlockLink } from "@/app/_components/navigation-block";
-import { useState } from "react";
+import {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useContext,
+  useState,
+} from "react";
+
+const SidebarContext = createContext<
+  [isOpen: boolean, setIsOpen: Dispatch<SetStateAction<boolean>>]
+>([
+  false,
+  () => {
+    //
+  },
+]);
+
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  const state = useState(false);
+  return (
+    <SidebarContext.Provider value={state}>{children}</SidebarContext.Provider>
+  );
+}
 
 export function Sidebar({
   selected,
@@ -29,7 +51,6 @@ export function Sidebar({
   session,
   profile,
   track,
-  open,
 }: {
   selected?:
     | "PROFILE"
@@ -54,9 +75,9 @@ export function Sidebar({
     username: string;
     access: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
   };
-  open?: boolean;
 }) {
-  const [isOpen, setIsOpen] = useState(open ?? false);
+  const [isOpen, setIsOpen] = useContext(SidebarContext);
+
   let className =
     "z-20 flex min-h-dvh h-screen min-w-52 flex-col items-center justify-between gap-2 overflow-y-auto bg-neutral-800 py-4 shadow-inner";
   if (isOpen) {
@@ -86,7 +107,7 @@ export function Sidebar({
               height={69}
               objectFit="contain"
             />
-            <div className="none flex w-10"></div>
+            <div className="none flex w-10 sm:hidden"></div>
           </div>
         </div>
         <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
@@ -254,9 +275,19 @@ export function Sidebar({
           </div>
         )}
       </aside>
-      <button className="text-lg" onClick={() => setIsOpen(true)}>
-        <FontAwesomeIcon icon={faBars} size="xl" className="ml-3 mt-5" />
-      </button>
     </div>
+  );
+}
+
+export function SidebarButton() {
+  const [isOpen, setIsOpen] = useContext(SidebarContext);
+
+  return (
+    <button
+      className="mr-4 text-2xl sm:hidden"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <FontAwesomeIcon icon={faBars} />
+    </button>
   );
 }

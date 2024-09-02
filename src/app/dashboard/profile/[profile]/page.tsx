@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
+import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 import { Profile, type ProfileType } from "@/app/_components/profile";
 
 export default async function AdminProfilePage({
@@ -33,7 +33,7 @@ export default async function AdminProfilePage({
 
   return (
     <HydrateClient>
-      <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar
             selected="PROFILE"
@@ -44,9 +44,12 @@ export default async function AdminProfilePage({
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {profile ? (
               <>
-                <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-                  {`${profile.name}'s Profile`}
-                </h1>
+                <div className="flex items-center justify-center">
+                  <SidebarButton />
+                  <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                    {`${profile.name}'s Profile`}
+                  </h1>
+                </div>
                 <Profile
                   profile={profile as ProfileType}
                   as={profile.username}

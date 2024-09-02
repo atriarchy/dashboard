@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <main className="flex h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="flex h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex w-1/2 flex-col justify-between bg-neutral-800 p-8">
           <div className="h-auto w-auto">
             <Image

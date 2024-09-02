@@ -4,7 +4,7 @@ import { type IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface TextInputProps {
   id: string;
-  label: string;
+  label?: string;
   value: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -29,9 +29,11 @@ const TextInput = ({
 }: TextInputProps) => {
   return (
     <div className="flex w-full flex-col items-center justify-start gap-2">
-      <label htmlFor={id} className="text-md w-full font-semibold">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="text-md w-full font-semibold">
+          {label}
+        </label>
+      )}
       <div className="relative w-full">
         {icon && (
           <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-slate-900">

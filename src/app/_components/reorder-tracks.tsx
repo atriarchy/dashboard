@@ -20,14 +20,18 @@ export function ReorderTracks({
   tracks,
   refetch,
 }: {
-  tracks: {
-    username: string;
-    title: string;
-    order: number | null;
-  }[];
+  tracks:
+    | {
+        username: string;
+        title: string;
+        order: number | null;
+      }[]
+    | undefined;
   refetch: () => void;
 }) {
-  const nullIndex = tracks.findIndex(track => track.order === null);
+  const nullIndex = tracks
+    ? tracks.findIndex(track => track.order === null)
+    : -1;
 
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState<
@@ -38,11 +42,15 @@ export function ReorderTracks({
         }
       | "_null"
     )[]
-  >([
-    ...tracks.slice(0, nullIndex > -1 ? nullIndex : tracks.length),
-    "_null",
-    ...tracks.slice(nullIndex > -1 ? nullIndex : tracks.length),
-  ]);
+  >(
+    tracks
+      ? [
+          ...tracks.slice(0, nullIndex > -1 ? nullIndex : tracks.length),
+          "_null",
+          ...tracks.slice(nullIndex > -1 ? nullIndex : tracks.length),
+        ]
+      : []
+  );
 
   const initalFocusRef = useRef(null);
 
@@ -55,6 +63,10 @@ export function ReorderTracks({
       toast.error(error.message);
     },
   });
+
+  if (!tracks) {
+    return <></>;
+  }
 
   return (
     <>
