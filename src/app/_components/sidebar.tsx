@@ -69,14 +69,28 @@ export function Sidebar({
     <div>
       <aside className={className}>
         {/* Logo at the top of the sidebar */}
-        <div className="mb-4 flex flex-col items-center justify-center px-4">
-          <Image
-            src={logo}
-            alt="Logo"
-            width={128}
-            height={69}
-            objectFit="contain"
-          />
+        <div className="mb-4 flex w-full flex-col items-center justify-center px-4">
+          <div className="flex w-full flex-row items-center gap-2 max-sm:justify-between sm:justify-center">
+            {isOpen && (
+              <button
+                onClick={() => setIsOpen(false)}
+                className={`flex w-10 items-center p-2 font-semibold sm:hidden`}
+              >
+                <FontAwesomeIcon icon={faBars} size="xl" />
+              </button>
+            )}
+            <Image
+              src={logo}
+              alt="Logo"
+              width={128}
+              height={69}
+              objectFit="contain"
+            />
+            <div
+              onClick={() => setIsOpen(false)}
+              className={`none flex w-10`}
+            ></div>
+          </div>
         </div>
         <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
           <BlockLink
@@ -112,15 +126,6 @@ export function Sidebar({
             <FontAwesomeIcon icon={faTicket} fixedWidth />
             <span>Tickets</span>
           </BlockLink>
-          {isOpen && (
-            <button
-              onClick={() => setIsOpen(false)}
-              className={`hover:bg-violet-500"} flex w-full items-center justify-start gap-2 rounded-lg bg-gray-700 p-2 font-semibold transition sm:hidden`}
-            >
-              <FontAwesomeIcon icon={faBars} fixedWidth />
-              <span>Back</span>
-            </button>
-          )}
           {project && (
             <>
               <div className="mt-8 flex w-full flex-col items-center justify-start gap-2">
