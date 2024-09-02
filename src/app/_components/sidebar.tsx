@@ -74,7 +74,7 @@ export function Sidebar({
             {isOpen && (
               <button
                 onClick={() => setIsOpen(false)}
-                className={`flex w-10 items-center p-2 font-semibold sm:hidden`}
+                className="flex w-10 items-center p-2 font-semibold sm:hidden"
               >
                 <FontAwesomeIcon icon={faBars} size="xl" />
               </button>
@@ -86,10 +86,7 @@ export function Sidebar({
               height={69}
               objectFit="contain"
             />
-            <div
-              onClick={() => setIsOpen(false)}
-              className={`none flex w-10`}
-            ></div>
+            <div className="none flex w-10"></div>
           </div>
         </div>
         <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
