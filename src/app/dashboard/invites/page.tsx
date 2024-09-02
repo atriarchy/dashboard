@@ -17,11 +17,19 @@ export default async function InvitesPage() {
     return redirect("/dashboard/onboarding");
   }
 
+  const profile = await api.profile.getProfile();
+  const access = await api.access.getAccess();
+
   return (
     <HydrateClient>
       <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar selected="INVITES" />
+          <Sidebar
+            selected="INVITES"
+            profile={profile}
+            session={session}
+            access={access}
+          />
           <div className="flex h-full w-full flex-col items-start justify-start gap-4 p-4">
             <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
               Invites
