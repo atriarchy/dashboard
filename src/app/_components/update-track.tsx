@@ -17,6 +17,8 @@ import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import SelectInput from "./primitives/select-input";
 
+type TrackType = "ORIGINAL" | "PARODY" | "COVER";
+
 export function EditTrack({
   access,
   username,
@@ -25,6 +27,7 @@ export function EditTrack({
   explicit,
   musicStatus,
   visualStatus,
+  type,
 }: {
   access?: "ADMIN" | null;
   username: string;
@@ -47,6 +50,7 @@ export function EditTrack({
     | "CONCEPT"
     | "WORKING"
     | "POLISHING";
+  type: "ORIGINAL" | "PARODY" | "COVER";
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTitle, setCurrentTitle] = useState(title);
@@ -67,6 +71,7 @@ export function EditTrack({
   const [currentVisualStatus, setCurrentVisualStatus] = useState<
     "ABANDONED" | "FINISHED" | "SEARCHING" | "CONCEPT" | "WORKING" | "POLISHING"
   >(visualStatus);
+  const [currentType, setCurrentType] = useState<TrackType>(type);
 
   const initalFocusRef = useRef(null);
 
@@ -151,6 +156,7 @@ export function EditTrack({
                           musicStatus: currentMusicStatus,
                           visualStatus: currentVisualStatus,
                           description: currentDescription || undefined,
+                          type: currentType,
                         });
                       }}
                     >
@@ -220,6 +226,19 @@ export function EditTrack({
                         ]}
                       />
                       <SelectInput
+                        id="type"
+                        label="Track Type"
+                        value={currentType}
+                        onChange={e =>
+                          setCurrentType(e.target.value as TrackType)
+                        }
+                        options={[
+                          { value: "ORIGINAL", label: "Original" },
+                          { value: "PARODY", label: "Parody" },
+                          { value: "COVER", label: "Cover" },
+                        ]}
+                      />
+                      <SelectInput
                         id="musicStatus"
                         label="Music Status"
                         value={currentMusicStatus}
@@ -251,7 +270,6 @@ export function EditTrack({
                           },
                         ]}
                       />
-
                       <SelectInput
                         id="visualStatus"
                         label="Visual Status"

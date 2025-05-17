@@ -27,6 +27,7 @@ export function CreateTrack({ project }: { project: string }) {
   const [explicit, setExplicit] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [username, setUsername] = useState("");
+  const [type, setType] = useState<"ORIGINAL" | "PARODY" | "COVER">("ORIGINAL");
 
   const initalFocusRef = useRef(null);
 
@@ -122,6 +123,7 @@ export function CreateTrack({ project }: { project: string }) {
                             : undefined,
                           description: description || undefined,
                           explicit: advanced ? explicit : false,
+                          type,
                         });
                       }}
                     >
@@ -198,6 +200,24 @@ export function CreateTrack({ project }: { project: string }) {
                             options={[
                               { value: "CLEAN", label: "Clean" },
                               { value: "EXPLICIT", label: "Explicit" },
+                            ]}
+                          />
+                          <SelectInput
+                            id="type"
+                            label="Track Type"
+                            value={type}
+                            onChange={e =>
+                              setType(
+                                e.target.value as
+                                  | "ORIGINAL"
+                                  | "PARODY"
+                                  | "COVER"
+                              )
+                            }
+                            options={[
+                              { value: "ORIGINAL", label: "Original" },
+                              { value: "PARODY", label: "Parody" },
+                              { value: "COVER", label: "Cover" },
                             ]}
                           />
                         </>
