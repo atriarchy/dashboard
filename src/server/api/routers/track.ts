@@ -46,12 +46,42 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
-          title: input.query
-            ? {
-                search: input.query.trim().split(" ").join(" & "),
-              }
-            : undefined,
+          ...(input.query && {
+            OR: [
+              {
+                // Search by title
+                title: {
+                  // switching from full-text to contains, performance shouldn't be an issue with this data size
+                  contains: input.query,
+                  mode: "insensitive",
+                },
+              },
+              {
+                // Search by slug
+                username: {
+                  contains: input.query,
+                  mode: "insensitive",
+                },
+              },
+              {
+                // Search by collaborator usernames
+                collaborators: {
+                  some: {
+                    user: {
+                      profile: {
+                        username: {
+                          contains: input.query,
+                          mode: "insensitive",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          }),
         },
+
         include: {
           collaborators: {
             include: {
