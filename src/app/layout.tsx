@@ -9,8 +9,6 @@ import { Toaster } from "react-hot-toast";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
 import { env } from "@/env";
 import { NavigationBlockerProvider } from "@/app/_components/navigation-block";
@@ -50,12 +48,6 @@ export default function RootLayout({
                 <Toaster />
               </div>
               {children}
-              {env.NODE_ENV == "production" && (
-                <>
-                  <Analytics />
-                  <SpeedInsights />
-                </>
-              )}
             </NavigationBlockerProvider>
           </SidebarProvider>
         </TRPCReactProvider>
