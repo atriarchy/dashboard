@@ -180,8 +180,7 @@ export const projectRouter = createTRPCRouter({
           },
           {
             deadline: {
-              // projects with upcoming deadlines at beginning
-              sort: "asc",
+              sort: "desc",
               nulls: "last",
             },
           },
