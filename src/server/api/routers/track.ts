@@ -327,7 +327,7 @@ export const trackRouter = createTRPCRouter({
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         explicit: z.boolean(),
-        type: z.enum(["ORIGINAL", "PARODY", "COVER"]).optional(),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -730,7 +730,7 @@ export const trackRouter = createTRPCRouter({
           "ABANDONED",
           "FINISHED",
         ]),
-        type: z.enum(["ORIGINAL", "PARODY", "COVER"]).optional(),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
