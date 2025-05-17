@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
+import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 import { Agreements } from "@/app/_components/agreements";
 
 export default async function AgreementsPage({
@@ -31,7 +31,7 @@ export default async function AgreementsPage({
 
   return (
     <HydrateClient>
-      <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar
             selected="PROJECTS_AGREEMENTS"
@@ -41,9 +41,12 @@ export default async function AgreementsPage({
             }}
           />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-            <h1 className="mb-8 bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              {project.title}
-            </h1>
+            <div className="flex items-center justify-center">
+              <SidebarButton />
+              <h1 className="mb-8 bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                {project.title}
+              </h1>
+            </div>
             <Agreements access={access} project={params.project} />
           </div>
         </div>

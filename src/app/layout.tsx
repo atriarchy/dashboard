@@ -14,6 +14,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
 import { env } from "@/env";
 import { NavigationBlockerProvider } from "@/app/_components/navigation-block";
+import { SidebarProvider } from "@/app/_components/sidebar";
 
 config.autoAddCss = false;
 
@@ -43,18 +44,20 @@ export default function RootLayout({
       </Head>
       <body className="bg-neutral-900">
         <TRPCReactProvider>
-          <NavigationBlockerProvider>
-            <div>
-              <Toaster />
-            </div>
-            {children}
-            {env.NODE_ENV == "production" && (
-              <>
-                <Analytics />
-                <SpeedInsights />
-              </>
-            )}
-          </NavigationBlockerProvider>
+          <SidebarProvider>
+            <NavigationBlockerProvider>
+              <div>
+                <Toaster />
+              </div>
+              {children}
+              {env.NODE_ENV == "production" && (
+                <>
+                  <Analytics />
+                  <SpeedInsights />
+                </>
+              )}
+            </NavigationBlockerProvider>
+          </SidebarProvider>
         </TRPCReactProvider>
       </body>
     </html>

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import { Sidebar } from "@/app/_components/sidebar";
+import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 import { InviteBanner } from "@/app/_components/invite-banner";
 import { EditTrack } from "@/app/_components/update-track";
 import IconExplicit from "@/app/_components/icons/icon-explicit";
@@ -31,13 +31,16 @@ export default async function InfoPage({
   if (!track) {
     return (
       <HydrateClient>
-        <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
+        <main className="h-dvh w-full bg-neutral-900 text-gray-200">
           <div className="flex h-full w-full items-start justify-center">
             <Sidebar />
             <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
-              <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-                Track not found.
-              </h1>
+              <div className="flex items-center justify-center">
+                <SidebarButton />
+                <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                  Track not found.
+                </h1>
+              </div>
             </div>
           </div>
         </main>
@@ -49,7 +52,7 @@ export default async function InfoPage({
 
   return (
     <HydrateClient>
-      <main className="h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
           <Sidebar
             selected="PROJECTS_TRACKS_INFO"
@@ -66,12 +69,15 @@ export default async function InfoPage({
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {
               <div className="mb-8 flex flex-col items-start justify-start gap-2">
-                <h1 className="flex items-center space-x-2 text-3xl font-bold">
-                  <span className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-transparent">
-                    {track.title}
-                  </span>
-                  {track.explicit && <IconExplicit />}
-                </h1>
+                <div className="flex items-center justify-center">
+                  <SidebarButton />
+                  <h1 className="flex items-center space-x-2 text-3xl font-bold">
+                    <span className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-transparent">
+                      {track.title}
+                    </span>
+                    {track.explicit && <IconExplicit />}
+                  </h1>
+                </div>
                 {track.description && (
                   <p className="text-lg">{track.description}</p>
                 )}

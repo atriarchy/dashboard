@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { api } from "@/trpc/react";
 import { ProjectForm } from "@/app/_components/project-form";
 import Badge from "@/app/_components/primitives/badge";
+import { SidebarButton } from "@/app/_components/sidebar";
 
 export function Projects({ access }: { access?: "ADMIN" | null }) {
   const projects = api.project.getProjects.useInfiniteQuery(
@@ -28,9 +29,12 @@ export function Projects({ access }: { access?: "ADMIN" | null }) {
       ) : (
         <>
           <div className="flex items-start justify-start gap-4">
-            <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
-              Projects
-            </h1>
+            <div className="flex items-center justify-center">
+              <SidebarButton />
+              <h1 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-3xl font-bold text-transparent">
+                Projects
+              </h1>
+            </div>
             {access === "ADMIN" && <ProjectForm />}
           </div>
           <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">

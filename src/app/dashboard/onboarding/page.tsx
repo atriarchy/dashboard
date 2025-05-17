@@ -18,7 +18,7 @@ export default async function Onboarding() {
 
   return (
     <HydrateClient>
-      <main className="min-h-dvh w-dvw bg-neutral-900 text-gray-200">
+      <main className="min-h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full flex-col items-start justify-start gap-4 p-4">
           <h1 className="text-4xl font-bold">
             <span>👋 </span>
