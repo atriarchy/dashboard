@@ -16,6 +16,9 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
 import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
+import SelectInput from "@/app/_components/primitives/select-input";
+import type { Option } from "@/app/_components/primitives/select-input";
+import countryList from "react-select-country-list";
 
 export type ProfileType = {
   id: string;
@@ -45,6 +48,8 @@ export type ProfileType = {
   };
   privacy: "PRIVATE";
 };
+
+const countryOptions: Option[] = countryList().getData();
 
 export function Profile({
   onboarding,
@@ -475,13 +480,14 @@ export function Profile({
               placeholder="Legal Name"
               maxLength={256}
             />
-            <TextInput
+            <SelectInput
               id="country"
               label="Country"
-              value={country}
-              onChange={e => setCountry(e.target.value)}
-              placeholder="Country"
-              maxLength={256}
+              className="w-full"
+              value={countryOptions.find(opt => opt.value === country) ?? null}
+              onChange={opt => setCountry(opt?.value ?? "")}
+              options={countryOptions}
+              placeholder="Select Country"
             />
           </div>
           <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
