@@ -17,6 +17,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.637.0
         version: 3.637.0
+      '@documenso/sdk-typescript':
+        specifier: ^0.2.0
+        version: 0.2.0(zod@3.23.8)
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.6.0
         version: 6.6.0
@@ -358,6 +361,16 @@ packages:
   '@babel/runtime@7.25.0':
     resolution: {integrity: sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==}
     engines: {node: '>=6.9.0'}
+
+  '@documenso/sdk-typescript@0.2.0':
+    resolution: {integrity: sha512-AuqRykeZNTSDdAB1+tqxu5Iu3TdsP9NrU8Ji1h/zToVPdtgnOmWCrEJ7rYXbLKIVrchz+rUBYLKDziOdGQpp5Q==}
+    hasBin: true
+    peerDependencies:
+      '@modelcontextprotocol/sdk': ^1.5.0
+      zod: '>= 3'
+    peerDependenciesMeta:
+      '@modelcontextprotocol/sdk':
+        optional: true
 
   '@emnapi/runtime@1.2.0':
     resolution: {integrity: sha512-bV21/9LQmcQeCPEg3BDFtvwL6cwiTMksYNWQQ4KOxCZikEGalWtenoZ0wCiukJINlGCIi2KXx01g4FoH/LxpzQ==}
@@ -3373,6 +3386,10 @@ snapshots:
   '@babel/runtime@7.25.0':
     dependencies:
       regenerator-runtime: 0.14.1
+
+  '@documenso/sdk-typescript@0.2.0(zod@3.23.8)':
+    dependencies:
+      zod: 3.23.8
 
   '@emnapi/runtime@1.2.0':
     dependencies:

@@ -27,6 +27,9 @@ export function CreateAgreement({
   const [agreement, setAgreement] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [fieldTitle, setFieldTitle] = useState("");
+  const [fieldName, setFieldName] = useState("");
+  const [fieldDiscord, setFieldDiscord] = useState("");
 
   const initalFocusRef = useRef(null);
 
@@ -37,6 +40,9 @@ export function CreateAgreement({
       setAgreement("");
       setTitle("");
       setDescription("");
+      setFieldTitle("");
+      setFieldName("");
+      setFieldDiscord("");
     },
     onError: error => {
       toast.error(error.message);
@@ -63,6 +69,9 @@ export function CreateAgreement({
             setAgreement("");
             setTitle("");
             setDescription("");
+            setFieldTitle("");
+            setFieldName("");
+            setFieldDiscord("");
           }}
           initialFocus={initalFocusRef}
         >
@@ -100,6 +109,9 @@ export function CreateAgreement({
                         setAgreement("");
                         setTitle("");
                         setDescription("");
+                        setFieldTitle("");
+                        setFieldName("");
+                        setFieldDiscord("");
                       }}
                       aria-label="Close"
                     >
@@ -129,11 +141,73 @@ export function CreateAgreement({
                           return;
                         }
 
+                        const fieldTitles = fieldTitle
+                          .split(",")
+                          .map(field => field.trim())
+                          .filter(field => field.length > 0);
+
+                        const fieldNames = fieldName
+                          .split(",")
+                          .map(field => field.trim())
+                          .filter(field => field.length > 0);
+
+                        const fieldDiscords = fieldDiscord
+                          .split(",")
+                          .map(field => field.trim())
+                          .filter(field => field.length > 0);
+
+                        if (
+                          fieldTitles.some(field => {
+                            if (isNaN(parseInt(field))) {
+                              toast.error("Invalid field ID(s)");
+                              return true;
+                            }
+                          })
+                        ) {
+                          return;
+                        }
+
+                        if (
+                          fieldNames.some(field => {
+                            if (isNaN(parseInt(field))) {
+                              toast.error("Invalid field ID(s)");
+                              return true;
+                            }
+                          })
+                        ) {
+                          return;
+                        }
+
+                        if (
+                          fieldDiscords.some(field => {
+                            if (isNaN(parseInt(field))) {
+                              toast.error("Invalid field ID(s)");
+                              return true;
+                            }
+                          })
+                        ) {
+                          return;
+                        }
+
                         createAgreement.mutate({
                           agreement: parseInt(templateId),
                           project,
                           title,
                           description: description || undefined,
+                          fields: {
+                            title:
+                              fieldTitles.length > 0
+                                ? fieldTitles.map(field => parseInt(field))
+                                : undefined,
+                            name:
+                              fieldNames.length > 0
+                                ? fieldNames.map(field => parseInt(field))
+                                : undefined,
+                            discord:
+                              fieldDiscords.length > 0
+                                ? fieldDiscords.map(field => parseInt(field))
+                                : undefined,
+                          },
                         });
                       }}
                     >
@@ -181,6 +255,27 @@ export function CreateAgreement({
                           </small>
                         </div>
                       </div>
+                      <TextInput
+                        id="fieldTitle"
+                        label="Project Title Field ID"
+                        value={fieldTitle}
+                        onChange={e => setFieldTitle(e.target.value)}
+                        placeholder="Comma Seperated IDs"
+                      />
+                      <TextInput
+                        id="fieldName"
+                        label="Artist Name Field ID"
+                        value={fieldName}
+                        onChange={e => setFieldName(e.target.value)}
+                        placeholder="Comma Seperated IDs"
+                      />
+                      <TextInput
+                        id="fieldDiscord"
+                        label="Discord Field ID"
+                        value={fieldDiscord}
+                        onChange={e => setFieldDiscord(e.target.value)}
+                        placeholder="Comma Seperated IDs"
+                      />
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
@@ -192,6 +287,9 @@ export function CreateAgreement({
                           setAgreement("");
                           setTitle("");
                           setDescription("");
+                          setFieldTitle("");
+                          setFieldName("");
+                          setFieldDiscord("");
                         }}
                       >
                         Cancel
