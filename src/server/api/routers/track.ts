@@ -46,40 +46,40 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
-          ...(input.query && {
-            OR: [
-              {
-                // Search by title
-                title: {
-                  // switching from full-text to contains, performance shouldn't be an issue with this data size
-                  contains: input.query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                // Search by slug
-                username: {
-                  contains: input.query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                // Search by collaborator usernames
-                collaborators: {
-                  some: {
-                    user: {
-                      profile: {
-                        username: {
-                          contains: input.query,
-                          mode: "insensitive",
+          ...(input.query &&
+            (input.query.startsWith("@")
+              ? {
+                  // Only search by collaborator usernames if query starts with "@"
+                  collaborators: {
+                    some: {
+                      user: {
+                        profile: {
+                          username: {
+                            contains: input.query.slice(1), // Remove the "@" for search
+                            mode: "insensitive",
+                          },
                         },
                       },
                     },
                   },
-                },
-              },
-            ],
-          }),
+                }
+              : {
+                  // Otherwise, search by title or slug
+                  OR: [
+                    {
+                      title: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                    {
+                      username: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                  ],
+                })),
         },
 
         include: {
