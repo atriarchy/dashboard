@@ -15,6 +15,7 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPencil, faWarning } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
+import SelectInput from "./primitives/select-input";
 
 export function EditTrack({
   access,
@@ -206,22 +207,21 @@ export function EditTrack({
                           </small>
                         </div>
                       </div>
-                      <select
+                      <SelectInput
                         id="explicit"
-                        name="Is this track explicit?"
-                        className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                        label="Is this track explicit?"
                         value={currentExplicit ? "EXPLICIT" : "CLEAN"}
                         onChange={e =>
                           setCurrentExplicit(e.target.value === "EXPLICIT")
                         }
-                      >
-                        <option value="CLEAN">Clean</option>
-                        <option value="EXPLICIT">Explicit</option>
-                      </select>
-                      <select
+                        options={[
+                          { value: "CLEAN", label: "Clean" },
+                          { value: "EXPLICIT", label: "Explicit" },
+                        ]}
+                      />
+                      <SelectInput
                         id="musicStatus"
-                        name="Music Status"
-                        className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                        label="Music Status"
                         value={currentMusicStatus}
                         onChange={e =>
                           setCurrentMusicStatus(
@@ -236,22 +236,25 @@ export function EditTrack({
                               | "FINISHED"
                           )
                         }
-                      >
-                        <option value="IDEA">Idea</option>
-                        <option value="DEMO">Demo</option>
-                        <option value="WRITING">Writing</option>
-                        <option value="PRODUCTION">Production</option>
-                        <option value="RECORDING">Recording</option>
-                        <option value="MIX_MASTER">Mix and Master</option>
-                        <option value="ABANDONED">Abandoned</option>
-                        <option value="FINISHED" disabled={access !== "ADMIN"}>
-                          Finished
-                        </option>
-                      </select>
-                      <select
+                        options={[
+                          { value: "IDEA", label: "Idea" },
+                          { value: "DEMO", label: "Demo" },
+                          { value: "WRITING", label: "Writing" },
+                          { value: "PRODUCTION", label: "Production" },
+                          { value: "RECORDING", label: "Recording" },
+                          { value: "MIX_MASTER", label: "Mix and Master" },
+                          { value: "ABANDONED", label: "Abandoned" },
+                          {
+                            value: "FINISHED",
+                            label: "Finished",
+                            disabled: access !== "ADMIN",
+                          },
+                        ]}
+                      />
+
+                      <SelectInput
                         id="visualStatus"
-                        name="Visual Status"
-                        className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                        label="Visual Status"
                         value={currentVisualStatus}
                         onChange={e =>
                           setCurrentVisualStatus(
@@ -264,14 +267,15 @@ export function EditTrack({
                               | "POLISHING"
                           )
                         }
-                      >
-                        <option value="SEARCHING">Searching</option>
-                        <option value="CONCEPT">Concept</option>
-                        <option value="WORKING">Working</option>
-                        <option value="POLISHING">Polishing</option>
-                        <option value="ABANDONED">Abandoned</option>
-                        <option value="FINISHED">Finished</option>
-                      </select>
+                        options={[
+                          { value: "SEARCHING", label: "Searching" },
+                          { value: "CONCEPT", label: "Concept" },
+                          { value: "WORKING", label: "Working" },
+                          { value: "POLISHING", label: "Polishing" },
+                          { value: "ABANDONED", label: "Abandoned" },
+                          { value: "FINISHED", label: "Finished" },
+                        ]}
+                      />
                     </form>
                     <div className="flex items-center justify-between gap-2">
                       <button
