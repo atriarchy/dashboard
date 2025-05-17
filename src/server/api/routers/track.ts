@@ -46,12 +46,42 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
-          title: input.query
-            ? {
-                search: input.query.trim().split(" ").join(" & "),
-              }
-            : undefined,
+          ...(input.query &&
+            (input.query.startsWith("@")
+              ? {
+                  // Only search by collaborator usernames if query starts with "@"
+                  collaborators: {
+                    some: {
+                      user: {
+                        profile: {
+                          username: {
+                            contains: input.query.slice(1), // Remove the "@" for search
+                            mode: "insensitive",
+                          },
+                        },
+                      },
+                    },
+                  },
+                }
+              : {
+                  // Otherwise, search by title or slug
+                  OR: [
+                    {
+                      title: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                    {
+                      username: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                  ],
+                })),
         },
+
         include: {
           collaborators: {
             include: {
