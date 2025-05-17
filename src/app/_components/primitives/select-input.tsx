@@ -57,7 +57,7 @@ const SelectInput = ({
       className
     )}
   >
-    {label && <label className="text-md w-full font-semibold">{label}</label>}
+    {label && <label htmlFor={id} className="text-md w-full font-semibold">{label}</label>}
     <Select<Option, false>
       unstyled
       id={id}
