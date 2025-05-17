@@ -177,9 +177,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: targetUser
-                ? `Invited ${targetUser} as a collaborator`
-                : "Invited someone as a collaborator",
+              title: user
+                ? `${user} invited ${targetUser ?? "someone"} as a collaborator`
+                : `Invited ${targetUser ?? "someone"} as a collaborator`,
+
               date: auditLog.createdAt,
               details: value?.role
                 ? [`With role "${humanize(value.role)}"`]
@@ -203,9 +204,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: targetUser
-                ? `Updated ${targetUser} as a collaborator`
-                : "Updated someone as a collaborator",
+              title: user
+                ? `${user} updated ${targetUser ?? "someone"} as a collaborator`
+                : `Updated ${targetUser ?? "someone"} as a collaborator`,
+
               date: auditLog.createdAt,
               details: value?.role
                 ? oldValue?.role
@@ -221,9 +223,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: targetUser
-                ? `Removed ${targetUser} as a collaborator`
-                : "Removed someone as a collaborator",
+              title: user
+                ? `${user} removed ${targetUser ?? "someone"} as a collaborator`
+                : `Removed ${targetUser ?? "someone"} as a collaborator`,
+
               date: auditLog.createdAt,
             };
           }
@@ -244,8 +247,8 @@ export const auditLogRouter = createTRPCRouter({
               id: auditLog.id,
               action: auditLog.action,
               title: user
-                ? `${user} declined the invitation`
-                : "Someone declined the invitation",
+                ? `${user} declined the invitation to collaborate`
+                : "Someone declined the invitation to collaborate",
               date: auditLog.createdAt,
             };
           }
@@ -268,7 +271,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: `Added credit for ${targetUser ?? value?.name ?? "someone"}`,
+              title: user
+                ? `${user} added credit for ${targetUser ?? value?.name ?? "someone"}`
+                : `Added credit for ${targetUser ?? value?.name ?? "someone"}`,
+
               date: auditLog.createdAt,
               details: details,
             };
@@ -310,7 +316,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: `Credit updated for ${targetUser ?? value?.name ?? "someone"}`,
+              title: user
+                ? `${user} updated credits for ${targetUser ?? value?.name ?? "someone"}`
+                : `Updated credits for ${targetUser ?? value?.name ?? "someone"}`,
+
               date: auditLog.createdAt,
               details: details,
             };
@@ -328,7 +337,10 @@ export const auditLogRouter = createTRPCRouter({
             return {
               id: auditLog.id,
               action: auditLog.action,
-              title: `Removed credit for ${targetUser ?? oldValue?.name ?? "someone"}`,
+              title: user
+                ? `${user} removed credit for ${targetUser ?? oldValue?.name ?? "someone"}`
+                : `Removed credit for ${targetUser ?? oldValue?.name ?? "someone"}`,
+
               date: auditLog.createdAt,
             };
           }
