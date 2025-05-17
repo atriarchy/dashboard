@@ -230,48 +230,54 @@ export const trackRouter = createTRPCRouter({
         },
       });
 
-      return tracks.map(track => {
-        const collaborators = track.collaborators
-          .map(collaborator => {
-            if (collaborator.user?.profile) {
-              return {
-                type: "ATRIARCHY",
-                username: collaborator.user.profile.username,
-                avatar: collaborator.user.image,
-                role: collaborator.role,
-              };
-            }
+      return tracks
+        .filter(track =>
+          track.collaborators.find(
+            c => c.userId === ctx.session.user.id && c.acceptedInvite
+          )
+        )
+        .map(track => {
+          const collaborators = track.collaborators
+            .map(collaborator => {
+              if (collaborator.user?.profile) {
+                return {
+                  type: "ATRIARCHY",
+                  username: collaborator.user.profile.username,
+                  avatar: collaborator.user.image,
+                  role: collaborator.role,
+                };
+              }
 
-            if (collaborator.discordUserId) {
-              return {
-                type: "DISCORD",
-                username: collaborator.discordUsername,
-                avatar: collaborator.discordAvatar,
-                role: collaborator.role,
-              };
-            }
+              if (collaborator.discordUserId) {
+                return {
+                  type: "DISCORD",
+                  username: collaborator.discordUsername,
+                  avatar: collaborator.discordAvatar,
+                  role: collaborator.role,
+                };
+              }
 
-            return null;
-          })
-          .filter(c => c !== null)
-          .sort((a, b) => {
-            // Prioritize the MANAGER role
-            if (a.role === "MANAGER") return -1;
-            if (b.role === "MANAGER") return 1;
-            return 0;
-          });
+              return null;
+            })
+            .filter(c => c !== null)
+            .sort((a, b) => {
+              // Prioritize the MANAGER role
+              if (a.role === "MANAGER") return -1;
+              if (b.role === "MANAGER") return 1;
+              return 0;
+            });
 
-        return {
-          username: track.username,
-          title: track.title,
-          description: track.description,
-          musicStatus: track.musicStatus,
-          visualStatus: track.visualStatus,
-          explicit: track.explicit,
-          collaborators: collaborators,
-          order: track.order,
-        };
-      });
+          return {
+            username: track.username,
+            title: track.title,
+            description: track.description,
+            musicStatus: track.musicStatus,
+            visualStatus: track.visualStatus,
+            explicit: track.explicit,
+            collaborators: collaborators,
+            order: track.order,
+          };
+        });
     }),
 
   createTrack: protectedProcedure
