@@ -203,6 +203,13 @@ export function Profile({
           onSubmit={e => {
             e.preventDefault();
 
+            if (!/^[a-z0-9-]+$/g.test(username)) {
+              toast.error(
+                "Username can only contain lowercase letters, numbers, and dashes."
+              );
+              return;
+            }
+
             const links: ProfileType["links"] = [];
 
             if (youtube) {
@@ -356,7 +363,14 @@ export function Profile({
               id="username"
               label="Username"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={e =>
+                setUsername(
+                  e.target.value
+                    .toLowerCase()
+                    .replace(/ /g, "-")
+                    .replace(/[^a-z0-9-]/g, "")
+                )
+              }
               placeholder="Name"
               maxLength={64}
               required

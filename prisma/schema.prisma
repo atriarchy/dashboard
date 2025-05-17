@@ -247,14 +247,17 @@ model TrackAuditLog {
 }
 
 model Agreement {
-    id          String              @id @default(cuid())
-    project     Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
-    projectId   String
-    templateId  Int                 @unique
-    recipientId Int
-    title       String
-    description String?
-    documents   AgreementDocument[]
+    id              String              @id @default(cuid())
+    project         Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+    projectId       String
+    templateId      Int
+    recipientId     Int
+    title           String
+    description     String?
+    titleFieldIds   Int[]
+    nameFieldIds    Int[]
+    discordFieldIds Int[]
+    documents       AgreementDocument[]
 }
 
 model AgreementDocument {
