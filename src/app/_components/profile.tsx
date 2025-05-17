@@ -16,8 +16,8 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
 import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
-import SelectInput from "@/app/_components/primitives/select-input";
-import type { Option } from "@/app/_components/primitives/select-input";
+import ReactSelectInput from "@/app/_components/primitives/react-select-input";
+import type { Option } from "@/app/_components/primitives/react-select-input";
 import countryList from "react-select-country-list";
 
 export type ProfileType = {
@@ -480,7 +480,7 @@ export function Profile({
               placeholder="Legal Name"
               maxLength={256}
             />
-            <SelectInput
+            <ReactSelectInput
               id="country"
               label="Country"
               className="w-full"

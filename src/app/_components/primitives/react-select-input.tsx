@@ -13,7 +13,7 @@ export type Option = {
   value: string;
 };
 
-interface SelectInputProps {
+interface ReactSelectInputProps {
   label?: string;
   id?: string;
   value: Option | null;
@@ -42,7 +42,7 @@ const ClearIndicator = (
   </components.ClearIndicator>
 );
 
-const SelectInput = ({
+const ReactSelectInput = ({
   label,
   id,
   value,
@@ -50,14 +50,18 @@ const SelectInput = ({
   options,
   placeholder,
   className = "w-full",
-}: SelectInputProps) => (
+}: ReactSelectInputProps) => (
   <div
     className={clsx(
       "flex w-full flex-col items-center justify-start gap-2",
       className
     )}
   >
-    {label && <label htmlFor={id} className="text-md w-full font-semibold">{label}</label>}
+    {label && (
+      <label htmlFor={id} className="text-md w-full font-semibold">
+        {label}
+      </label>
+    )}
     <Select<Option, false>
       unstyled
       id={id}
@@ -116,4 +120,4 @@ const SelectInput = ({
   </div>
 );
 
-export default SelectInput;
+export default ReactSelectInput;
