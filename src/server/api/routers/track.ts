@@ -46,12 +46,42 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
-          title: input.query
-            ? {
-                search: input.query.trim().split(" ").join(" & "),
-              }
-            : undefined,
+          ...(input.query &&
+            (input.query.startsWith("@")
+              ? {
+                  // Only search by collaborator usernames if query starts with "@"
+                  collaborators: {
+                    some: {
+                      user: {
+                        profile: {
+                          username: {
+                            contains: input.query.slice(1), // Remove the "@" for search
+                            mode: "insensitive",
+                          },
+                        },
+                      },
+                    },
+                  },
+                }
+              : {
+                  // Otherwise, search by title or slug
+                  OR: [
+                    {
+                      title: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                    {
+                      username: {
+                        contains: input.query,
+                        mode: "insensitive",
+                      },
+                    },
+                  ],
+                })),
         },
+
         include: {
           collaborators: {
             include: {
@@ -297,6 +327,7 @@ export const trackRouter = createTRPCRouter({
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         explicit: z.boolean(),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -487,6 +518,7 @@ export const trackRouter = createTRPCRouter({
           musicStatus: "IDEA",
           visualStatus: "SEARCHING",
           explicit: input.explicit,
+          type: input.type ?? "ORIGINAL",
         },
       });
 
@@ -647,6 +679,7 @@ export const trackRouter = createTRPCRouter({
         title: track.title,
         description: track.description,
         explicit: track.explicit,
+        type: track.type,
         musicStatus: track.musicStatus,
         visualStatus: track.visualStatus,
         project: {
@@ -697,6 +730,7 @@ export const trackRouter = createTRPCRouter({
           "ABANDONED",
           "FINISHED",
         ]),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -767,6 +801,7 @@ export const trackRouter = createTRPCRouter({
           description: input.description,
           musicStatus: input.musicStatus,
           visualStatus: input.visualStatus,
+          type: input.type ?? track.type,
         },
       });
 

@@ -107,6 +107,7 @@ export default async function InfoPage({
                 title={track.title}
                 description={track.description}
                 explicit={track.explicit}
+                type={track.type}
                 musicStatus={track.musicStatus}
                 visualStatus={track.visualStatus}
               />
