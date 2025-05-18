@@ -15,7 +15,7 @@ export const s3 = new S3Client({
     secretAccessKey: env.FILE_STORAGE_SECRET,
   },
   endpoint: env.FILE_STORAGE_ENDPOINT,
-  forcePathStyle: env.FILE_STORAGE_PATH_STYLE === true,
+  forcePathStyle: env.FILE_STORAGE_PATH_STYLE,
 });
 
 type Options = {
