@@ -30,6 +30,7 @@ export default async function TracksPage({
   }
 
   const access = await api.access.getAccess();
+  const profile = await api.profile.getProfile();
 
   return (
     <HydrateClient>
@@ -41,6 +42,9 @@ export default async function TracksPage({
               title: project.title,
               username: project.username,
             }}
+            profile={profile}
+            session={session}
+            access={access}
           />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <div className="mb-8 flex flex-col items-start justify-start gap-2">
