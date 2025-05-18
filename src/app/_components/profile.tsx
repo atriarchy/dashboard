@@ -16,6 +16,9 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
 import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
+import Combobox, { type Item } from "@/app/_components/primitives/combobox";
+import countryList from "countries-list/minimal/countries.en.min.json";
+import { getEmojiFlag, type TCountryCode } from "countries-list";
 
 export type ProfileType = {
   id: string;
@@ -45,6 +48,18 @@ export type ProfileType = {
   };
   privacy: "PRIVATE";
 };
+
+const countryOptions: Item[] = Object.entries(countryList)
+  .map(([key, value]) => ({
+    id: key,
+    name: value,
+    emoji: getEmojiFlag(key as TCountryCode),
+  }))
+  .sort((a, b) => {
+    if (a.id === "US") return -1;
+    if (b.id === "US") return 1;
+    return a.name.localeCompare(b.name);
+  });
 
 export function Profile({
   onboarding,
@@ -475,13 +490,12 @@ export function Profile({
               placeholder="Legal Name"
               maxLength={256}
             />
-            <TextInput
+            <Combobox
               id="country"
               label="Country"
               value={country}
-              onChange={e => setCountry(e.target.value)}
-              placeholder="Country"
-              maxLength={256}
+              onChange={val => setCountry(val)}
+              items={countryOptions}
             />
           </div>
           <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
@@ -524,13 +538,12 @@ export function Profile({
                   maxLength={256}
                   required
                 />
-                <TextInput
+                <Combobox
                   id="proCountry"
                   label="In which country does the PRO represent you?"
                   value={proCountry}
-                  onChange={e => setProCountry(e.target.value)}
-                  placeholder="Country"
-                  maxLength={256}
+                  onChange={val => setProCountry(val)}
+                  items={countryOptions}
                 />
               </div>
               <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
