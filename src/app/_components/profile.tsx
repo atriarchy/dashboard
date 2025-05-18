@@ -16,9 +16,9 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "@/app/_components/primitives/text-input";
 import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
-import ReactSelectInput from "@/app/_components/primitives/react-select-input";
-import type { Option } from "@/app/_components/primitives/react-select-input";
-import countryList from "react-select-country-list";
+import Combobox, { type Item } from "@/app/_components/primitives/combobox";
+import countryList from "countries-list/minimal/countries.en.min.json";
+import { getEmojiFlag, type TCountryCode } from "countries-list";
 
 export type ProfileType = {
   id: string;
@@ -49,7 +49,17 @@ export type ProfileType = {
   privacy: "PRIVATE";
 };
 
-const countryOptions: Option[] = countryList().getData();
+const countryOptions: Item[] = Object.entries(countryList)
+  .map(([key, value]) => ({
+    id: key,
+    name: value,
+    emoji: getEmojiFlag(key as TCountryCode),
+  }))
+  .sort((a, b) => {
+    if (a.id === "US") return -1;
+    if (b.id === "US") return 1;
+    return a.name.localeCompare(b.name);
+  });
 
 export function Profile({
   onboarding,
@@ -480,14 +490,12 @@ export function Profile({
               placeholder="Legal Name"
               maxLength={256}
             />
-            <ReactSelectInput
+            <Combobox
               id="country"
               label="Country"
-              className="w-full"
-              value={countryOptions.find(opt => opt.value === country) ?? null}
-              onChange={opt => setCountry(opt?.value ?? "")}
-              options={countryOptions}
-              placeholder="Select Country"
+              value={country}
+              onChange={val => setCountry(val ?? null)}
+              items={countryOptions}
             />
           </div>
           <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
