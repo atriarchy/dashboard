@@ -114,14 +114,21 @@ export default async function InfoPage({
             )}
             <CreateSong username={track.username} explicit={track.explicit} />
             {track.songUrl && (
-              <a
-                href={track.songUrl}
-                download={track.username}
-                className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
-              >
-                <FontAwesomeIcon icon={faCloudArrowDown} />
-                Download Song
-              </a>
+              <div className="flex w-full max-w-lg items-center gap-3">
+                <audio controls className="h-10 w-full">
+                  <source src={track.songUrl} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+
+                <a
+                  href={track.songUrl}
+                  download={track.username}
+                  className="text-violet-400 transition hover:text-violet-200"
+                  title="Download Song"
+                >
+                  <FontAwesomeIcon icon={faCloudArrowDown} size="xl" />
+                </a>
+              </div>
             )}
           </div>
         </div>
