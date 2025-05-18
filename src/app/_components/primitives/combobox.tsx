@@ -52,7 +52,6 @@ const Combobox = ({
   return (
     <HeadlessCombobox
       as="div"
-      id={id}
       value={value}
       onChange={val => {
         setQuery("");
@@ -65,6 +64,7 @@ const Combobox = ({
       </Label>
       <div className="relative mt-2">
         <ComboboxInput
+          id={id}
           className={className}
           onChange={event => setQuery(event.target.value)}
           onBlur={() => setQuery("")}
