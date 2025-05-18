@@ -494,7 +494,7 @@ export function Profile({
               id="country"
               label="Country"
               value={country}
-              onChange={val => setCountry(val ?? null)}
+              onChange={val => setCountry(val)}
               items={countryOptions}
             />
           </div>
@@ -538,13 +538,12 @@ export function Profile({
                   maxLength={256}
                   required
                 />
-                <TextInput
+                <Combobox
                   id="proCountry"
                   label="In which country does the PRO represent you?"
                   value={proCountry}
-                  onChange={e => setProCountry(e.target.value)}
-                  placeholder="Country"
-                  maxLength={256}
+                  onChange={val => setProCountry(val)}
+                  items={countryOptions}
                 />
               </div>
               <div className="flex w-full flex-col items-center justify-start gap-2 md:flex-row">
