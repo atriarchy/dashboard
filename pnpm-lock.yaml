@@ -117,9 +117,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
-      '@types/react-select-country-list':
-        specifier: ^2.2.3
-        version: 2.2.3
       '@types/react-twemoji':
         specifier: ^0.4.3
         version: 0.4.3
@@ -1037,9 +1034,6 @@ packages:
 
   '@types/react-dom@18.3.0':
     resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
-
-  '@types/react-select-country-list@2.2.3':
-    resolution: {integrity: sha512-nffcYOwuun+5B0EWqubK+amHpPdK9Xj20xkLYNqYrzmESd8FnpLwHsS79ClLAWA9y+icVA8gWPkbwBp1gpjSwA==}
 
   '@types/react-twemoji@0.4.3':
     resolution: {integrity: sha512-VzWkjmO8yJ31JSWgQhe0LCLU3FxcurTOklECm9p8v1xI/WfUBOGbSrqPjQPL46LE4oOqfrYIQ+0LM/8I6A8EDQ==}
@@ -4144,8 +4138,6 @@ snapshots:
   '@types/react-dom@18.3.0':
     dependencies:
       '@types/react': 18.3.4
-
-  '@types/react-select-country-list@2.2.3': {}
 
   '@types/react-twemoji@0.4.3':
     dependencies:
