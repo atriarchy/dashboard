@@ -56,6 +56,8 @@ export const auditLogRouter = createTRPCRouter({
               profile: true,
             },
           },
+          discordUser: true,
+          targetDiscordUser: true,
         },
       });
 
@@ -74,20 +76,20 @@ export const auditLogRouter = createTRPCRouter({
             user = `${auditLog.user.profile.name}${auditLog.user.profile.username ? ` (@${auditLog.user.profile.username})` : ""}`;
           }
 
-          if (auditLog.discordUserId) {
-            user = auditLog.discordUsername
-              ? `@${auditLog.discordUsername} (Discord)`
-              : `${auditLog.discordUserId} (Discord)`;
+          if (auditLog.discordUser) {
+            user = auditLog.discordUser.username
+              ? `@${auditLog.discordUser.username} (Discord)`
+              : `${auditLog.discordUser.id} (Discord)`;
           }
 
           if (auditLog.targetUser?.profile) {
             targetUser = `${auditLog.targetUser.profile.name}${auditLog.targetUser.profile.username ? ` (@${auditLog.targetUser.profile.username})` : ""}`;
           }
 
-          if (auditLog.targetDiscordUserId) {
-            targetUser = auditLog.targetDiscordUsername
-              ? `@${auditLog.targetDiscordUsername} (Discord)`
-              : `${auditLog.targetDiscordUserId} (Discord)`;
+          if (auditLog.targetDiscordUser) {
+            targetUser = auditLog.targetDiscordUser.username
+              ? `@${auditLog.targetDiscordUser.username} (Discord)`
+              : `${auditLog.targetDiscordUser.id} (Discord)`;
           }
 
           if (auditLog.action === "CREATE_TRACK") {

@@ -103,6 +103,7 @@ export const profileRouter = createTRPCRouter({
                           profile: true,
                         },
                       },
+                      discordUser: true,
                     },
                   },
                 },
@@ -133,10 +134,15 @@ export const profileRouter = createTRPCRouter({
                           username: credit.collaborator.user.profile.username,
                         }
                       : undefined
-                    : {
-                        name: credit.collaborator.discordUsername ?? "Unknown",
-                        username: null,
-                      }
+                    : credit.collaborator.discordUser
+                      ? {
+                          name: credit.collaborator.discordUser.username,
+                          username: null,
+                        }
+                      : {
+                          name: "Unknown",
+                          username: null,
+                        }
                   : {
                       name: credit.name ?? "Unknown",
                       username: null,
@@ -437,6 +443,7 @@ export const profileRouter = createTRPCRouter({
           })
           .filter(p => p !== null);
 
+        // Upgrade the DiscordUser to a User
         if (discordProviders && discordProviders.length > 0) {
           await ctx.db.trackCollaborator.updateMany({
             where: {
@@ -444,9 +451,15 @@ export const profileRouter = createTRPCRouter({
             },
             data: {
               userId: ctx.session.user.id,
-              discordUserId: null,
-              discordUsername: null,
-              discordAvatar: null,
+            },
+          });
+
+          await ctx.db.trackAuditLog.updateMany({
+            where: {
+              OR: discordProviders,
+            },
+            data: {
+              userId: ctx.session.user.id,
             },
           });
 
@@ -456,25 +469,34 @@ export const profileRouter = createTRPCRouter({
 
           await ctx.db.trackAuditLog.updateMany({
             where: {
-              OR: discordProviders,
-            },
-            data: {
-              userId: ctx.session.user.id,
-              discordUserId: null,
-              discordUsername: null,
-              discordAvatar: null,
-            },
-          });
-
-          await ctx.db.trackAuditLog.updateMany({
-            where: {
               OR: targetDiscordProvider,
             },
             data: {
               targetUserId: ctx.session.user.id,
-              targetDiscordUserId: null,
-              targetDiscordUsername: null,
-              targetDiscordAvatar: null,
+            },
+          });
+
+          await ctx.db.ticket.updateMany({
+            where: {
+              OR: targetDiscordProvider,
+            },
+            data: {
+              userId: ctx.session.user.id,
+            },
+          });
+
+          await ctx.db.ticketFeedItem.updateMany({
+            where: {
+              OR: targetDiscordProvider,
+            },
+            data: {
+              userId: ctx.session.user.id,
+            },
+          });
+
+          await ctx.db.discordUser.deleteMany({
+            where: {
+              OR: discordProviders,
             },
           });
         }

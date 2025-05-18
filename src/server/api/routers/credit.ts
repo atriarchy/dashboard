@@ -44,6 +44,7 @@ export const creditRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
         },
@@ -72,10 +73,10 @@ export const creditRouter = createTRPCRouter({
           };
         }
 
-        if (credit.collaborator?.discordUserId) {
+        if (credit.collaborator?.discordUser) {
           return {
             id: credit.id,
-            name: credit.collaborator.discordUsername,
+            name: credit.collaborator.discordUser.username,
             nameSource: "DISCORD" as const,
             type: credit.type,
             value: credit.value,
@@ -214,9 +215,6 @@ export const creditRouter = createTRPCRouter({
                 trackId: updatedCredit.trackId,
                 userId: ctx.session.user.id,
                 targetDiscordUserId: updatedCredit.collaborator.discordUserId,
-                targetDiscordUsername:
-                  updatedCredit.collaborator.discordUsername,
-                targetDiscordAvatar: updatedCredit.collaborator.discordAvatar,
                 action: "UPDATE_CREDIT",
                 oldValue: credit,
                 value: updatedCredit,
@@ -319,8 +317,6 @@ export const creditRouter = createTRPCRouter({
                 trackId: track.id,
                 userId: ctx.session.user.id,
                 targetDiscordUserId: collaborator.discordUserId,
-                targetDiscordUsername: collaborator.discordUsername,
-                targetDiscordAvatar: collaborator.discordAvatar,
                 action: "CREATE_CREDIT",
                 value: credit,
               },
@@ -442,8 +438,6 @@ export const creditRouter = createTRPCRouter({
               trackId: credit.trackId,
               userId: ctx.session.user.id,
               targetDiscordUserId: credit.collaborator.discordUserId,
-              targetDiscordUsername: credit.collaborator.discordUsername,
-              targetDiscordAvatar: credit.collaborator.discordAvatar,
               action: "DELETE_CREDIT",
               oldValue: credit,
             },

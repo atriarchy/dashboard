@@ -90,6 +90,7 @@ export const trackRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
         },
@@ -119,11 +120,11 @@ export const trackRouter = createTRPCRouter({
               };
             }
 
-            if (collaborator.discordUserId) {
+            if (collaborator.discordUser) {
               return {
                 type: "DISCORD",
-                username: collaborator.discordUsername,
-                avatar: collaborator.discordAvatar,
+                username: collaborator.discordUser.username,
+                avatar: collaborator.discordUser.avatar,
                 role: collaborator.role,
               };
             }
@@ -249,6 +250,7 @@ export const trackRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
         },
@@ -278,11 +280,11 @@ export const trackRouter = createTRPCRouter({
                 };
               }
 
-              if (collaborator.discordUserId) {
+              if (collaborator.discordUser) {
                 return {
                   type: "DISCORD",
-                  username: collaborator.discordUsername,
-                  avatar: collaborator.discordAvatar,
+                  username: collaborator.discordUser.username,
+                  avatar: collaborator.discordUser.avatar,
                   role: collaborator.role,
                 };
               }
@@ -599,6 +601,7 @@ export const trackRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
         },
@@ -634,14 +637,14 @@ export const trackRouter = createTRPCRouter({
               };
             }
 
-            if (collaborator.discordUserId) {
+            if (collaborator.discordUser) {
               return {
                 type: "DISCORD" as const,
                 id: collaborator.id,
                 discord: {
-                  userId: collaborator.discordUserId,
-                  username: collaborator.discordUsername,
-                  avatar: collaborator.discordAvatar,
+                  userId: collaborator.discordUser.id,
+                  username: collaborator.discordUser.username,
+                  avatar: collaborator.discordUser.avatar,
                 },
                 role: collaborator.role,
                 acceptedInvite: collaborator.acceptedInvite,
