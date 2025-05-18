@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const optionalBoolSchema = z
   .enum(["true", "false"])
-  .optional()
+  .default("false")
   .transform(val => val === "true");
 
 export const env = createEnv({
