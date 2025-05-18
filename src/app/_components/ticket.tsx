@@ -8,7 +8,7 @@ import {
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TicketItemDetails } from "@/app/_components/ticket-item-detail";
 import { humanize } from "@/utils/string";
 import Link from "next/link";
@@ -42,6 +42,7 @@ export function Ticket({
 }) {
   const [comment, setComment] = useState("");
   const [privateComment, setPrivateComment] = useState(false);
+  const scrollRef = useRef<HTMLUListElement | null>(null);
 
   const localTicket = api.ticket.getTicket.useQuery({
     id: ticket,
@@ -57,6 +58,17 @@ export function Ticket({
       toast.error(error.message);
     },
   });
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [scrollRef, localTicket.data]);
+
+  useEffect(() => {
+    void localTicket.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (localTicket.error) {
     return (
@@ -110,7 +122,11 @@ export function Ticket({
         />
       </div>
       <div className="flex w-full flex-1 flex-col items-center justify-between overflow-hidden">
-        <ul role="list" className="w-full space-y-6 overflow-y-auto px-4">
+        <ul
+          ref={scrollRef}
+          role="list"
+          className="w-full space-y-6 overflow-y-auto px-4"
+        >
           {localTicket.data.feed.map((item, index) => {
             const details = [];
 
