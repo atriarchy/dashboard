@@ -480,21 +480,19 @@ export const profileRouter = createTRPCRouter({
         }
       }
 
+      const oldLinks = await ctx.db.profileLink.findMany({
+        where: {
+          profileId: data.id,
+        },
+      });
+
       await ctx.db.profileLink.deleteMany({
         where: {
           profileId: data.id,
         },
       });
 
-      let oldLinks;
-
       if (input.links) {
-        oldLinks = await ctx.db.profileLink.findMany({
-          where: {
-            profileId: data.id,
-          },
-        });
-
         await ctx.db.profileLink.createMany({
           data: input.links.map(link => ({
             profileId: data.id,
