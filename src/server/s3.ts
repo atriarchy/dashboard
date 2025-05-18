@@ -15,6 +15,7 @@ export const s3 = new S3Client({
     secretAccessKey: env.FILE_STORAGE_SECRET,
   },
   endpoint: env.FILE_STORAGE_ENDPOINT,
+  forcePathStyle: env.FILE_STORAGE_PATH_STYLE === true,
 });
 
 type Options = {
@@ -27,9 +28,7 @@ export async function getUploadURL(options: Options) {
   const file = options.file;
   const metadata = options.metadata ?? {};
   const expiresIn = options.expiresIn ?? 60;
-  const key = !env.FILE_STORAGE_ENDPOINT.startsWith("http://localhost")
-    ? crypto.randomBytes(32).toString("hex")
-    : `${env.FILE_STORAGE_BUCKET}/${crypto.randomBytes(32).toString("hex")}`;
+  const key = crypto.randomBytes(32).toString("hex");
 
   const url = await getSignedUrl(
     s3,
@@ -38,12 +37,9 @@ export async function getUploadURL(options: Options) {
       Key: key,
       ContentType: file.type,
       ContentLength: file.size,
-      ChecksumSHA256: file.checksum,
       Metadata: metadata,
     }),
-    {
-      expiresIn,
-    }
+    { expiresIn }
   );
 
   return { url, key };
