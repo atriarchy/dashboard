@@ -16,6 +16,7 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faChevronDown, faPlus } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
+import SelectInput from "./primitives/select-input";
 
 export function CreateTrack({ project }: { project: string }) {
   const router = useRouter();
@@ -26,6 +27,7 @@ export function CreateTrack({ project }: { project: string }) {
   const [explicit, setExplicit] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [username, setUsername] = useState("");
+  const [type, setType] = useState<"ORIGINAL" | "PARODY" | "COVER">("ORIGINAL");
 
   const initalFocusRef = useRef(null);
 
@@ -121,6 +123,7 @@ export function CreateTrack({ project }: { project: string }) {
                             : undefined,
                           description: description || undefined,
                           explicit: advanced ? explicit : false,
+                          type,
                         });
                       }}
                     >
@@ -187,18 +190,36 @@ export function CreateTrack({ project }: { project: string }) {
                             maxLength={64}
                             required
                           />
-                          <select
+                          <SelectInput
                             id="explicit"
-                            name="Is this track explicit?"
-                            className="w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900"
+                            label="Is this track explicit?"
                             value={explicit ? "EXPLICIT" : "CLEAN"}
                             onChange={e =>
                               setExplicit(e.target.value === "EXPLICIT")
                             }
-                          >
-                            <option value="CLEAN">Clean</option>
-                            <option value="EXPLICIT">Explicit</option>
-                          </select>
+                            options={[
+                              { value: "CLEAN", label: "Clean" },
+                              { value: "EXPLICIT", label: "Explicit" },
+                            ]}
+                          />
+                          <SelectInput
+                            id="type"
+                            label="Track Type"
+                            value={type}
+                            onChange={e =>
+                              setType(
+                                e.target.value as
+                                  | "ORIGINAL"
+                                  | "PARODY"
+                                  | "COVER"
+                              )
+                            }
+                            options={[
+                              { value: "ORIGINAL", label: "Original" },
+                              { value: "PARODY", label: "Parody" },
+                              { value: "COVER", label: "Cover" },
+                            ]}
+                          />
                         </>
                       )}
                     </form>

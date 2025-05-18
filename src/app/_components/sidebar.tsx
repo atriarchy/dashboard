@@ -112,6 +112,7 @@ export function Sidebar({
         </div>
         <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
           <BlockLink
+            onClick={() => setIsOpen(false)}
             href="/dashboard/projects"
             className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
               selected === "PROJECTS"
@@ -123,6 +124,7 @@ export function Sidebar({
             <span>Projects</span>
           </BlockLink>
           <BlockLink
+            onClick={() => setIsOpen(false)}
             href="/dashboard/invites"
             className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
               selected === "INVITES"
@@ -134,6 +136,7 @@ export function Sidebar({
             <span>Invites</span>
           </BlockLink>
           <BlockLink
+            onClick={() => setIsOpen(false)}
             href="/dashboard/tickets"
             className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
               selected === "TICKETS"
@@ -151,6 +154,7 @@ export function Sidebar({
                   {project.title}
                 </span>
                 <BlockLink
+                  onClick={() => setIsOpen(false)}
                   href={`/dashboard/projects/${project.username}/tracks`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_TRACKS"
@@ -162,6 +166,7 @@ export function Sidebar({
                   <span>Tracks</span>
                 </BlockLink>
                 <BlockLink
+                  onClick={() => setIsOpen(false)}
                   href={`/dashboard/projects/${project.username}/agreements`}
                   className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                     selected === "PROJECTS_AGREEMENTS"
@@ -179,6 +184,7 @@ export function Sidebar({
                     {track.title}
                   </span>
                   <BlockLink
+                    onClick={() => setIsOpen(false)}
                     href={`/dashboard/projects/${project.username}/tracks/${track.username}`}
                     className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                       selected === "PROJECTS_TRACKS_INFO"
@@ -190,6 +196,7 @@ export function Sidebar({
                     <span>Info</span>
                   </BlockLink>
                   <BlockLink
+                    onClick={() => setIsOpen(false)}
                     href={`/dashboard/projects/${project.username}/tracks/${track.username}/collaborators`}
                     className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                       selected === "PROJECTS_TRACKS_COLLABORATORS"
@@ -201,6 +208,7 @@ export function Sidebar({
                     <span>Collaborators</span>
                   </BlockLink>
                   <BlockLink
+                    onClick={() => setIsOpen(false)}
                     href={`/dashboard/projects/${project.username}/tracks/${track.username}/credits`}
                     className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                       selected === "PROJECTS_TRACKS_CREDITS"
@@ -212,6 +220,7 @@ export function Sidebar({
                     <span>Credits</span>
                   </BlockLink>
                   <BlockLink
+                    onClick={() => setIsOpen(false)}
                     href={`/dashboard/projects/${project.username}/tracks/${track.username}/logs`}
                     className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
                       selected === "PROJECTS_TRACKS_LOGS"
@@ -230,6 +239,7 @@ export function Sidebar({
         <div className="mt-8 flex w-full flex-col items-center justify-start gap-2 px-4">
           {access === "ADMIN" && <Access />}
           <BlockLink
+            onClick={() => setIsOpen(false)}
             href="/dashboard/profile"
             className={`flex w-full items-center justify-start gap-2 rounded-lg p-2 font-semibold ${
               selected === "PROFILE"
@@ -245,6 +255,7 @@ export function Sidebar({
           <div className="flex w-full items-center justify-between gap-2 px-4 pt-2">
             {profile ? (
               <BlockLink
+                onClick={() => setIsOpen(false)}
                 href={`/@${profile.username}`}
                 className="group flex items-center gap-2 overflow-hidden"
               >

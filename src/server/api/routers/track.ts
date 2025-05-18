@@ -327,6 +327,7 @@ export const trackRouter = createTRPCRouter({
         title: z.string().min(1).max(64),
         description: z.string().min(1).max(1024).optional(),
         explicit: z.boolean(),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -348,7 +349,7 @@ export const trackRouter = createTRPCRouter({
       let username = input.username;
 
       if (username) {
-        const usernameFind = await ctx.db.project.findFirst({
+        const usernameFind = await ctx.db.track.findFirst({
           where: {
             username: {
               equals: input.username,
@@ -517,6 +518,7 @@ export const trackRouter = createTRPCRouter({
           musicStatus: "IDEA",
           visualStatus: "SEARCHING",
           explicit: input.explicit,
+          type: input.type ?? "ORIGINAL",
         },
       });
 
@@ -677,6 +679,7 @@ export const trackRouter = createTRPCRouter({
         title: track.title,
         description: track.description,
         explicit: track.explicit,
+        type: track.type,
         musicStatus: track.musicStatus,
         visualStatus: track.visualStatus,
         project: {
@@ -727,6 +730,7 @@ export const trackRouter = createTRPCRouter({
           "ABANDONED",
           "FINISHED",
         ]),
+        type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -797,6 +801,8 @@ export const trackRouter = createTRPCRouter({
           description: input.description,
           musicStatus: input.musicStatus,
           visualStatus: input.visualStatus,
+          explicit: input.explicit,
+          type: input.type ?? track.type,
         },
       });
 

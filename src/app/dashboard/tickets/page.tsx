@@ -24,7 +24,12 @@ export default async function TicketsPage() {
     <HydrateClient>
       <main className="h-dvh w-full bg-neutral-900 text-gray-200">
         <div className="flex h-full w-full items-start justify-center">
-          <Sidebar profile={profile} session={session} access={access} />
+          <Sidebar
+            selected="TICKETS"
+            profile={profile}
+            session={session}
+            access={access}
+          />
           <div className="flex h-full w-full grow flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             <Tickets />
           </div>
