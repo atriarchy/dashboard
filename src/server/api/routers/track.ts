@@ -349,7 +349,7 @@ export const trackRouter = createTRPCRouter({
       let username = input.username;
 
       if (username) {
-        const usernameFind = await ctx.db.project.findFirst({
+        const usernameFind = await ctx.db.track.findFirst({
           where: {
             username: {
               equals: input.username,
@@ -801,6 +801,7 @@ export const trackRouter = createTRPCRouter({
           description: input.description,
           musicStatus: input.musicStatus,
           visualStatus: input.visualStatus,
+          explicit: input.explicit,
           type: input.type ?? track.type,
         },
       });
