@@ -4,10 +4,11 @@ import { api, HydrateClient } from "@/trpc/server";
 import { Sidebar, SidebarButton } from "@/app/_components/sidebar";
 import { InviteBanner } from "@/app/_components/invite-banner";
 import { EditTrack } from "@/app/_components/update-track";
+import { DeleteTrack } from "@/app/_components/delete-track";
 import IconExplicit from "@/app/_components/icons/icon-explicit";
 import { CreateSong } from "@/app/_components/create-song";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faCloudArrowDown, faBan } from "@fortawesome/free-solid-svg-icons";
 
 export default async function InfoPage({
   params,
@@ -76,14 +77,29 @@ export default async function InfoPage({
                 <div className="flex items-center justify-center">
                   <SidebarButton />
                   <h1 className="flex items-center space-x-2 text-3xl font-bold">
-                    <span className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-transparent">
-                      {track.title}
-                    </span>
+                    {track.deletedAt ? (
+                      <span className="flex items-center gap-2 text-gray-400 line-through">
+                        <FontAwesomeIcon
+                          icon={faBan}
+                          className="text-red-500"
+                        />
+                        {track.title}
+                        <span className="text-sm font-normal">(Deleted)</span>
+                      </span>
+                    ) : (
+                      <span className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-transparent">
+                        {track.title}
+                      </span>
+                    )}
                     {track.explicit && <IconExplicit />}
                   </h1>
                 </div>
                 {track.description && (
-                  <p className="text-lg">{track.description}</p>
+                  <p
+                    className={`text-lg ${track.deletedAt ? "text-gray-400" : ""}`}
+                  >
+                    {track.description}
+                  </p>
                 )}
                 {track.manager && (
                   <span className="text-sm text-gray-400">
@@ -93,6 +109,11 @@ export default async function InfoPage({
                       : `${track.manager.discord.username} (Discord)`}
                   </span>
                 )}
+                {track.deletedAt && access === "ADMIN" && (
+                  <span className="text-sm text-gray-400">
+                    Deleted on: {new Date(track.deletedAt).toLocaleString()}
+                  </span>
+                )}
               </div>
             }
             {track.me.role !== "VIEWER" && !track.me.acceptedInvite && (
@@ -100,20 +121,41 @@ export default async function InfoPage({
             )}
             {(track.me.role === "MANAGER" ||
               track.me.role === "EDITOR" ||
-              access === "ADMIN") && (
-              <EditTrack
-                access={access}
+              access === "ADMIN") &&
+              !track.deletedAt && (
+                <div className="flex items-center gap-4">
+                  <EditTrack
+                    access={access}
+                    username={track.username}
+                    title={track.title}
+                    description={track.description}
+                    explicit={track.explicit}
+                    type={track.type}
+                    musicStatus={track.musicStatus}
+                    visualStatus={track.visualStatus}
+                  />
+                  {(track.me.role === "MANAGER" || access === "ADMIN") && (
+                    <DeleteTrack
+                      username={track.username}
+                      title={track.title}
+                      access={access}
+                    />
+                  )}
+                </div>
+              )}
+
+            {track.deletedAt && access === "ADMIN" && (
+              <DeleteTrack
                 username={track.username}
                 title={track.title}
-                description={track.description}
-                explicit={track.explicit}
-                type={track.type}
-                musicStatus={track.musicStatus}
-                visualStatus={track.visualStatus}
+                isDeleted={true}
+                access={access}
               />
             )}
-            <CreateSong username={track.username} explicit={track.explicit} />
-            {track.songUrl && (
+            {!track.deletedAt && (
+              <CreateSong username={track.username} explicit={track.explicit} />
+            )}
+            {track.songUrl && (!track.deletedAt || access === "ADMIN") && (
               <div className="flex w-full max-w-lg items-center gap-3">
                 <audio controls className="h-10 w-full">
                   <source src={track.songUrl} type="audio/mpeg" />
