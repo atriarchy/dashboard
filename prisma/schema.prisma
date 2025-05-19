@@ -94,6 +94,13 @@ enum TicketFeedItemAction {
     CREATE_COMMENT
 }
 
+enum TrackSubmissionStatus {
+    DRAFT
+    SUBMITTED
+    ACCEPTED
+    REJECTED
+}
+
 model Access {
     id                      String     @id @default(cuid())
     provider                String
@@ -186,6 +193,11 @@ model Track {
     song             TrackSong?
     maxSongFileSize  Int                 @default(62914560)
     auditLogs        TrackAuditLog[]
+    submissionStatus TrackSubmissionStatus @default(DRAFT)
+    submittedAt      DateTime?
+    acceptedAt       DateTime?
+    rejectedAt       DateTime?
+    submissionNote   String?
     createdAt        DateTime            @default(now())
     updatedAt        DateTime            @default(now()) @updatedAt
     deletedAt        DateTime?
