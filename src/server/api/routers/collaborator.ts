@@ -28,6 +28,10 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -450,6 +454,10 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -501,6 +509,12 @@ export const collaboratorRouter = createTRPCRouter({
             where: {
               trackId: track.id,
               userId: userInput.id,
+              track: {
+                project: {
+                  deletedAt: null,
+                },
+                deletedAt: access === "ADMIN" ? undefined : null,
+              },
             },
           });
 
@@ -584,6 +598,12 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             discordUserId: input.discord,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -684,6 +704,12 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             userId: profile.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -787,6 +813,10 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -837,6 +867,12 @@ export const collaboratorRouter = createTRPCRouter({
             where: {
               trackId: track.id,
               userId: userInput.id,
+              track: {
+                project: {
+                  deletedAt: null,
+                },
+                deletedAt: access === "ADMIN" ? undefined : null,
+              },
             },
           });
 
@@ -857,6 +893,12 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             discordUserId: input.discord,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -894,6 +936,12 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             userId: profile.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -924,10 +972,18 @@ export const collaboratorRouter = createTRPCRouter({
     }),
 
   getMyInvites: protectedProcedure.query(async ({ ctx }) => {
+    const access = await accessCheck(ctx);
+
     const invites = await ctx.db.trackCollaborator.findMany({
       where: {
         userId: ctx.session.user.id,
         acceptedInvite: false,
+        track: {
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
+        },
       },
       include: {
         track: {
@@ -952,12 +1008,18 @@ export const collaboratorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
       const track = await ctx.db.track.findFirst({
         where: {
           username: {
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           collaborators: {
@@ -992,6 +1054,12 @@ export const collaboratorRouter = createTRPCRouter({
         where: {
           trackId: track.id,
           userId: collaborator.userId,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
         },
       });
 
@@ -1028,12 +1096,18 @@ export const collaboratorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
       const track = await ctx.db.track.findFirst({
         where: {
           username: {
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           collaborators: {
@@ -1068,6 +1142,12 @@ export const collaboratorRouter = createTRPCRouter({
         where: {
           trackId: track.id,
           userId: collaborator.userId,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
         },
       });
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { accessCheck } from "@/server/api/routers/access";
 import { env } from "@/env";
-import { getUploadURL, deleteObject } from "@/server/s3";
+import { getUploadURL } from "@/server/s3";
 
 const allowedFileTypes = ["image/png", "image/jpeg"];
 const maxFileSize = 1048576; // 1MB

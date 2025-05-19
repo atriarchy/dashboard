@@ -38,6 +38,7 @@ export const agreementRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -116,6 +117,7 @@ export const agreementRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -137,6 +139,11 @@ export const agreementRouter = createTRPCRouter({
             where: {
               agreementId: agreement.id,
               userId: ctx.session.user.id,
+              agreement: {
+                project: {
+                  deletedAt: null,
+                },
+              },
             },
           });
 
@@ -178,6 +185,11 @@ export const agreementRouter = createTRPCRouter({
         where: {
           agreementId: input.agreement,
           userId: ctx.session.user.id,
+          agreement: {
+            project: {
+              deletedAt: null,
+            },
+          },
         },
         include: {
           agreement: true,

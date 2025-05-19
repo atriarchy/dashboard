@@ -22,6 +22,10 @@ export const creditRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -35,6 +39,12 @@ export const creditRouter = createTRPCRouter({
       const credits = await ctx.db.trackCredit.findMany({
         where: {
           trackId: track.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
         },
         include: {
           collaborator: {
@@ -132,6 +142,12 @@ export const creditRouter = createTRPCRouter({
         const credit = await ctx.db.trackCredit.findUnique({
           where: {
             id: input.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
           include: {
             track: {
@@ -162,6 +178,12 @@ export const creditRouter = createTRPCRouter({
           where: {
             trackId: credit.trackId,
             userId: ctx.session.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -243,6 +265,10 @@ export const creditRouter = createTRPCRouter({
               equals: input.track,
               mode: "insensitive",
             },
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
           include: {
             project: true,
@@ -260,6 +286,12 @@ export const creditRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             userId: ctx.session.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: access === "ADMIN" ? undefined : null,
+            },
           },
         });
 
@@ -268,6 +300,12 @@ export const creditRouter = createTRPCRouter({
             where: {
               id: input.collaborator,
               trackId: track.id,
+              track: {
+                project: {
+                  deletedAt: null,
+                },
+                deletedAt: access === "ADMIN" ? undefined : null,
+              },
             },
             include: {
               user: {
@@ -371,6 +409,12 @@ export const creditRouter = createTRPCRouter({
       const credit = await ctx.db.trackCredit.findUnique({
         where: {
           id: input.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
         },
         include: {
           track: {
@@ -401,6 +445,12 @@ export const creditRouter = createTRPCRouter({
         where: {
           trackId: credit.trackId,
           userId: ctx.session.user.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
         },
       });
 

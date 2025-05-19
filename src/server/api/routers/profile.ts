@@ -52,6 +52,7 @@ export const profileRouter = createTRPCRouter({
               },
             },
           },
+          deletedAt: null,
         },
         select: {
           id: true,
@@ -87,6 +88,10 @@ export const profileRouter = createTRPCRouter({
                   },
                 },
               },
+              project: {
+                deletedAt: null,
+              },
+              deletedAt: null,
             },
             include: {
               project: {
@@ -573,6 +578,12 @@ export const profileRouter = createTRPCRouter({
         where: {
           collaborator: {
             userId: userId,
+          },
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: null,
           },
         },
       });
