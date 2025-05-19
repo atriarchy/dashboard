@@ -26,35 +26,35 @@ INSERT INTO "DiscordUser" ("id", "username", "avatar")
 SELECT DISTINCT "discordUserId", "discordUsername", "discordAvatar"
 FROM "TrackCollaborator"
 WHERE "discordUserId" IS NOT NULL
-  AND "discordUserId" NOT IN (SELECT "id" FROM "DiscordUser");
+ON CONFLICT ("id") DO NOTHING;
 
 -- From TrackAuditLog (actor)
 INSERT INTO "DiscordUser" ("id", "username", "avatar")
 SELECT DISTINCT "discordUserId", "discordUsername", "discordAvatar"
 FROM "TrackAuditLog"
 WHERE "discordUserId" IS NOT NULL
-  AND "discordUserId" NOT IN (SELECT "id" FROM "DiscordUser");
+ON CONFLICT ("id") DO NOTHING;
 
 -- From TrackAuditLog (target)
 INSERT INTO "DiscordUser" ("id", "username", "avatar")
 SELECT DISTINCT "targetDiscordUserId", "targetDiscordUsername", "targetDiscordAvatar"
 FROM "TrackAuditLog"
 WHERE "targetDiscordUserId" IS NOT NULL
-  AND "targetDiscordUserId" NOT IN (SELECT "id" FROM "DiscordUser");
+ON CONFLICT ("id") DO NOTHING;
 
 -- From Ticket
 INSERT INTO "DiscordUser" ("id", "username", "avatar")
 SELECT DISTINCT "discordUserId", "discordUsername", "discordAvatar"
 FROM "Ticket"
 WHERE "discordUserId" IS NOT NULL
-  AND "discordUserId" NOT IN (SELECT "id" FROM "DiscordUser");
+ON CONFLICT ("id") DO NOTHING;
 
 -- From TicketFeedItem
 INSERT INTO "DiscordUser" ("id", "username", "avatar")
 SELECT DISTINCT "discordUserId", "discordUsername", "discordAvatar"
 FROM "TicketFeedItem"
 WHERE "discordUserId" IS NOT NULL
-  AND "discordUserId" NOT IN (SELECT "id" FROM "DiscordUser");
+ON CONFLICT ("id") DO NOTHING;
 
 -- Step 3: Now safe to drop columns
 ALTER TABLE "Ticket"
