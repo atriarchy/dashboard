@@ -46,14 +46,17 @@ const Combobox = ({
       ? items
       : items.filter(
           item =>
-            (item.name.toLowerCase().includes(query.toLowerCase()) ||
-              item.id.toLowerCase().includes(query.toLowerCase()) ||
-              item.secondaryText
-                ?.toLowerCase()
-                .includes(query.toLowerCase())) ??
-            item.keywords?.some(keyword =>
-              keyword.toLowerCase().includes(query.toLowerCase())
-            )
+            item.name.toLowerCase().includes(query.toLowerCase()) ||
+            item.id.toLowerCase().includes(query.toLowerCase()) ||
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            item.secondaryText?.toLowerCase().includes(query.toLowerCase()) ||
+            item.keywords?.some(keyword => {
+              console.log(
+                "Combobox keyword",
+                keyword.toLowerCase().includes(query.toLowerCase())
+              );
+              return keyword.toLowerCase().includes(query.toLowerCase());
+            })
         );
 
   return (
