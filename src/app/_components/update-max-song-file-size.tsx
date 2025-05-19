@@ -68,7 +68,10 @@ export function UpdateMaxSongFileSize({
         id="maxSongFileSize"
         value={value}
         onChange={e => setValue(e.target.value.replace(/[^\d.]/g, ""))}
-        placeholder="e.g. 20"
+        placeholder="60"
+        className="w-20"
+        autoFocus
+        type="number"
       />
       <button
         type="submit"
