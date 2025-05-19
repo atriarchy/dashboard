@@ -19,6 +19,7 @@ export interface Item {
   emoji?: string;
   imageUrl?: string;
   secondaryText?: string;
+  keywords?: string[];
 }
 
 interface ComboboxProps {
@@ -45,8 +46,14 @@ const Combobox = ({
       ? items
       : items.filter(
           item =>
-            item.name.toLowerCase().includes(query.toLowerCase()) ||
-            item.id.toLowerCase().includes(query.toLowerCase())
+            (item.name.toLowerCase().includes(query.toLowerCase()) ||
+              item.id.toLowerCase().includes(query.toLowerCase()) ||
+              item.secondaryText
+                ?.toLowerCase()
+                .includes(query.toLowerCase())) ??
+            item.keywords?.some(keyword =>
+              keyword.toLowerCase().includes(query.toLowerCase())
+            )
         );
 
   return (

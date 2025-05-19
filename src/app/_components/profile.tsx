@@ -18,6 +18,7 @@ import { Blocker } from "@/app/_components/navigation-block";
 import { getPublicUrl } from "@/utils/url";
 import Combobox, { type Item } from "@/app/_components/primitives/combobox";
 import countryList from "countries-list/minimal/countries.en.min.json";
+import countryCodeList from "countries-list/minimal/countries.2to3.min.json";
 import { getEmojiFlag, type TCountryCode } from "countries-list";
 
 export type ProfileType = {
@@ -53,7 +54,9 @@ const countryOptions: Item[] = Object.entries(countryList)
   .map(([key, value]) => ({
     id: key,
     name: value,
+    keywords: [countryCodeList[key as TCountryCode]],
     emoji: getEmojiFlag(key as TCountryCode),
+    secondaryText: key,
   }))
   .sort((a, b) => {
     if (a.id === "US") return -1;
