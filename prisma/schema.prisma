@@ -156,6 +156,7 @@ model Project {
     updatedAt               DateTime          @default(now()) @updatedAt
     closedAt                DateTime?
     releasedAt              DateTime?
+    deletedAt               DateTime?
 }
 
 model ProjectThumbnail {

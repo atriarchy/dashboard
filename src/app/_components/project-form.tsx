@@ -13,7 +13,7 @@ import {
 import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import { computeSHA256 } from "@/app/_helpers/crypto";
@@ -84,15 +84,42 @@ export function ProjectForm(props: ProjectFormProps) {
     },
   });
 
+  const deleteMutation = api.project.deleteProject.useMutation({
+    onSuccess: () => {
+      toast.success("Project deleted.");
+      router.push("/dashboard/projects");
+    },
+    onError: error => {
+      toast.error(error.message);
+    },
+  });
+
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
-      >
-        <FontAwesomeIcon icon={id ? faPencil : faPlus} />
-        {!id && "Add Project"}
-      </button>
+      <div className="mb-2 flex items-center gap-2">
+        <button
+          onClick={() => setIsOpen(true)}
+          className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
+        >
+          <FontAwesomeIcon icon={id ? faPencil : faPlus} />
+          {!id && "Add Project"}
+        </button>
+        {id && (
+          <button
+            onClick={async e => {
+              e.stopPropagation();
+              if (deleteMutation.isPending) return;
+              if (confirm("Are you sure you want to delete this project?")) {
+                deleteMutation.mutate({ id });
+              }
+            }}
+            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 transition hover:bg-red-500 disabled:bg-red-400"
+            disabled={deleteMutation.isPending}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        )}
+      </div>
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
