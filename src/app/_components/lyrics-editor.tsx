@@ -18,10 +18,12 @@ export function LyricsEditor({
 }) {
   const [editing, setEditing] = useState(false);
   const [lyricsState, setLyricsState] = useState(lyrics ?? "");
+  const [originalLyrics, setOriginalLyrics] = useState(lyrics ?? "");
   const updateLyrics = api.track.updateLyrics.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       toast.success("Lyrics updated");
       setEditing(false);
+      setLyricsState(variables.lyrics ?? "");
     },
     onError: err => toast.error(err.message),
   });
@@ -37,7 +39,7 @@ export function LyricsEditor({
             className="ml-2 text-violet-400 hover:text-violet-200"
             onClick={() => {
               setEditing(true);
-              setLyricsState(lyricsState);
+              setOriginalLyrics(lyricsState);
             }}
             title="Edit Lyrics"
           >
@@ -75,7 +77,7 @@ export function LyricsEditor({
               className="rounded bg-neutral-600 px-3 py-1 text-white hover:bg-neutral-500"
               onClick={() => {
                 setEditing(false);
-                setLyricsState(lyrics ?? "");
+                setLyricsState(originalLyrics);
               }}
               disabled={updateLyrics.isPending}
             >
