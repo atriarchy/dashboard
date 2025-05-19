@@ -5,6 +5,7 @@ import {
 } from "@/server/api/trpc";
 import { z } from "zod";
 import { accessCheck, providersCheck } from "@/server/api/routers/access";
+import countryList from "countries-list/minimal/countries.en.min.json";
 import { env } from "@/env";
 
 export const profileRouter = createTRPCRouter({
@@ -397,6 +398,15 @@ export const profileRouter = createTRPCRouter({
         );
       }
 
+      const countryCodes = Object.keys(countryList);
+
+      if (
+        (input.country && !countryCodes.includes(input.country)) ||
+        (input.pro?.country && !countryCodes.includes(input.pro.country))
+      ) {
+        throw new Error("Invalid country.");
+      }
+
       const oldData = await ctx.db.profile.findFirst({
         where: {
           userId: userId,
@@ -463,13 +473,11 @@ export const profileRouter = createTRPCRouter({
             },
           });
 
-          const targetDiscordProvider = discordProviders.map(p => ({
-            targetDiscordUserId: p.discordUserId,
-          }));
-
           await ctx.db.trackAuditLog.updateMany({
             where: {
-              OR: targetDiscordProvider,
+              OR: discordProviders.map(p => ({
+                targetDiscordUserId: p.discordUserId,
+              })),
             },
             data: {
               targetUserId: ctx.session.user.id,
@@ -478,7 +486,7 @@ export const profileRouter = createTRPCRouter({
 
           await ctx.db.ticket.updateMany({
             where: {
-              OR: targetDiscordProvider,
+              OR: discordProviders,
             },
             data: {
               userId: ctx.session.user.id,
@@ -487,7 +495,7 @@ export const profileRouter = createTRPCRouter({
 
           await ctx.db.ticketFeedItem.updateMany({
             where: {
-              OR: targetDiscordProvider,
+              OR: discordProviders,
             },
             data: {
               userId: ctx.session.user.id,
@@ -496,7 +504,9 @@ export const profileRouter = createTRPCRouter({
 
           await ctx.db.discordUser.deleteMany({
             where: {
-              OR: discordProviders,
+              OR: discordProviders.map(p => ({
+                id: p.discordUserId,
+              })),
             },
           });
         }
