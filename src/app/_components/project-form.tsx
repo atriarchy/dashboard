@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -48,8 +48,14 @@ export function ProjectForm(props: ProjectFormProps) {
   const [thumbnail, setThumbnail] = useState<File | undefined>();
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
-  const initalFocusRef = useRef(null);
-  const initalFocusDeleteRef = useRef(null);
+  const initialFocusRef = useRef(null);
+  const initialFocusDeleteRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isDeleteOpen && initialFocusDeleteRef.current) {
+      initialFocusDeleteRef.current.focus();
+    }
+  }, [isDeleteOpen]);
 
   const reset = () => {
     setTitle(props.title ?? "");
@@ -132,7 +138,7 @@ export function ProjectForm(props: ProjectFormProps) {
             setIsEditOpen(false);
             reset();
           }}
-          initialFocus={initalFocusRef}
+          initialFocus={initialFocusRef}
         >
           <TransitionChild
             as={Fragment}
@@ -358,7 +364,7 @@ export function ProjectForm(props: ProjectFormProps) {
             setIsDeleteOpen(false);
             setDeleteConfirmation("");
           }}
-          initialFocus={initalFocusDeleteRef}
+          initialFocus={initialFocusDeleteRef}
         >
           <TransitionChild
             as={Fragment}
@@ -434,6 +440,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         placeholder={username}
                         maxLength={username.length}
                         required
+                        ref={initialFocusDeleteRef}
                       />
                     </form>
                     <div className="flex items-center justify-between gap-2">
