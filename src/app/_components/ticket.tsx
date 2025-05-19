@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import Badge from "@/app/_components/primitives/badge";
 import { UpdateTicket } from "@/app/_components/update-ticket";
 import { SidebarButton } from "@/app/_components/sidebar";
+import TextArea from "@/app/_components/primitives/text-area";
 
 export const categoryMap = {
   PROFILE_UPDATE: { color: "blue", label: "Profile Update", icon: faUser },
@@ -301,16 +302,16 @@ export function Ticket({
                 <label htmlFor="comment" className="sr-only">
                   Add your comment
                 </label>
-                <textarea
+                <TextArea
                   id="comment"
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   name="comment"
-                  rows={2}
                   placeholder="Add your comment..."
                   maxLength={2048}
                   required
                   className="block w-full resize-none border-0 bg-transparent py-1.5 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  rows={2}
                 />
               </div>
               <div className="absolute inset-x-0 bottom-0 flex justify-between gap-2 py-2 pl-3 pr-2">

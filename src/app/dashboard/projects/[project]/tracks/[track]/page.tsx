@@ -8,6 +8,7 @@ import { DeleteTrack } from "@/app/_components/delete-track";
 import IconExplicit from "@/app/_components/icons/icon-explicit";
 import { CreateSong } from "@/app/_components/create-song";
 import { UpdateMaxSongFileSize } from "@/app/_components/update-max-song-file-size";
+import { LyricsEditor } from "@/app/_components/lyrics-editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowDown, faBan } from "@fortawesome/free-solid-svg-icons";
 
@@ -184,6 +185,15 @@ export default async function InfoPage({
                 </a>
               </div>
             )}
+            <LyricsEditor
+              username={track.username}
+              lyrics={track.lyrics}
+              canEdit={
+                track.me.role === "MANAGER" ||
+                track.me.role === "EDITOR" ||
+                access === "ADMIN"
+              }
+            />
           </div>
         </div>
       </main>
