@@ -162,8 +162,8 @@ model ProjectThumbnail {
     id        String  @id @default(cuid())
     project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
     projectId String  @unique
-    user      User    @relation(fields: [userId], references: [id])
-    userId    String
+    user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId    String?
     key       String
 }
 
@@ -190,33 +190,32 @@ model Track {
 }
 
 model TrackSong {
-    id      String @id @default(cuid())
-    track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
-    trackId String @unique
-    user    User   @relation(fields: [userId], references: [id])
-    userId  String
+    id      String  @id @default(cuid())
+    track   Track   @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId String  @unique
+    user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId  String?
     key     String
 }
 
 model TrackCollaborator {
-    id              String                @id @default(cuid())
-    track           Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
-    trackId         String
-    user            User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId          String?
-    discordUserId   String?
-    discordUsername String?
-    discordAvatar   String?
-    acceptedInvite  Boolean               @default(false)
-    role            TrackCollaboratorRole
-    credits         TrackCredit[]
+    id             String                @id @default(cuid())
+    track          Track                 @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId        String
+    user           User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId         String?
+    discordUser    DiscordUser?          @relation(fields: [discordUserId], references: [id], onDelete: SetNull)
+    discordUserId  String?
+    acceptedInvite Boolean               @default(false)
+    role           TrackCollaboratorRole
+    credits        TrackCredit[]
 }
 
 model TrackCredit {
     id             String             @id @default(cuid())
     track          Track              @relation(fields: [trackId], references: [id], onDelete: Cascade)
     trackId        String
-    collaborator   TrackCollaborator? @relation(fields: [collaboratorId], references: [id])
+    collaborator   TrackCollaborator? @relation(fields: [collaboratorId], references: [id], onDelete: Cascade)
     collaboratorId String?
     name           String?
     type           String
@@ -224,24 +223,22 @@ model TrackCredit {
 }
 
 model TrackAuditLog {
-    id                    String              @id @default(cuid())
-    track                 Track               @relation(fields: [trackId], references: [id], onDelete: Cascade)
-    trackId               String
-    user                  User?               @relation("User", fields: [userId], references: [id])
-    userId                String?
-    discordUserId         String?
-    discordUsername       String?
-    discordAvatar         String?
-    targetUser            User?               @relation("TargetUser", fields: [targetUserId], references: [id])
-    targetUserId          String?
-    targetDiscordUserId   String?
-    targetDiscordUsername String?
-    targetDiscordAvatar   String?
-    action                TrackAuditLogAction
-    value                 Json?
-    oldValue              Json?
-    createdAt             DateTime            @default(now())
-    updatedAt             DateTime            @default(now()) @updatedAt
+    id                  String              @id @default(cuid())
+    track               Track               @relation(fields: [trackId], references: [id], onDelete: Cascade)
+    trackId             String
+    user                User?               @relation("User", fields: [userId], references: [id], onDelete: SetNull)
+    userId              String?
+    discordUser         DiscordUser?        @relation("User", fields: [discordUserId], references: [id], onDelete: SetNull)
+    discordUserId       String?
+    targetUser          User?               @relation("TargetUser", fields: [targetUserId], references: [id], onDelete: SetNull)
+    targetUserId        String?
+    targetDiscordUser   DiscordUser?        @relation("TargetUser", fields: [targetDiscordUserId], references: [id], onDelete: SetNull)
+    targetDiscordUserId String?
+    action              TrackAuditLogAction
+    value               Json?
+    oldValue            Json?
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @default(now()) @updatedAt
 
     @@index([trackId])
 }
@@ -264,43 +261,41 @@ model AgreementDocument {
     id          String    @id @default(cuid())
     agreement   Agreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
     agreementId String
-    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String
+    user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId      String?
     email       String
     documentId  Int       @unique
     signingUrl  String
 }
 
 model Ticket {
-    id              String           @id @default(cuid())
-    user            User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId          String?
-    discordUserId   String?
-    discordUsername String?
-    discordAvatar   String?
-    status          TicketStatus     @default(OPEN)
-    category        TicketCategory
-    title           String
-    feed            TicketFeedItem[]
-    createdAt       DateTime         @default(now())
-    updatedAt       DateTime         @default(now()) @updatedAt
+    id            String           @id @default(cuid())
+    user          User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId        String?
+    discordUser   DiscordUser?     @relation(fields: [discordUserId], references: [id], onDelete: SetNull)
+    discordUserId String?
+    status        TicketStatus     @default(OPEN)
+    category      TicketCategory
+    title         String
+    feed          TicketFeedItem[]
+    createdAt     DateTime         @default(now())
+    updatedAt     DateTime         @default(now()) @updatedAt
 }
 
 model TicketFeedItem {
-    id              String               @id @default(cuid())
-    ticket          Ticket               @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-    ticketId        String
-    user            User?                @relation(fields: [userId], references: [id])
-    userId          String?
-    discordUserId   String?
-    discordUsername String?
-    discordAvatar   String?
-    system          Boolean?
-    private         Boolean              @default(false)
-    action          TicketFeedItemAction
-    value           String /// @encrypted
-    createdAt       DateTime             @default(now())
-    updatedAt       DateTime             @default(now()) @updatedAt
+    id            String               @id @default(cuid())
+    ticket        Ticket               @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+    ticketId      String
+    user          User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+    userId        String?
+    discordUser   DiscordUser?         @relation(fields: [discordUserId], references: [id], onDelete: SetNull)
+    discordUserId String?
+    system        Boolean?
+    private       Boolean              @default(false)
+    action        TicketFeedItemAction
+    value         String /// @encrypted
+    createdAt     DateTime             @default(now())
+    updatedAt     DateTime             @default(now()) @updatedAt
 
     @@index([ticketId])
 }
@@ -348,6 +343,17 @@ model User {
     trackAuditLogs       TrackAuditLog[]     @relation("User")
     trackAuditLogsTarget TrackAuditLog[]     @relation("TargetUser")
     trackSongs           TrackSong[]
+    tickets              Ticket[]
+    ticketFeedItems      TicketFeedItem[]
+}
+
+model DiscordUser {
+    id                   String              @id
+    username             String?
+    avatar               String?
+    trackAuditLogs       TrackAuditLog[]     @relation("User")
+    trackAuditLogsTarget TrackAuditLog[]     @relation("TargetUser")
+    trackCollaborators   TrackCollaborator[]
     tickets              Ticket[]
     ticketFeedItems      TicketFeedItem[]
 }

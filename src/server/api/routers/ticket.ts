@@ -67,6 +67,7 @@ export const ticketRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
           user: {
@@ -74,6 +75,7 @@ export const ticketRouter = createTRPCRouter({
               profile: true,
             },
           },
+          discordUser: true,
         },
       });
 
@@ -93,7 +95,7 @@ export const ticketRouter = createTRPCRouter({
             ticketUserType === "ATRIARCHY"
               ? ticket.user?.profile?.name
               : ticketUserType === "DISCORD"
-                ? ticket.discordUsername
+                ? ticket.discordUser?.username
                 : undefined,
           username:
             ticketUserType === "ATRIARCHY"
@@ -103,7 +105,7 @@ export const ticketRouter = createTRPCRouter({
             ticketUserType === "ATRIARCHY"
               ? ticket.user?.image
               : ticketUserType === "DISCORD"
-                ? ticket.discordAvatar
+                ? ticket.discordUser?.avatar
                 : undefined,
         },
         id: ticket.id,
@@ -142,7 +144,7 @@ export const ticketRouter = createTRPCRouter({
                 userType === "ATRIARCHY"
                   ? item.user?.profile?.name
                   : userType === "DISCORD"
-                    ? item.discordUsername
+                    ? item.discordUser?.username
                     : undefined,
               username:
                 userType === "ATRIARCHY"
@@ -152,7 +154,7 @@ export const ticketRouter = createTRPCRouter({
                 userType === "ATRIARCHY"
                   ? item.user?.image
                   : userType === "DISCORD"
-                    ? item.discordAvatar
+                    ? item.discordUser?.avatar
                     : undefined,
               action:
                 item.action === "CREATE_COMMENT"

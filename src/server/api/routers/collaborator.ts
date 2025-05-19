@@ -366,14 +366,29 @@ export const collaboratorRouter = createTRPCRouter({
           data.avatar
         );
 
+        const discordUser = await ctx.db.discordUser.upsert({
+          where: {
+            id: input.discord,
+          },
+          create: {
+            id: input.discord,
+            username: data.username,
+            avatar: data.avatar
+              ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${data.avatar.startsWith("a_") ? "gif" : "png"}`
+              : `https://cdn.discordapp.com/embed/avatars/${(parseInt(data.id) >> 22) % 6}.png`,
+          },
+          update: {
+            username: data.username,
+            avatar: data.avatar
+              ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${data.avatar.startsWith("a_") ? "gif" : "png"}`
+              : `https://cdn.discordapp.com/embed/avatars/${(parseInt(data.id) >> 22) % 6}.png`,
+          },
+        });
+
         const updatedData = await ctx.db.trackCollaborator.create({
           data: {
             trackId: track.id,
-            discordUserId: input.discord,
-            discordUsername: data.username,
-            discordAvatar: data.avatar
-              ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${data.avatar.startsWith("a_") ? "gif" : "png"}`
-              : `https://cdn.discordapp.com/embed/avatars/${(parseInt(data.id) >> 22) % 6}.png`,
+            discordUserId: discordUser.id,
             role: input.role,
             acceptedInvite: input.skipInvite,
           },
@@ -383,9 +398,7 @@ export const collaboratorRouter = createTRPCRouter({
           data: {
             trackId: track.id,
             userId: ctx.session.user.id,
-            targetDiscordUserId: input.discord,
-            targetDiscordUsername: updatedData.discordUsername,
-            targetDiscordAvatar: updatedData.discordAvatar,
+            targetDiscordUserId: updatedData.discordUserId,
             action: "CREATE_COLLABORATOR",
             value: {
               ...updatedData,
@@ -398,9 +411,7 @@ export const collaboratorRouter = createTRPCRouter({
           await ctx.db.trackAuditLog.create({
             data: {
               trackId: track.id,
-              discordUserId: input.discord,
-              discordUsername: updatedData.discordUsername,
-              discordAvatar: updatedData.discordAvatar,
+              discordUserId: updatedData.discordUserId,
               action: "ACCEPT_COLLABORATOR_INVITE",
               value: updatedData,
               oldValue: {
@@ -449,6 +460,7 @@ export const collaboratorRouter = createTRPCRouter({
                   profile: true,
                 },
               },
+              discordUser: true,
             },
           },
         },
@@ -530,14 +542,12 @@ export const collaboratorRouter = createTRPCRouter({
                   oldValue: manager,
                 },
               });
-            } else if (manager.discordUserId) {
+            } else if (manager.discordUser) {
               await ctx.db.trackAuditLog.create({
                 data: {
                   trackId: track.id,
                   userId: ctx.session.user.id,
-                  targetDiscordUserId: manager.discordUserId,
-                  targetDiscordUsername: manager.discordUsername,
-                  targetDiscordAvatar: manager.discordAvatar,
+                  targetDiscordUserId: manager.discordUser.id,
                   action: "UPDATE_COLLABORATOR",
                   value: updatedManager,
                   oldValue: manager,
@@ -615,14 +625,12 @@ export const collaboratorRouter = createTRPCRouter({
                 oldValue: manager,
               },
             });
-          } else if (manager.discordUserId) {
+          } else if (manager.discordUser) {
             await ctx.db.trackAuditLog.create({
               data: {
                 trackId: track.id,
                 userId: ctx.session.user.id,
-                targetDiscordUserId: manager.discordUserId,
-                targetDiscordUsername: manager.discordUsername,
-                targetDiscordAvatar: manager.discordAvatar,
+                targetDiscordUserId: manager.discordUser.id,
                 action: "UPDATE_COLLABORATOR",
                 value: updatedManager,
                 oldValue: manager,
@@ -645,9 +653,7 @@ export const collaboratorRouter = createTRPCRouter({
           data: {
             trackId: track.id,
             userId: ctx.session.user.id,
-            targetDiscordUserId: input.discord,
-            targetDiscordUsername: updatedData.discordUsername,
-            targetDiscordAvatar: updatedData.discordAvatar,
+            targetDiscordUserId: updatedData.discordUserId,
             action: "UPDATE_COLLABORATOR",
             value: updatedData,
             oldValue: check,
@@ -725,8 +731,6 @@ export const collaboratorRouter = createTRPCRouter({
                 trackId: track.id,
                 userId: ctx.session.user.id,
                 targetDiscordUserId: manager.discordUserId,
-                targetDiscordUsername: manager.discordUsername,
-                targetDiscordAvatar: manager.discordAvatar,
                 action: "UPDATE_COLLABORATOR",
                 value: updatedManager,
                 oldValue: manager,
