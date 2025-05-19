@@ -16,18 +16,16 @@ export function LyricsEditor({
   canEdit: boolean;
 }) {
   const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(lyrics ?? "");
-  const [localLyrics, setLocalLyrics] = useState(lyrics ?? "");
+  const [lyricsState, setLyricsState] = useState(lyrics ?? "");
   const updateLyrics = api.track.updateLyrics.useMutation({
     onSuccess: () => {
       toast.success("Lyrics updated");
       setEditing(false);
-      setLocalLyrics(value);
     },
     onError: err => toast.error(err.message),
   });
 
-  if (!canEdit && !localLyrics) return null;
+  if (!canEdit && !lyricsState) return null;
 
   return (
     <div className="w-full max-w-2xl">
@@ -36,7 +34,10 @@ export function LyricsEditor({
         {canEdit && !editing && (
           <button
             className="ml-2 text-violet-400 hover:text-violet-200"
-            onClick={() => setEditing(true)}
+            onClick={() => {
+              setEditing(true);
+              setLyricsState(lyricsState);
+            }}
             title="Edit Lyrics"
           >
             <FontAwesomeIcon icon={faPencil} />
@@ -47,27 +48,27 @@ export function LyricsEditor({
         <form
           onSubmit={e => {
             e.preventDefault();
-            updateLyrics.mutate({ username, lyrics: value });
+            updateLyrics.mutate({ username, lyrics: lyricsState });
           }}
           className="flex flex-col gap-2"
         >
           <div className="relative w-full">
             <textarea
               className="min-h-32 w-full rounded-lg border border-slate-300 bg-white p-2 pr-16 text-slate-900"
-              value={value}
-              onChange={e => setValue(e.target.value)}
+              value={lyricsState}
+              onChange={e => setLyricsState(e.target.value)}
               placeholder="Enter lyrics..."
               maxLength={10000}
               autoFocus
             />
             <small
               className={
-                value.length < 10000
+                lyricsState.length < 10000
                   ? "pointer-events-none absolute bottom-2 right-4 text-xs text-gray-400"
                   : "pointer-events-none absolute bottom-2 right-4 text-xs font-medium text-red-500"
               }
             >
-              {10000 - value.length}
+              {10000 - lyricsState.length}
             </small>
           </div>
           <div className="flex gap-2">
@@ -83,7 +84,7 @@ export function LyricsEditor({
               className="rounded bg-neutral-600 px-3 py-1 text-white hover:bg-neutral-500"
               onClick={() => {
                 setEditing(false);
-                setValue(localLyrics);
+                setLyricsState(lyrics ?? "");
               }}
               disabled={updateLyrics.isPending}
             >
@@ -91,9 +92,9 @@ export function LyricsEditor({
             </button>
           </div>
         </form>
-      ) : localLyrics ? (
+      ) : lyricsState ? (
         <pre className="whitespace-pre-wrap rounded bg-neutral-800 p-3 text-gray-200">
-          {localLyrics}
+          {lyricsState}
         </pre>
       ) : canEdit ? (
         <span className="text-gray-400">No lyrics yet. Click edit to add.</span>
