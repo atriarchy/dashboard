@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const BYTES_PER_MB = 1048576;
+
 export function UpdateMaxSongFileSize({
   username,
   initialValue,
@@ -15,7 +17,7 @@ export function UpdateMaxSongFileSize({
   initialValue?: number;
 }) {
   const [value, setValue] = useState(
-    initialValue ? (initialValue / 1048576).toString() : ""
+    initialValue ? (initialValue / BYTES_PER_MB).toString() : ""
   );
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -40,7 +42,7 @@ export function UpdateMaxSongFileSize({
 
   useEffect(() => {
     if (track && typeof track.maxSongFileSize === "number") {
-      setValue((track.maxSongFileSize / 1048576).toString());
+      setValue((track.maxSongFileSize / BYTES_PER_MB).toString());
     }
   }, [track?.maxSongFileSize]);
 
@@ -60,7 +62,7 @@ export function UpdateMaxSongFileSize({
         }
         update.mutate({
           username,
-          maxSongFileSize: Math.round(mb * 1048576),
+          maxSongFileSize: Math.round(mb * BYTES_PER_MB),
         });
       }}
     >
