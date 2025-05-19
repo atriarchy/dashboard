@@ -67,5 +67,5 @@ docker compose up -d --build --remove-orphans
 
 
 echo "✅ All services started successfully."
-echo "Run 'pnpm db:push' to update the database schema!"
+echo "Run 'pnpm db:generate' to update the database schema!"
 echo "Run 'pnpm dev' to start the app!"
