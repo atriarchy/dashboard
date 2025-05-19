@@ -622,7 +622,6 @@ export const trackRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
-          // Only include deleted tracks for admins
           deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
@@ -736,7 +735,70 @@ export const trackRouter = createTRPCRouter({
           access === "ADMIN" && track.song
             ? `${env.FILE_STORAGE_CDN_URL}/${track.song.key}`
             : undefined,
+        maxSongFileSize: track.maxSongFileSize,
+        lyrics: track.lyrics,
       };
+    }),
+
+  updateLyrics: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+        lyrics: z.string().max(10000).nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Track not found.");
+      }
+      const manager = track.collaborators.find(c => c.role === "MANAGER");
+      if (!manager) {
+        throw new Error("Manager not found.");
+      }
+      const editors = track.collaborators.filter(c => c.role === "EDITOR");
+      const contributors = track.collaborators.filter(
+        c => c.role === "CONTRIBUTOR"
+      );
+      const accessRoles = [manager, ...editors, ...contributors]
+        .map(c => c.userId)
+        .filter(c => c !== null);
+      if (!accessRoles.includes(ctx.session.user.id) && access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+      await ctx.db.track.update({
+        where: { id: track.id },
+        data: { lyrics: input.lyrics },
+      });
+      return { success: true };
     }),
 
   updateTrack: protectedProcedure
@@ -769,6 +831,7 @@ export const trackRouter = createTRPCRouter({
           "FINISHED",
         ]),
         type: z.enum(["ORIGINAL", "PARODY", "COVER"]),
+        maxSongFileSize: z.number().min(1048576).max(209715200).optional(), // 1MB-200MB
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -1288,6 +1351,39 @@ export const trackRouter = createTRPCRouter({
         where: { id: track.id },
       });
 
+      return { success: true };
+    }),
+
+  setMaxSongFileSize: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+        maxSongFileSize: z.number().min(1048576).max(209715200), // 1MB-200MB
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+          project: { deletedAt: null },
+        },
+      });
+      if (!track) throw new Error("Track not found.");
+      await ctx.db.track.update({
+        where: { id: track.id },
+        data: { maxSongFileSize: input.maxSongFileSize },
+      });
       return { success: true };
     }),
 });

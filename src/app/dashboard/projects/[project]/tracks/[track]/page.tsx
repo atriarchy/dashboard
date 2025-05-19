@@ -7,6 +7,8 @@ import { EditTrack } from "@/app/_components/update-track";
 import { DeleteTrack } from "@/app/_components/delete-track";
 import IconExplicit from "@/app/_components/icons/icon-explicit";
 import { CreateSong } from "@/app/_components/create-song";
+import { UpdateMaxSongFileSize } from "@/app/_components/update-max-song-file-size";
+import { LyricsEditor } from "@/app/_components/lyrics-editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowDown, faBan } from "@fortawesome/free-solid-svg-icons";
 
@@ -153,7 +155,18 @@ export default async function InfoPage({
               />
             )}
             {!track.deletedAt && (
-              <CreateSong username={track.username} explicit={track.explicit} />
+              <div className="flex items-center gap-2">
+                <CreateSong
+                  username={track.username}
+                  explicit={track.explicit}
+                />
+                {access === "ADMIN" && (
+                  <UpdateMaxSongFileSize
+                    username={track.username}
+                    initialValue={track.maxSongFileSize}
+                  />
+                )}
+              </div>
             )}
             {track.songUrl && (!track.deletedAt || access === "ADMIN") && (
               <div className="flex w-full max-w-lg items-center gap-3">
@@ -172,6 +185,15 @@ export default async function InfoPage({
                 </a>
               </div>
             )}
+            <LyricsEditor
+              username={track.username}
+              lyrics={track.lyrics}
+              canEdit={
+                track.me.role === "MANAGER" ||
+                track.me.role === "EDITOR" ||
+                access === "ADMIN"
+              }
+            />
           </div>
         </div>
       </main>
