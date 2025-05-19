@@ -48,12 +48,12 @@ export function ProjectForm(props: ProjectFormProps) {
   const [thumbnail, setThumbnail] = useState<File | undefined>();
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
-  const initalFocusRef = useRef(null);
-  const initalFocusDeleteRef = useRef<HTMLInputElement>(null);
+  const initialFocusRef = useRef(null);
+  const initialFocusDeleteRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isDeleteOpen && initalFocusDeleteRef.current) {
-      initalFocusDeleteRef.current.focus();
+    if (isDeleteOpen && initialFocusDeleteRef.current) {
+      initialFocusDeleteRef.current.focus();
     }
   }, [isDeleteOpen]);
 
@@ -138,7 +138,7 @@ export function ProjectForm(props: ProjectFormProps) {
             setIsEditOpen(false);
             reset();
           }}
-          initialFocus={initalFocusRef}
+          initialFocus={initialFocusRef}
         >
           <TransitionChild
             as={Fragment}
@@ -364,7 +364,7 @@ export function ProjectForm(props: ProjectFormProps) {
             setIsDeleteOpen(false);
             setDeleteConfirmation("");
           }}
-          initialFocus={initalFocusDeleteRef}
+          initialFocus={initialFocusDeleteRef}
         >
           <TransitionChild
             as={Fragment}
@@ -440,7 +440,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         placeholder={username}
                         maxLength={username.length}
                         required
-                        ref={initalFocusDeleteRef}
+                        ref={initialFocusDeleteRef}
                       />
                     </form>
                     <div className="flex items-center justify-between gap-2">
