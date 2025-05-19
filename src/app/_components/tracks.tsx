@@ -169,7 +169,11 @@ export function Tracks({
                         <Link
                           href={`/dashboard/projects/${project}/tracks/${track.username}`}
                           key={track.username}
-                          className="group flex w-full break-words rounded-lg bg-neutral-800 transition hover:bg-neutral-700"
+                          className={`group flex w-full break-words rounded-lg ${
+                            track.deletedAt
+                              ? "border border-red-700/30 bg-red-900/20"
+                              : "bg-neutral-800"
+                          } transition hover:bg-neutral-700`}
                         >
                           {track.order && (
                             <div className="flex w-8 flex-shrink-0 items-center justify-center rounded-l-lg bg-neutral-700">
@@ -186,8 +190,13 @@ export function Tracks({
                             } border-neutral-700 px-4 py-2`}
                           >
                             <div className="flex-1 truncate text-sm">
-                              <span className="font-medium text-neutral-100">
-                                {track.title}
+                              <span
+                                className={`font-medium ${track.deletedAt ? "text-gray-400 line-through" : "text-neutral-100"}`}
+                              >
+                                {track.title}{" "}
+                                {track.deletedAt &&
+                                  access === "ADMIN" &&
+                                  "(Deleted)"}
                               </span>
                               <div className="mt-2 flex gap-2">
                                 {track.explicit && <IconExplicit />}
