@@ -384,8 +384,10 @@ export function ProjectForm(props: ProjectFormProps) {
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
-                  <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
-                    <DialogTitle as="h3">Delete Project</DialogTitle>
+                  <div className="mb-4 flex items-start justify-between gap-4 text-lg font-bold">
+                    <DialogTitle as="h3" className="text-red-500">
+                      Delete Project
+                    </DialogTitle>
                     <button
                       disabled={deleteMutation.isPending}
                       onClick={() => {
@@ -418,6 +420,10 @@ export function ProjectForm(props: ProjectFormProps) {
                         });
                       }}
                     >
+                      <p className="mb-4">
+                        Are you sure you want to delete the project{" "}
+                        <strong>{title}</strong>?
+                      </p>
                       <TextInput
                         id="deleteConfirmation"
                         label="Type the project slug to confirm deletion."
@@ -445,7 +451,7 @@ export function ProjectForm(props: ProjectFormProps) {
                       <button
                         type="submit"
                         form="deleteProject"
-                        className="w-full rounded-lg bg-red-600 p-2 transition hover:bg-red-500 disabled:bg-red-400"
+                        className="w-full rounded-lg bg-red-700 p-2 transition hover:bg-red-600 disabled:bg-neutral-500/50"
                         disabled={
                           deleteMutation.isPending ||
                           deleteConfirmation !== username
