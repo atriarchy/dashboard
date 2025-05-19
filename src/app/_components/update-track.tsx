@@ -16,6 +16,7 @@ import { faPencil, faWarning } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
 import SelectInput from "./primitives/select-input";
+import TextArea from "./primitives/text-area";
 
 type TrackType = "ORIGINAL" | "PARODY" | "COVER";
 
@@ -184,35 +185,14 @@ export function EditTrack({
                         maxLength={64}
                         required
                       />
-                      <div className="flex w-full flex-col items-center justify-start gap-2">
-                        <label
-                          htmlFor="description"
-                          className="text-md w-full font-semibold"
-                        >
-                          Description
-                        </label>
-                        <div className="relative w-full">
-                          <textarea
-                            id="description"
-                            value={currentDescription}
-                            onChange={e =>
-                              setCurrentDescription(e.target.value)
-                            }
-                            className="min-h-16 w-full rounded-lg border border-slate-300 bg-white py-2 pl-2 pr-8 text-slate-900"
-                            placeholder="Description"
-                            maxLength={1024}
-                          />
-                          <small
-                            className={
-                              currentDescription.length < 1024
-                                ? "pointer-events-none absolute bottom-2 right-2 -translate-y-1/2 text-xs text-gray-400"
-                                : "pointer-events-none absolute bottom-2 right-2 -translate-y-1/2 text-xs font-medium text-red-500"
-                            }
-                          >
-                            {1024 - currentDescription.length}
-                          </small>
-                        </div>
-                      </div>
+                      <TextArea
+                        id="description"
+                        label="Description"
+                        value={currentDescription}
+                        onChange={e => setCurrentDescription(e.target.value)}
+                        placeholder="Description"
+                        maxLength={1024}
+                      />
                       <SelectInput
                         id="explicit"
                         label="Is this track explicit?"
