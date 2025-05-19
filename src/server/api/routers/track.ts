@@ -32,6 +32,7 @@ export const trackRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -46,6 +47,9 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
+          project: {
+            deletedAt: null,
+          },
           ...(input.query &&
             (input.query.startsWith("@")
               ? {
@@ -180,6 +184,7 @@ export const trackRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -190,6 +195,9 @@ export const trackRouter = createTRPCRouter({
       const tracks = await ctx.db.track.findMany({
         where: {
           projectId: project.id,
+          project: {
+            deletedAt: null,
+          },
         },
         orderBy: {
           order: {
@@ -231,6 +239,7 @@ export const trackRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -241,6 +250,9 @@ export const trackRouter = createTRPCRouter({
       const tracks = await ctx.db.track.findMany({
         where: {
           projectId: project.id,
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           collaborators: {
@@ -341,6 +353,7 @@ export const trackRouter = createTRPCRouter({
             equals: input.project,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -590,6 +603,9 @@ export const trackRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -744,6 +760,9 @@ export const trackRouter = createTRPCRouter({
           username: {
             equals: input.username,
             mode: "insensitive",
+            project: {
+              deletedAt: null,
+            },
           },
         },
         include: {
@@ -785,7 +804,14 @@ export const trackRouter = createTRPCRouter({
 
       if (input.musicStatus !== "FINISHED") {
         const oldTrackSong = await ctx.db.trackSong.findFirst({
-          where: { trackId: track.id },
+          where: {
+            trackId: track.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+            },
+          },
         });
 
         if (oldTrackSong) {
@@ -838,6 +864,9 @@ export const trackRouter = createTRPCRouter({
           username: {
             equals: input.username,
             mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
           },
         },
         include: {
@@ -902,6 +931,9 @@ export const trackRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -957,7 +989,14 @@ export const trackRouter = createTRPCRouter({
       });
 
       const oldTrackSong = await ctx.db.trackSong.findFirst({
-        where: { trackId: track.id },
+        where: {
+          trackId: track.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+          },
+        },
       });
 
       if (oldTrackSong) {

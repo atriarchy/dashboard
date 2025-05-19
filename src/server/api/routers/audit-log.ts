@@ -26,6 +26,9 @@ export const auditLogRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -43,6 +46,11 @@ export const auditLogRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           trackId: track.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+          },
         },
         orderBy: [{ createdAt: "desc" }],
         include: {

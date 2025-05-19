@@ -28,6 +28,9 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -450,6 +453,9 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -501,6 +507,11 @@ export const collaboratorRouter = createTRPCRouter({
             where: {
               trackId: track.id,
               userId: userInput.id,
+              track: {
+                project: {
+                  deletedAt: null,
+                },
+              },
             },
           });
 
@@ -584,6 +595,11 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             discordUserId: input.discord,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+            },
           },
         });
 
@@ -684,6 +700,11 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             userId: profile.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+            },
           },
         });
 
@@ -787,6 +808,9 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -837,6 +861,11 @@ export const collaboratorRouter = createTRPCRouter({
             where: {
               trackId: track.id,
               userId: userInput.id,
+              track: {
+                project: {
+                  deletedAt: null,
+                },
+              },
             },
           });
 
@@ -857,6 +886,11 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             discordUserId: input.discord,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+            },
           },
         });
 
@@ -894,6 +928,11 @@ export const collaboratorRouter = createTRPCRouter({
           where: {
             trackId: track.id,
             userId: profile.user.id,
+            track: {
+              project: {
+                deletedAt: null,
+              },
+            },
           },
         });
 
@@ -928,6 +967,11 @@ export const collaboratorRouter = createTRPCRouter({
       where: {
         userId: ctx.session.user.id,
         acceptedInvite: false,
+        track: {
+          project: {
+            deletedAt: null,
+          },
+        },
       },
       include: {
         track: {
@@ -957,6 +1001,9 @@ export const collaboratorRouter = createTRPCRouter({
           username: {
             equals: input.track,
             mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
           },
         },
         include: {
@@ -992,6 +1039,11 @@ export const collaboratorRouter = createTRPCRouter({
         where: {
           trackId: track.id,
           userId: collaborator.userId,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+          },
         },
       });
 
@@ -1034,6 +1086,9 @@ export const collaboratorRouter = createTRPCRouter({
             equals: input.track,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           collaborators: {
@@ -1068,6 +1123,11 @@ export const collaboratorRouter = createTRPCRouter({
         where: {
           trackId: track.id,
           userId: collaborator.userId,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+          },
         },
       });
 

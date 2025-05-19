@@ -35,7 +35,8 @@ export function ProjectForm(props: ProjectFormProps) {
   const router = useRouter();
 
   const { id } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [title, setTitle] = useState(props.title ?? "");
   const [status, setStatus] = useState(props.status ?? ProjectStatus.DRAFT);
   const [username, setUsername] = useState(props.username ?? "");
@@ -45,8 +46,10 @@ export function ProjectForm(props: ProjectFormProps) {
     props.discordChannelId ?? ""
   );
   const [thumbnail, setThumbnail] = useState<File | undefined>();
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const initalFocusRef = useRef(null);
+  const initalFocusDeleteRef = useRef(null);
 
   const reset = () => {
     setTitle(props.title ?? "");
@@ -98,7 +101,10 @@ export function ProjectForm(props: ProjectFormProps) {
     <>
       <div className="mb-2 flex items-center gap-2">
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsEditOpen(true);
+            setIsDeleteOpen(false);
+          }}
           className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 transition hover:bg-violet-500"
         >
           <FontAwesomeIcon icon={id ? faPencil : faPlus} />
@@ -106,28 +112,24 @@ export function ProjectForm(props: ProjectFormProps) {
         </button>
         {id && (
           <button
-            onClick={async e => {
-              e.stopPropagation();
-              if (deleteMutation.isPending) return;
-              if (confirm("Are you sure you want to delete this project?")) {
-                deleteMutation.mutate({ id });
-              }
+            onClick={() => {
+              setIsDeleteOpen(true);
+              setIsEditOpen(false);
             }}
-            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 transition hover:bg-red-500 disabled:bg-red-400"
-            disabled={deleteMutation.isPending}
+            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 transition hover:bg-red-500"
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
         )}
       </div>
 
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={isEditOpen} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
           onClose={() => {
             if (mutation.isPending) return;
-            setIsOpen(false);
+            setIsEditOpen(false);
             reset();
           }}
           initialFocus={initalFocusRef}
@@ -164,7 +166,7 @@ export function ProjectForm(props: ProjectFormProps) {
                       disabled={mutation.isPending}
                       onClick={() => {
                         if (mutation.isPending) return;
-                        setIsOpen(false);
+                        setIsEditOpen(false);
                         reset();
                       }}
                       aria-label="Close"
@@ -320,7 +322,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         disabled={mutation.isPending}
                         onClick={() => {
                           if (mutation.isPending) return;
-                          setIsOpen(false);
+                          setIsEditOpen(false);
                           reset();
                         }}
                       >
@@ -332,7 +334,124 @@ export function ProjectForm(props: ProjectFormProps) {
                         className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
                         disabled={mutation.isPending}
                       >
-                        {mutation.isPending ? "Loading..." : "Save"}
+                        {mutation.isPending
+                          ? "Loading..."
+                          : id
+                            ? "Save"
+                            : "Create"}
+                      </button>
+                    </div>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      <Transition appear show={isDeleteOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => {
+            if (deleteMutation.isPending) return;
+            setIsDeleteOpen(false);
+            setDeleteConfirmation("");
+          }}
+          initialFocus={initalFocusDeleteRef}
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          </TransitionChild>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
+                  <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
+                    <DialogTitle as="h3">Delete Project</DialogTitle>
+                    <button
+                      disabled={deleteMutation.isPending}
+                      onClick={() => {
+                        if (deleteMutation.isPending) return;
+                        setIsDeleteOpen(false);
+                        setDeleteConfirmation("");
+                      }}
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} />
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <form
+                      id="deleteProject"
+                      className="flex flex-col items-start justify-start gap-2"
+                      onSubmit={async e => {
+                        e.preventDefault();
+                        if (deleteMutation.isPending || !id) return;
+
+                        if (deleteConfirmation !== username) {
+                          toast.error(
+                            "Project slug does not match. Please try again."
+                          );
+                          return;
+                        }
+
+                        deleteMutation.mutate({
+                          id,
+                        });
+                      }}
+                    >
+                      <TextInput
+                        id="deleteConfirmation"
+                        label="Type the project slug to confirm deletion."
+                        value={deleteConfirmation}
+                        onChange={e => {
+                          setDeleteConfirmation(e.target.value);
+                        }}
+                        placeholder={username}
+                        maxLength={username.length}
+                        required
+                      />
+                    </form>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                        disabled={deleteMutation.isPending}
+                        onClick={() => {
+                          if (deleteMutation.isPending) return;
+                          setIsDeleteOpen(false);
+                          setDeleteConfirmation("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        form="deleteProject"
+                        className="w-full rounded-lg bg-red-600 p-2 transition hover:bg-red-500 disabled:bg-red-400"
+                        disabled={
+                          deleteMutation.isPending ||
+                          deleteConfirmation !== username
+                        }
+                      >
+                        {deleteMutation.isPending ? "Loading..." : "Delete"}
                       </button>
                     </div>
                   </div>
