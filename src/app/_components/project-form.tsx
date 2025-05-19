@@ -238,7 +238,6 @@ export function ProjectForm(props: ProjectFormProps) {
                         onChange={e => setDescription(e.target.value)}
                         placeholder="Description"
                         maxLength={1024}
-                        className="min-h-16"
                       />
                       <div className="flex w-full flex-col items-center justify-start gap-2">
                         <label

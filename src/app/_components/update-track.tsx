@@ -192,7 +192,6 @@ export function EditTrack({
                         onChange={e => setCurrentDescription(e.target.value)}
                         placeholder="Description"
                         maxLength={1024}
-                        className="min-h-16"
                       />
                       <SelectInput
                         id="explicit"

@@ -49,7 +49,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             onChange={onChange}
             className={twMerge(
               clsx(
-                "min-h-32 w-full grow rounded-lg border border-slate-300 bg-white p-2 text-slate-900",
+                "min-h-16 w-full grow rounded-lg border border-slate-300 bg-white p-2 text-slate-900",
                 maxLength && "pr-12",
                 className
               )

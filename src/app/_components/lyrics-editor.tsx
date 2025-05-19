@@ -60,7 +60,7 @@ export function LyricsEditor({
             placeholder="Enter lyrics..."
             maxLength={10000}
             autoFocus
-            className="pr-16"
+            className="min-h-32 pr-16"
           />
           <div className="flex gap-2">
             <button

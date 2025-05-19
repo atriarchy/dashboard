@@ -145,7 +145,6 @@ export function CreateTrack({ project }: { project: string }) {
                         onChange={e => setDescription(e.target.value)}
                         placeholder="Description"
                         maxLength={1024}
-                        className="min-h-16"
                       />
                       <button
                         type="button"
