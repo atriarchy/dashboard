@@ -46,6 +46,8 @@ export const trackRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           projectId: project.id,
+          // Only include deleted tracks for admins
+          deletedAt: access === "ADMIN" ? undefined : null,
           ...(input.query &&
             (input.query.startsWith("@")
               ? {
@@ -94,12 +96,21 @@ export const trackRouter = createTRPCRouter({
             },
           },
         },
-        orderBy: {
-          order: {
-            sort: "asc",
-            nulls: "last",
+        orderBy: [
+          // Sort deleted tracks to the bottom for admins
+          {
+            deletedAt: {
+              sort: "asc",
+              nulls: "first",
+            },
           },
-        },
+          {
+            order: {
+              sort: "asc",
+              nulls: "last",
+            },
+          },
+        ],
       });
 
       let cursor;
@@ -148,6 +159,7 @@ export const trackRouter = createTRPCRouter({
           explicit: track.explicit,
           collaborators: collaborators,
           order: track.order,
+          deletedAt: track.deletedAt,
         };
       });
 
@@ -208,6 +220,7 @@ export const trackRouter = createTRPCRouter({
           visualStatus: track.visualStatus,
           explicit: track.explicit,
           order: track.order,
+          deletedAt: track.deletedAt,
         };
       });
     }),
@@ -241,6 +254,7 @@ export const trackRouter = createTRPCRouter({
       const tracks = await ctx.db.track.findMany({
         where: {
           projectId: project.id,
+          deletedAt: null,
         },
         include: {
           collaborators: {
@@ -308,6 +322,7 @@ export const trackRouter = createTRPCRouter({
             explicit: track.explicit,
             collaborators: collaborators,
             order: track.order,
+            deletedAt: track.deletedAt,
           };
         });
     }),
@@ -590,6 +605,8 @@ export const trackRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          // Only include deleted tracks for admins
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -697,6 +714,7 @@ export const trackRouter = createTRPCRouter({
           id: myId,
         },
         manager: manager,
+        deletedAt: track.deletedAt,
         songUrl:
           access === "ADMIN" && track.song
             ? `${env.FILE_STORAGE_CDN_URL}/${track.song.key}`
@@ -1045,5 +1063,177 @@ export const trackRouter = createTRPCRouter({
       );
 
       return;
+    }),
+
+  deleteTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Track not found.");
+      }
+
+      // Only managers or admins can delete tracks
+      const manager = track.collaborators.find(c => c.role === "MANAGER");
+
+      if (!manager) {
+        throw new Error("Manager not found.");
+      }
+
+      // Check if user is a manager or admin
+      const isManager = manager.userId === ctx.session.user.id;
+
+      if (!isManager && access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      const oldTrack = { ...track };
+
+      // Soft delete the track
+      const updatedTrack = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: oldTrack,
+          value: updatedTrack,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  restoreTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      // Only admins can restore tracks
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      if (!track.deletedAt) {
+        throw new Error("Track is not deleted.");
+      }
+
+      const oldTrack = { ...track };
+
+      // Restore the track
+      const updatedTrack = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          deletedAt: null,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: oldTrack,
+          value: updatedTrack,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  hardDeleteTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      // Only admins can hard delete tracks
+      if (access !== "ADMIN") {
+        throw new Error("Unauthorized.");
+      }
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      // Hard delete the track (this will cascade to related entities as defined in schema)
+      await ctx.db.track.delete({
+        where: { id: track.id },
+      });
+
+      return { success: true };
     }),
 });
