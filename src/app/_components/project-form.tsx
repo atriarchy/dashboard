@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -50,6 +50,13 @@ export function ProjectForm(props: ProjectFormProps) {
 
   const initalFocusRef = useRef(null);
   const initalFocusDeleteRef = useRef(null);
+  const deleteConfirmationInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isDeleteOpen && deleteConfirmationInputRef.current) {
+      deleteConfirmationInputRef.current.focus();
+    }
+  }, [isDeleteOpen]);
 
   const reset = () => {
     setTitle(props.title ?? "");
@@ -434,6 +441,7 @@ export function ProjectForm(props: ProjectFormProps) {
                         placeholder={username}
                         maxLength={username.length}
                         required
+                        ref={initalFocusDeleteRef}
                       />
                     </form>
                     <div className="flex items-center justify-between gap-2">
