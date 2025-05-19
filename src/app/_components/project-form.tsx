@@ -49,12 +49,11 @@ export function ProjectForm(props: ProjectFormProps) {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const initalFocusRef = useRef(null);
-  const initalFocusDeleteRef = useRef(null);
-  const deleteConfirmationInputRef = useRef<HTMLInputElement>(null);
+  const initalFocusDeleteRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isDeleteOpen && deleteConfirmationInputRef.current) {
-      deleteConfirmationInputRef.current.focus();
+    if (isDeleteOpen && initalFocusDeleteRef.current) {
+      initalFocusDeleteRef.current.focus();
     }
   }, [isDeleteOpen]);
 
