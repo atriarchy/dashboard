@@ -29,6 +29,7 @@ export const auditLogRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -50,6 +51,7 @@ export const auditLogRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
         orderBy: [{ createdAt: "desc" }],

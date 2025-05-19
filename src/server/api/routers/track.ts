@@ -210,6 +210,7 @@ export const trackRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: null,
         },
         orderBy: {
           order: {
@@ -781,6 +782,7 @@ export const trackRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
         include: {
@@ -828,6 +830,7 @@ export const trackRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -886,6 +889,7 @@ export const trackRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -952,6 +956,7 @@ export const trackRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -1013,6 +1018,7 @@ export const trackRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
       });
@@ -1123,6 +1129,9 @@ export const trackRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
         include: {
           project: true,
@@ -1203,6 +1212,9 @@ export const trackRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          project: {
+            deletedAt: null,
+          },
         },
       });
 
@@ -1260,6 +1272,9 @@ export const trackRouter = createTRPCRouter({
           username: {
             equals: input.username,
             mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
           },
         },
       });

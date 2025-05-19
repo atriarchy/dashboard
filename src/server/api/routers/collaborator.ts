@@ -31,6 +31,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -456,6 +457,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -511,6 +513,7 @@ export const collaboratorRouter = createTRPCRouter({
                 project: {
                   deletedAt: null,
                 },
+                deletedAt: access === "ADMIN" ? undefined : null,
               },
             },
           });
@@ -599,6 +602,7 @@ export const collaboratorRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -704,6 +708,7 @@ export const collaboratorRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -811,6 +816,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -865,6 +871,7 @@ export const collaboratorRouter = createTRPCRouter({
                 project: {
                   deletedAt: null,
                 },
+                deletedAt: access === "ADMIN" ? undefined : null,
               },
             },
           });
@@ -890,6 +897,7 @@ export const collaboratorRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -932,6 +940,7 @@ export const collaboratorRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -963,6 +972,8 @@ export const collaboratorRouter = createTRPCRouter({
     }),
 
   getMyInvites: protectedProcedure.query(async ({ ctx }) => {
+    const access = await accessCheck(ctx);
+
     const invites = await ctx.db.trackCollaborator.findMany({
       where: {
         userId: ctx.session.user.id,
@@ -971,6 +982,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
       },
       include: {
@@ -996,6 +1008,8 @@ export const collaboratorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
       const track = await ctx.db.track.findFirst({
         where: {
           username: {
@@ -1005,6 +1019,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           collaborators: {
@@ -1043,6 +1058,7 @@ export const collaboratorRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
       });
@@ -1080,6 +1096,8 @@ export const collaboratorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
       const track = await ctx.db.track.findFirst({
         where: {
           username: {
@@ -1089,6 +1107,7 @@ export const collaboratorRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           collaborators: {
@@ -1127,6 +1146,7 @@ export const collaboratorRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
       });

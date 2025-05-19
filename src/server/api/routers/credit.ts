@@ -25,6 +25,7 @@ export const creditRouter = createTRPCRouter({
           project: {
             deletedAt: null,
           },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -42,6 +43,7 @@ export const creditRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
         include: {
@@ -144,6 +146,7 @@ export const creditRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
           include: {
@@ -179,6 +182,7 @@ export const creditRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -264,6 +268,7 @@ export const creditRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
           include: {
             project: true,
@@ -285,6 +290,7 @@ export const creditRouter = createTRPCRouter({
               project: {
                 deletedAt: null,
               },
+              deletedAt: access === "ADMIN" ? undefined : null,
             },
           },
         });
@@ -298,6 +304,7 @@ export const creditRouter = createTRPCRouter({
                 project: {
                   deletedAt: null,
                 },
+                deletedAt: access === "ADMIN" ? undefined : null,
               },
             },
             include: {
@@ -406,6 +413,7 @@ export const creditRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
         include: {
@@ -441,6 +449,7 @@ export const creditRouter = createTRPCRouter({
             project: {
               deletedAt: null,
             },
+            deletedAt: access === "ADMIN" ? undefined : null,
           },
         },
       });
