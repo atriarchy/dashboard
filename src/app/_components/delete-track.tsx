@@ -215,12 +215,6 @@ export function DeleteTrack({
                     <p className="mb-4">
                       Are you sure you want to {actionText}{" "}
                       <strong>{title}</strong>?
-                      {!isDeleted && (
-                        <span className="mt-2 block text-sm text-gray-300">
-                          This track will be hidden from view, but can be
-                          restored by an admin if needed.
-                        </span>
-                      )}
                       {isDeleted && (
                         <span className="mt-2 block text-sm text-gray-300">
                           This action cannot be undone. The track and all
