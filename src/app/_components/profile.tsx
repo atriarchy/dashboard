@@ -415,7 +415,6 @@ export function Profile({
                 onChange={e => setBio(e.target.value)}
                 placeholder="Bio"
                 maxLength={1024}
-                className="min-h-16"
               />
             </div>
           </div>
