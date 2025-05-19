@@ -5,6 +5,7 @@ import { api } from "@/trpc/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
+import TextArea from "@/app/_components/primitives/text-area";
 
 export function LyricsEditor({
   username,
@@ -52,25 +53,15 @@ export function LyricsEditor({
           }}
           className="flex flex-col gap-2"
         >
-          <div className="relative w-full">
-            <textarea
-              className="min-h-32 w-full rounded-lg border border-slate-300 bg-white p-2 pr-16 text-slate-900"
-              value={lyricsState}
-              onChange={e => setLyricsState(e.target.value)}
-              placeholder="Enter lyrics..."
-              maxLength={10000}
-              autoFocus
-            />
-            <small
-              className={
-                lyricsState.length < 10000
-                  ? "pointer-events-none absolute bottom-2 right-4 text-xs text-gray-400"
-                  : "pointer-events-none absolute bottom-2 right-4 text-xs font-medium text-red-500"
-              }
-            >
-              {10000 - lyricsState.length}
-            </small>
-          </div>
+          <TextArea
+            id="lyrics-editor-textarea"
+            value={lyricsState}
+            onChange={e => setLyricsState(e.target.value)}
+            placeholder="Enter lyrics..."
+            maxLength={10000}
+            autoFocus
+            className="pr-16"
+          />
           <div className="flex gap-2">
             <button
               type="submit"
