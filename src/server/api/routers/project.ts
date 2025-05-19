@@ -168,8 +168,11 @@ export const projectRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where:
           access !== "ADMIN"
-            ? { status: { in: ["ACTIVE", "CLOSED", "RELEASED"] } }
-            : undefined,
+            ? {
+                status: { in: ["ACTIVE", "CLOSED", "RELEASED"] },
+                deletedAt: null,
+              }
+            : { deletedAt: null },
         orderBy: [
           {
             releasedAt: {
@@ -231,12 +234,14 @@ export const projectRouter = createTRPCRouter({
                   mode: "insensitive",
                 },
                 status: { in: ["ACTIVE", "CLOSED", "RELEASED"] },
+                deletedAt: null,
               }
             : {
                 username: {
                   equals: input.username,
                   mode: "insensitive",
                 },
+                deletedAt: null,
               },
         include: {
           thumbnail: true,
@@ -282,6 +287,7 @@ export const projectRouter = createTRPCRouter({
             equals: input.username,
             mode: "insensitive",
           },
+          deletedAt: null,
         },
       });
 
@@ -347,7 +353,7 @@ export const projectRouter = createTRPCRouter({
       }
 
       const project = await ctx.db.project.findFirst({
-        where: { id: input.id },
+        where: { id: input.id, deletedAt: null },
         include: {
           thumbnail: true,
         },
@@ -357,12 +363,9 @@ export const projectRouter = createTRPCRouter({
         throw new Error("Project not found.");
       }
 
-      if (project.thumbnail) {
-        await deleteObject(project.thumbnail.key);
-      }
-
-      await ctx.db.project.delete({
+      await ctx.db.project.update({
         where: { id: input.id },
+        data: { deletedAt: new Date() },
       });
 
       return;
