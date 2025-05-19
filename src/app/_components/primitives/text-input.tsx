@@ -19,7 +19,6 @@ interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: IconDefinition;
   readOnly?: boolean;
   required?: boolean;
-  type?: string;
 }
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
