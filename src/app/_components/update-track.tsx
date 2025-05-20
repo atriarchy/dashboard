@@ -591,10 +591,10 @@ export function EditTrack({
                             label="Credits"
                             description={
                               validationData.credits !== 0
-                                ? `You have ${validationData.credits} credit${
+                                ? `There are ${validationData.credits} credit${
                                     validationData.credits > 1 ? "s" : ""
                                   }! Make sure all the credits are up-to-date.`
-                                : "You don't have any credits. Please add at least one credit."
+                                : "There are no credits. Please add at least one credit."
                             }
                             checked={validationData.credits > 0}
                             disabled
