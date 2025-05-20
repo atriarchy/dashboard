@@ -79,7 +79,7 @@ export function Sidebar({
   const [isOpen, setIsOpen] = useContext(SidebarContext);
 
   let className =
-    "z-20 flex min-h-dvh h-screen min-w-52 flex-col items-center justify-between gap-2 overflow-y-auto bg-neutral-800 py-4 shadow-inner";
+    "z-20 flex min-h-dvh h-screen w-52 flex-col items-center justify-between gap-2 bg-neutral-800 py-4 shadow-inner";
   if (isOpen) {
     className += " max-sm:w-screen max-sm:absolute";
   } else {
@@ -110,7 +110,7 @@ export function Sidebar({
             <div className="none flex w-10 sm:hidden"></div>
           </div>
         </div>
-        <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto px-4">
+        <div className="flex h-full w-full flex-col items-center justify-start gap-2 overflow-y-auto overflow-x-hidden px-4">
           <BlockLink
             onClick={() => setIsOpen(false)}
             href="/dashboard/projects"
