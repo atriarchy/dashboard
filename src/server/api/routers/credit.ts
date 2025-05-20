@@ -174,6 +174,14 @@ export const creditRouter = createTRPCRouter({
           throw new Error("Credit not found.");
         }
 
+        if (
+          access !== "ADMIN" &&
+          (credit.track.submissionStatus === "SUBMITTED" ||
+            credit.track.submissionStatus === "ACCEPTED")
+        ) {
+          throw new Error("Track is locked.");
+        }
+
         const me = await ctx.db.trackCollaborator.findFirst({
           where: {
             trackId: credit.trackId,
@@ -280,6 +288,14 @@ export const creditRouter = createTRPCRouter({
           (track.project.status === "DRAFT" && access !== "ADMIN")
         ) {
           throw new Error("Track not found.");
+        }
+
+        if (
+          access !== "ADMIN" &&
+          (track.submissionStatus === "SUBMITTED" ||
+            track.submissionStatus === "ACCEPTED")
+        ) {
+          throw new Error("Track is locked.");
         }
 
         const me = await ctx.db.trackCollaborator.findFirst({
@@ -439,6 +455,14 @@ export const creditRouter = createTRPCRouter({
         (credit.track.project.status === "DRAFT" && access !== "ADMIN")
       ) {
         throw new Error("Credit not found.");
+      }
+
+      if (
+        access !== "ADMIN" &&
+        (credit.track.submissionStatus === "SUBMITTED" ||
+          credit.track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
       }
 
       const me = await ctx.db.trackCollaborator.findFirst({

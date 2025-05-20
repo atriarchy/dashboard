@@ -145,7 +145,6 @@ export default async function InfoPage({
                   )}
                 </div>
               )}
-
             {track.deletedAt && access === "ADMIN" && (
               <DeleteTrack
                 username={track.username}

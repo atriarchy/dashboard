@@ -51,6 +51,14 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
+      }
+
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
       if (!manager) {
@@ -478,6 +486,14 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
+      }
+
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
       if (!manager) {
@@ -836,6 +852,14 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
+      }
+
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
       if (!manager) {
@@ -1038,6 +1062,14 @@ export const collaboratorRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
+      }
+
       const collaborator = track.collaborators.find(
         c => c.userId === ctx.session.user.id
       );
@@ -1124,6 +1156,14 @@ export const collaboratorRouter = createTRPCRouter({
 
       if (!track) {
         throw new Error("Track not found.");
+      }
+
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
       }
 
       const collaborator = track.collaborators.find(
