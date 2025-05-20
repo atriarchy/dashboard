@@ -7,7 +7,6 @@ import { CreateTrack } from "@/app/_components/create-track";
 import Badge from "@/app/_components/primitives/badge";
 import {
   faChevronDown,
-  faDotCircle,
   faHeadphones,
   faLock,
   faLockOpen,
