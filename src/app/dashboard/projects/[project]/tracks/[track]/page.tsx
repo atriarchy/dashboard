@@ -10,20 +10,10 @@ import { CreateSong } from "@/app/_components/create-song";
 import { UpdateMaxSongFileSize } from "@/app/_components/update-max-song-file-size";
 import { LyricsEditor } from "@/app/_components/lyrics-editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCloudArrowDown,
-  faBan,
-  faLock,
-  faLockOpen,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCloudArrowDown, faBan } from "@fortawesome/free-solid-svg-icons";
 import Badge from "@/app/_components/primitives/badge";
 import { humanize } from "@/utils/string";
-
-export const statusMap = {
-  SUBMITTED: { color: "yellow", icon: faLock },
-  ACCEPTED: { color: "green", icon: faLock },
-  REJECTED: { color: "red", icon: faLockOpen },
-};
+import { statusMap } from "@/app/_components/tracks";
 
 export default async function InfoPage({
   params,

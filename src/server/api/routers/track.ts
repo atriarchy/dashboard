@@ -181,6 +181,7 @@ export const trackRouter = createTRPCRouter({
           collaborators: collaborators,
           order: track.order,
           deletedAt: track.deletedAt,
+          status: track.submissionStatus,
         };
       });
 
@@ -353,6 +354,7 @@ export const trackRouter = createTRPCRouter({
             collaborators: collaborators,
             order: track.order,
             deletedAt: track.deletedAt,
+            status: track.submissionStatus,
           };
         });
     }),

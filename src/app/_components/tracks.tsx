@@ -7,7 +7,10 @@ import { CreateTrack } from "@/app/_components/create-track";
 import Badge from "@/app/_components/primitives/badge";
 import {
   faChevronDown,
+  faDotCircle,
   faHeadphones,
+  faLock,
+  faLockOpen,
   faMagnifyingGlass,
   faPaintbrush,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +18,14 @@ import IconExplicit from "@/app/_components/icons/icon-explicit";
 import { ReorderTracks } from "@/app/_components/reorder-tracks";
 import TextInput from "@/app/_components/primitives/text-input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { humanize } from "@/utils/string";
+
+export const statusMap = {
+  DRAFT: { color: "gray", icon: faLockOpen },
+  SUBMITTED: { color: "yellow", icon: faLock },
+  ACCEPTED: { color: "green", icon: faLock },
+  REJECTED: { color: "red", icon: faLockOpen },
+};
 
 export function Tracks({
   project,
@@ -107,6 +118,12 @@ export function Tracks({
                           </span>
                           <div className="mt-2 flex gap-2">
                             {track.explicit && <IconExplicit />}
+                            <Badge
+                              text={humanize(track.status)}
+                              color={statusMap[track.status].color}
+                              icon={statusMap[track.status].icon}
+                              dark
+                            />
                             <Badge
                               text={
                                 musicStatusMap[track.musicStatus].label ||
@@ -215,6 +232,12 @@ export function Tracks({
                               </span>
                               <div className="mt-2 flex gap-2">
                                 {track.explicit && <IconExplicit />}
+                                <Badge
+                                  text={humanize(track.status)}
+                                  color={statusMap[track.status].color}
+                                  icon={statusMap[track.status].icon}
+                                  dark
+                                />
                                 <Badge
                                   text={
                                     musicStatusMap[track.musicStatus].label ||
@@ -340,6 +363,12 @@ export function Tracks({
                                   </span>
                                   <div className="mt-2 flex gap-2">
                                     {track.explicit && <IconExplicit />}
+                                    <Badge
+                                      text={humanize(track.status)}
+                                      color={statusMap[track.status].color}
+                                      icon={statusMap[track.status].icon}
+                                      dark
+                                    />
                                     <Badge
                                       text={
                                         musicStatusMap[track.musicStatus]
