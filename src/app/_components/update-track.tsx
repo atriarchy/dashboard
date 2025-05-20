@@ -28,6 +28,7 @@ type TrackType = "ORIGINAL" | "PARODY" | "COVER";
 
 export function EditTrack({
   access,
+  role,
   username,
   title,
   description,
@@ -35,8 +36,10 @@ export function EditTrack({
   musicStatus,
   visualStatus,
   type,
+  status,
 }: {
   access?: "ADMIN" | null;
+  role: "VIEWER" | "MANAGER" | "EDITOR" | "CONTRIBUTOR";
   username: string;
   title: string;
   description: string | null;
@@ -58,6 +61,7 @@ export function EditTrack({
     | "WORKING"
     | "POLISHING";
   type: "ORIGINAL" | "PARODY" | "COVER";
+  status: "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED";
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingOpen, setIsSubmittingOpen] = useState(false);
@@ -99,6 +103,9 @@ export function EditTrack({
     "ABANDONED" | "FINISHED" | "SEARCHING" | "CONCEPT" | "WORKING" | "POLISHING"
   >(visualStatus);
   const [currentType, setCurrentType] = useState<TrackType>(type);
+  const [currentStatus, setCurrentStatus] = useState<
+    "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED"
+  >(status);
   const [validationData, setValidationData] = useState<
     | {
         audioFileUploaded: boolean;
@@ -141,6 +148,7 @@ export function EditTrack({
       toast.success("Track submitted successfully");
       setIsSubmittingOpen(false);
       setValidationChecked(false);
+      setCurrentStatus("SUBMITTED");
     },
     onError: error => {
       toast.error(error.message);
@@ -167,30 +175,37 @@ export function EditTrack({
 
   return (
     <>
-      <button
-        onClick={() => {
-          setIsOpen(true);
-          setIsSubmittingOpen(false);
-        }}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
-      >
-        <FontAwesomeIcon icon={faPencil} />
-        Edit
-      </button>
+      {access === "ADMIN" ||
+        (currentStatus !== "SUBMITTED" && currentStatus !== "ACCEPTED" && (
+          <button
+            onClick={() => {
+              setIsOpen(true);
+              setIsSubmittingOpen(false);
+            }}
+            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+          >
+            <FontAwesomeIcon icon={faPencil} />
+            Edit
+          </button>
+        ))}
 
-      <button
-        onClick={() => {
-          setIsSubmittingOpen(true);
-          setIsOpen(false);
-          validateTrack.mutate({
-            username,
-          });
-        }}
-        className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
-      >
-        <FontAwesomeIcon icon={faCheck} />
-        Submit for Release
-      </button>
+      {currentStatus !== "SUBMITTED" &&
+        currentStatus !== "ACCEPTED" &&
+        (role === "MANAGER" || access === "ADMIN") && (
+          <button
+            onClick={() => {
+              setIsSubmittingOpen(true);
+              setIsOpen(false);
+              validateTrack.mutate({
+                username,
+              });
+            }}
+            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+          >
+            <FontAwesomeIcon icon={faCheck} />
+            Submit for Release
+          </button>
+        )}
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog

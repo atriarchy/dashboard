@@ -55,19 +55,21 @@ export default async function TracksPage({
                     {project.title}
                   </h1>
                 </div>
-                <ProjectForm
-                  {...{
-                    id: project.id,
-                    title: project.title,
-                    username: project.username,
-                    status: project.status,
-                    description: project.description,
-                    deadline: project.deadline
-                      ? formatDateToDatetimeLocal(project.deadline)
-                      : undefined,
-                    discordChannelId: project.discordChannelId,
-                  }}
-                />
+                {access === "ADMIN" && (
+                  <ProjectForm
+                    {...{
+                      id: project.id,
+                      title: project.title,
+                      username: project.username,
+                      status: project.status,
+                      description: project.description,
+                      deadline: project.deadline
+                        ? formatDateToDatetimeLocal(project.deadline)
+                        : undefined,
+                      discordChannelId: project.discordChannelId,
+                    }}
+                  />
+                )}
               </div>
               {project.description && (
                 <p className="text-lg">{project.description}</p>

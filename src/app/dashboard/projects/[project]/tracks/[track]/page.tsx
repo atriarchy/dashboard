@@ -128,6 +128,7 @@ export default async function InfoPage({
                 <div className="flex items-center gap-4">
                   <EditTrack
                     access={access}
+                    role={track.me.role}
                     username={track.username}
                     title={track.title}
                     description={track.description}
@@ -135,8 +136,12 @@ export default async function InfoPage({
                     type={track.type}
                     musicStatus={track.musicStatus}
                     visualStatus={track.visualStatus}
+                    status={track.status}
                   />
-                  {(track.me.role === "MANAGER" || access === "ADMIN") && (
+                  {((track.me.role === "MANAGER" &&
+                    track.status !== "SUBMITTED" &&
+                    track.status !== "ACCEPTED") ||
+                    access === "ADMIN") && (
                     <DeleteTrack
                       username={track.username}
                       title={track.title}

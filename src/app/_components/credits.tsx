@@ -15,10 +15,12 @@ export function Credits({
   username,
   access,
   me,
+  status,
 }: {
   username: string;
   access?: "ADMIN" | null;
   me: "MANAGER" | "EDITOR" | "CONTRIBUTOR" | "VIEWER";
+  status: "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED";
 }) {
   const credits = api.credit.getTrackCredits.useQuery({
     username: username,
@@ -44,7 +46,10 @@ export function Credits({
             <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
               Credits
             </h2>
-            {(me !== "VIEWER" || access === "ADMIN") && (
+            {((me !== "VIEWER" &&
+              status !== "SUBMITTED" &&
+              status !== "ACCEPTED") ||
+              access === "ADMIN") && (
               <CreateCredit
                 refetch={() => credits.refetch()}
                 track={username}

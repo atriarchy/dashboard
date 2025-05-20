@@ -739,6 +739,7 @@ export const trackRouter = createTRPCRouter({
             : undefined,
         maxSongFileSize: track.maxSongFileSize,
         lyrics: track.lyrics,
+        status: track.submissionStatus,
       };
     }),
 

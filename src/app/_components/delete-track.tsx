@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef, useState, useEffect } from "react";
+import { Fragment, useRef, useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -19,7 +19,6 @@ export function DeleteTrack({
   username,
   title,
   isDeleted,
-  access,
 }: {
   username: string;
   title: string;
@@ -87,7 +86,7 @@ export function DeleteTrack({
 
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleDeleteAction = () => {
+  const handleDeleteAction = useCallback(() => {
     if (isDeleted) {
       if (!hardDeleteTrack.isPending) {
         hardDeleteTrack.mutate({ username });
@@ -97,7 +96,7 @@ export function DeleteTrack({
         deleteTrack.mutate({ username });
       }
     }
-  };
+  }, [deleteTrack, hardDeleteTrack, isDeleted, username]);
 
   // Handle keyboard events for dialog
   useEffect(() => {
@@ -120,7 +119,12 @@ export function DeleteTrack({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, deleteTrack.isPending, hardDeleteTrack.isPending]);
+  }, [
+    isOpen,
+    deleteTrack.isPending,
+    hardDeleteTrack.isPending,
+    handleDeleteAction,
+  ]);
 
   return (
     <>
