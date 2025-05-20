@@ -21,6 +21,7 @@ export const trackRouter = createTRPCRouter({
           .min(1)
           .max(64)
           .regex(/^[a-z0-9-]+$/),
+        archived: z.boolean().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -44,6 +45,12 @@ export const trackRouter = createTRPCRouter({
         };
       }
 
+      if (project.status !== "RELEASED" && input.archived) {
+        return {
+          tracks: [],
+        };
+      }
+
       const tracks = await ctx.db.track.findMany({
         take: length + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
@@ -54,6 +61,14 @@ export const trackRouter = createTRPCRouter({
           },
           // Only include deleted tracks for admins
           deletedAt: access === "ADMIN" ? undefined : null,
+          submissionStatus:
+            project.status === "RELEASED"
+              ? input.archived
+                ? {
+                    in: ["DRAFT", "SUBMITTED", "REJECTED"],
+                  }
+                : "ACCEPTED"
+              : undefined,
           ...(input.query &&
             (input.query.startsWith("@")
               ? {
@@ -1110,7 +1125,7 @@ export const trackRouter = createTRPCRouter({
                 ? "REJECTED"
                 : "DRAFT"
               : input.status,
-          submissionNote: access !== "ADMIN" ? (input.notes ?? null) : null,
+          submissionNote: access === "ADMIN" ? (input.notes ?? null) : null,
           rejectedAt: input.status === "REJECTED" ? new Date() : undefined,
         },
       });
