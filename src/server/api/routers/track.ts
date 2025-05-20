@@ -740,6 +740,7 @@ export const trackRouter = createTRPCRouter({
         maxSongFileSize: track.maxSongFileSize,
         lyrics: track.lyrics,
         status: track.submissionStatus,
+        notes: track.submissionNote,
       };
     }),
 
@@ -1023,6 +1024,7 @@ export const trackRouter = createTRPCRouter({
           musicStatus: "FINISHED",
           visualStatus: "FINISHED",
           submissionStatus: "SUBMITTED",
+          submissionNote: null,
           submittedAt: new Date(),
         },
       });
@@ -1036,6 +1038,94 @@ export const trackRouter = createTRPCRouter({
           value: newData,
         },
       });
+    }),
+
+  updateTrackStatus: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+        status: z.enum(["ACCEPTED", "REJECTED", "DRAFT"]),
+        notes: z.string().max(1024).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
+        },
+        include: {
+          song: true,
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const me = await ctx.db.trackCollaborator.findFirst({
+        where: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
+        },
+      });
+
+      if (
+        (access !== "ADMIN" && me?.role !== "MANAGER") ||
+        ((input.status === "ACCEPTED" || input.status === "REJECTED") &&
+          access !== "ADMIN") ||
+        (track.submissionStatus !== "SUBMITTED" && input.status === "DRAFT")
+      ) {
+        throw new Error("Unauthorized.");
+      }
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const newData = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          submissionStatus:
+            input.status === "DRAFT"
+              ? track.rejectedAt
+                ? "REJECTED"
+                : "DRAFT"
+              : input.status,
+          submissionNote: access !== "ADMIN" ? (input.notes ?? null) : null,
+          rejectedAt: input.status === "REJECTED" ? new Date() : undefined,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: track,
+          value: newData,
+        },
+      });
+
+      return input.status;
     }),
 
   getMaxSongFileSize: protectedProcedure

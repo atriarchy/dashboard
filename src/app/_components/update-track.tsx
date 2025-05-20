@@ -16,6 +16,7 @@ import {
   faCheck,
   faPencil,
   faWarning,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import TextInput from "@/app/_components/primitives/text-input";
@@ -65,6 +66,9 @@ export function EditTrack({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingOpen, setIsSubmittingOpen] = useState(false);
+  const [isAccceptingOpen, setIsAcceptingOpen] = useState(false);
+  const [isRejectingOpen, setIsRejectingOpen] = useState(false);
+  const [isRecallOpen, setIsRecallOpen] = useState(false);
   const [originalTitle, setOriginalTitle] = useState(title);
   const [originalDescription, setOriginalDescription] = useState(
     description ?? ""
@@ -124,6 +128,7 @@ export function EditTrack({
     | undefined
   >(undefined);
   const [validationChecked, setValidationChecked] = useState<boolean>(false);
+  const [notes, setNotes] = useState<string>("");
 
   const initalFocusRef = useRef(null);
 
@@ -164,6 +169,20 @@ export function EditTrack({
     },
   });
 
+  const updateTrackStatus = api.track.updateTrackStatus.useMutation({
+    onSuccess: data => {
+      toast.success("Track status updated successfully");
+      setIsAcceptingOpen(false);
+      setIsRejectingOpen(false);
+      setIsRecallOpen(false);
+      setCurrentStatus(data);
+      setNotes("");
+    },
+    onError: error => {
+      toast.error(error.message);
+    },
+  });
+
   const reset = () => {
     setCurrentTitle(originalTitle);
     setCurrentDescription(originalDescription);
@@ -181,6 +200,9 @@ export function EditTrack({
             onClick={() => {
               setIsOpen(true);
               setIsSubmittingOpen(false);
+              setIsAcceptingOpen(false);
+              setIsRejectingOpen(false);
+              setIsRecallOpen(false);
             }}
             className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
           >
@@ -196,6 +218,9 @@ export function EditTrack({
             onClick={() => {
               setIsSubmittingOpen(true);
               setIsOpen(false);
+              setIsAcceptingOpen(false);
+              setIsRejectingOpen(false);
+              setIsRecallOpen(false);
               validateTrack.mutate({
                 username,
               });
@@ -203,9 +228,60 @@ export function EditTrack({
             className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
           >
             <FontAwesomeIcon icon={faCheck} />
-            Submit for Release
+            {currentStatus === "DRAFT"
+              ? "Submit for Release"
+              : "Resubmit for Release"}
           </button>
         )}
+
+      {currentStatus === "SUBMITTED" &&
+        (role === "MANAGER" || access === "ADMIN") && (
+          <button
+            onClick={() => {
+              setIsRecallOpen(true);
+              setIsOpen(false);
+              setIsAcceptingOpen(false);
+              setIsSubmittingOpen(false);
+              setIsRejectingOpen(false);
+            }}
+            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+          >
+            <FontAwesomeIcon icon={faXmark} />
+            Cancel Submission
+          </button>
+        )}
+
+      {currentStatus === "SUBMITTED" && access === "ADMIN" && (
+        <button
+          onClick={() => {
+            setIsAcceptingOpen(true);
+            setIsOpen(false);
+            setIsSubmittingOpen(false);
+            setIsRejectingOpen(false);
+            setIsRecallOpen(false);
+          }}
+          className="flex w-fit items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm transition hover:bg-green-500"
+        >
+          <FontAwesomeIcon icon={faCheck} />
+          Accept
+        </button>
+      )}
+
+      {currentStatus === "SUBMITTED" && access === "ADMIN" && (
+        <button
+          onClick={() => {
+            setIsRejectingOpen(true);
+            setIsOpen(false);
+            setIsSubmittingOpen(false);
+            setIsAcceptingOpen(false);
+            setIsRecallOpen(false);
+          }}
+          className="flex w-fit items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2 text-sm transition hover:bg-red-500"
+        >
+          <FontAwesomeIcon icon={faXmark} />
+          Reject
+        </button>
+      )}
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
@@ -626,6 +702,284 @@ export function EditTrack({
                         }
                       >
                         {submitTrack.isPending ? "Loading..." : "Submit"}
+                      </button>
+                    </div>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      <Transition appear show={isAccceptingOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => {
+            if (updateTrackStatus.isPending) return;
+            setIsAcceptingOpen(false);
+          }}
+          initialFocus={initalFocusRef}
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          </TransitionChild>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
+                  <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
+                    <DialogTitle as="h3">Accept Track</DialogTitle>
+                    <button
+                      disabled={updateTrackStatus.isPending}
+                      onClick={() => {
+                        if (updateTrackStatus.isPending) return;
+                        setIsAcceptingOpen(false);
+                      }}
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} />
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <form
+                      id="acceptProject"
+                      onSubmit={async e => {
+                        e.preventDefault();
+
+                        if (updateTrackStatus.isPending) return;
+
+                        updateTrackStatus.mutate({
+                          username,
+                          status: "ACCEPTED",
+                        });
+                      }}
+                    ></form>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                        onClick={() => {
+                          if (updateTrackStatus.isPending) return;
+                          setIsAcceptingOpen(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        form="acceptProject"
+                        className="w-full rounded-lg bg-green-700 p-2 transition hover:bg-green-500 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                      >
+                        {updateTrackStatus.isPending ? "Loading..." : "Accept"}
+                      </button>
+                    </div>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      <Transition appear show={isRejectingOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => {
+            if (updateTrackStatus.isPending) return;
+            setIsRejectingOpen(false);
+            setNotes("");
+          }}
+          initialFocus={initalFocusRef}
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          </TransitionChild>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
+                  <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
+                    <DialogTitle as="h3">Reject Track</DialogTitle>
+                    <button
+                      disabled={updateTrackStatus.isPending}
+                      onClick={() => {
+                        if (updateTrackStatus.isPending) return;
+                        setIsRejectingOpen(false);
+                        setNotes("");
+                      }}
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} />
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <form
+                      id="acceptProject"
+                      onSubmit={async e => {
+                        e.preventDefault();
+
+                        if (updateTrackStatus.isPending) return;
+
+                        updateTrackStatus.mutate({
+                          username,
+                          status: "REJECTED",
+                          notes,
+                        });
+                      }}
+                    >
+                      <TextArea
+                        id="notes"
+                        label="Notes"
+                        value={notes}
+                        onChange={e => setNotes(e.target.value)}
+                        placeholder="Rejection Notes"
+                        maxLength={1024}
+                        disabled={updateTrackStatus.isPending}
+                      />
+                    </form>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                        onClick={() => {
+                          if (updateTrackStatus.isPending) return;
+                          setIsRejectingOpen(false);
+                          setNotes("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        form="acceptProject"
+                        className="w-full rounded-lg bg-red-700 p-2 transition hover:bg-red-500 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                      >
+                        {updateTrackStatus.isPending ? "Loading..." : "Reject"}
+                      </button>
+                    </div>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      <Transition appear show={isRecallOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => {
+            if (updateTrackStatus.isPending) return;
+            setIsRecallOpen(false);
+          }}
+          initialFocus={initalFocusRef}
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          </TransitionChild>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-800 p-6 text-left align-middle text-white shadow-xl transition-all">
+                  <div className="mb-2 flex items-start justify-between gap-4 text-lg font-bold">
+                    <DialogTitle as="h3">Cancel Submission</DialogTitle>
+                    <button
+                      disabled={updateTrackStatus.isPending}
+                      onClick={() => {
+                        if (updateTrackStatus.isPending) return;
+                        setIsRecallOpen(false);
+                      }}
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faCircleXmark} />
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <form
+                      id="acceptProject"
+                      onSubmit={async e => {
+                        e.preventDefault();
+
+                        if (updateTrackStatus.isPending) return;
+
+                        updateTrackStatus.mutate({
+                          username,
+                          status: "DRAFT",
+                        });
+                      }}
+                    ></form>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        className="w-full rounded-lg bg-neutral-500 p-2 transition hover:bg-neutral-500/50 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                        onClick={() => {
+                          if (updateTrackStatus.isPending) return;
+                          setIsRecallOpen(false);
+                        }}
+                      >
+                        No
+                      </button>
+                      <button
+                        type="submit"
+                        form="acceptProject"
+                        className="w-full rounded-lg bg-violet-700 p-2 transition hover:bg-violet-500 disabled:bg-neutral-500/50"
+                        disabled={updateTrackStatus.isPending}
+                      >
+                        {updateTrackStatus.isPending ? "Loading..." : "Yes"}
                       </button>
                     </div>
                   </div>

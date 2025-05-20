@@ -10,7 +10,20 @@ import { CreateSong } from "@/app/_components/create-song";
 import { UpdateMaxSongFileSize } from "@/app/_components/update-max-song-file-size";
 import { LyricsEditor } from "@/app/_components/lyrics-editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCloudArrowDown, faBan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCloudArrowDown,
+  faBan,
+  faLock,
+  faLockOpen,
+} from "@fortawesome/free-solid-svg-icons";
+import Badge from "@/app/_components/primitives/badge";
+import { humanize } from "@/utils/string";
+
+export const statusMap = {
+  SUBMITTED: { color: "yellow", icon: faLock },
+  ACCEPTED: { color: "green", icon: faLock },
+  REJECTED: { color: "red", icon: faLockOpen },
+};
 
 export default async function InfoPage({
   params,
@@ -93,6 +106,17 @@ export default async function InfoPage({
                         {track.title}
                       </span>
                     )}
+                    {(track.status === "SUBMITTED" ||
+                      track.status === "ACCEPTED" ||
+                      track.status === "REJECTED") && (
+                      <Badge
+                        text={humanize(track.status)}
+                        color={statusMap[track.status].color || "gray"}
+                        icon={statusMap[track.status].icon}
+                        dark
+                        pill
+                      />
+                    )}
                     {track.explicit && <IconExplicit />}
                   </h1>
                 </div>
@@ -120,6 +144,16 @@ export default async function InfoPage({
             }
             {track.me.role !== "VIEWER" && !track.me.acceptedInvite && (
               <InviteBanner username={track.username} />
+            )}
+            {track.notes && (
+              <div className="mb-8 w-full max-w-2xl">
+                <p className="mb-1 text-lg font-semibold">
+                  {track.status === "REJECTED" ? "Rejection Notes" : "Notes"}
+                </p>
+                <p className="whitespace-pre-wrap rounded bg-neutral-800 p-3 text-gray-200">
+                  {track.notes}
+                </p>
+              </div>
             )}
             {(track.me.role === "MANAGER" ||
               track.me.role === "EDITOR" ||
