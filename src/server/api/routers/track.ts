@@ -1010,9 +1010,8 @@ export const trackRouter = createTRPCRouter({
       }
 
       if (
-        access !== "ADMIN" &&
-        (track.submissionStatus === "SUBMITTED" ||
-          track.submissionStatus === "ACCEPTED")
+        track.submissionStatus === "SUBMITTED" ||
+        track.submissionStatus === "ACCEPTED"
       ) {
         throw new Error("Track is locked.");
       }
