@@ -19,7 +19,7 @@ import {
 import Badge from "@/app/_components/primitives/badge";
 import { humanize } from "@/utils/string";
 
-export const statusMap = {
+const statusMap = {
   DRAFT: { color: "gray", icon: faLockOpen },
   SUBMITTED: { color: "yellow", icon: faLock },
   ACCEPTED: { color: "green", icon: faLock },
