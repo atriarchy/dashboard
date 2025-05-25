@@ -5,6 +5,8 @@ import { env } from "process";
 import { getPublicUrl } from "@/utils/url";
 import { slugify } from "@/utils/string";
 import { deleteObject, getUploadURL } from "@/server/s3";
+import { documenso } from "@/server/documenso";
+import { type inferProcedureBuilderResolverOptions } from "@trpc/server";
 
 const allowedFileTypes = ["audio/wav", "audio/mpeg"];
 
@@ -19,6 +21,7 @@ export const trackRouter = createTRPCRouter({
           .min(1)
           .max(64)
           .regex(/^[a-z0-9-]+$/),
+        archived: z.boolean().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -42,6 +45,12 @@ export const trackRouter = createTRPCRouter({
         };
       }
 
+      if (project.status !== "RELEASED" && input.archived) {
+        return {
+          tracks: [],
+        };
+      }
+
       const tracks = await ctx.db.track.findMany({
         take: length + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
@@ -52,6 +61,14 @@ export const trackRouter = createTRPCRouter({
           },
           // Only include deleted tracks for admins
           deletedAt: access === "ADMIN" ? undefined : null,
+          submissionStatus:
+            project.status === "RELEASED"
+              ? input.archived
+                ? {
+                    in: ["DRAFT", "SUBMITTED", "REJECTED"],
+                  }
+                : "ACCEPTED"
+              : undefined,
           ...(input.query &&
             (input.query.startsWith("@")
               ? {
@@ -164,6 +181,7 @@ export const trackRouter = createTRPCRouter({
           collaborators: collaborators,
           order: track.order,
           deletedAt: track.deletedAt,
+          status: track.submissionStatus,
         };
       });
 
@@ -336,6 +354,7 @@ export const trackRouter = createTRPCRouter({
             collaborators: collaborators,
             order: track.order,
             deletedAt: track.deletedAt,
+            status: track.submissionStatus,
           };
         });
     }),
@@ -737,7 +756,23 @@ export const trackRouter = createTRPCRouter({
             : undefined,
         maxSongFileSize: track.maxSongFileSize,
         lyrics: track.lyrics,
+        status: track.submissionStatus,
+        notes: track.submissionNote,
       };
+    }),
+
+  validateTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await validate(ctx, input.username);
     }),
 
   updateLyrics: protectedProcedure
@@ -779,6 +814,13 @@ export const trackRouter = createTRPCRouter({
       });
       if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
         throw new Error("Track not found.");
+      }
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
       }
       const manager = track.collaborators.find(c => c.role === "MANAGER");
       if (!manager) {
@@ -842,11 +884,11 @@ export const trackRouter = createTRPCRouter({
           username: {
             equals: input.username,
             mode: "insensitive",
-            project: {
-              deletedAt: null,
-            },
-            deletedAt: access === "ADMIN" ? undefined : null,
           },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
         },
         include: {
           project: true,
@@ -864,6 +906,14 @@ export const trackRouter = createTRPCRouter({
 
       if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
         throw new Error("Track not found.");
+      }
+
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
       }
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
@@ -928,6 +978,173 @@ export const trackRouter = createTRPCRouter({
           value: newData,
         },
       });
+    }),
+
+  submitTrack: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const valid = await validate(ctx, input.username);
+
+      if (!valid.ready) {
+        throw new Error("Track not valid.");
+      }
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
+        },
+        include: {
+          project: true,
+          collaborators: {
+            include: {
+              user: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
+        throw new Error("Track not found.");
+      }
+
+      if (
+        track.submissionStatus === "SUBMITTED" ||
+        track.submissionStatus === "ACCEPTED"
+      ) {
+        throw new Error("Track is locked.");
+      }
+
+      const newData = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          musicStatus: "FINISHED",
+          visualStatus: "FINISHED",
+          submissionStatus: "SUBMITTED",
+          submissionNote: null,
+          submittedAt: new Date(),
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: track,
+          value: newData,
+        },
+      });
+    }),
+
+  updateTrackStatus: protectedProcedure
+    .input(
+      z.object({
+        username: z
+          .string()
+          .min(1)
+          .max(64)
+          .regex(/^[a-z0-9-]+$/),
+        status: z.enum(["ACCEPTED", "REJECTED", "DRAFT"]),
+        notes: z.string().max(1024).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const access = await accessCheck(ctx);
+
+      const track = await ctx.db.track.findFirst({
+        where: {
+          username: {
+            equals: input.username,
+            mode: "insensitive",
+          },
+          project: {
+            deletedAt: null,
+          },
+          deletedAt: access === "ADMIN" ? undefined : null,
+        },
+        include: {
+          song: true,
+        },
+      });
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const me = await ctx.db.trackCollaborator.findFirst({
+        where: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          track: {
+            project: {
+              deletedAt: null,
+            },
+            deletedAt: access === "ADMIN" ? undefined : null,
+          },
+        },
+      });
+
+      if (
+        (access !== "ADMIN" && me?.role !== "MANAGER") ||
+        ((input.status === "ACCEPTED" || input.status === "REJECTED") &&
+          access !== "ADMIN") ||
+        (track.submissionStatus !== "SUBMITTED" &&
+          input.status === "DRAFT" &&
+          access !== "ADMIN")
+      ) {
+        throw new Error("Unauthorized.");
+      }
+
+      if (!track) {
+        throw new Error("Track not found.");
+      }
+
+      const newData = await ctx.db.track.update({
+        where: { id: track.id },
+        data: {
+          submissionStatus:
+            input.status === "DRAFT"
+              ? track.rejectedAt
+                ? "REJECTED"
+                : "DRAFT"
+              : input.status,
+          submissionNote: access === "ADMIN" ? (input.notes ?? null) : null,
+          rejectedAt: input.status === "REJECTED" ? new Date() : undefined,
+        },
+      });
+
+      await ctx.db.trackAuditLog.create({
+        data: {
+          trackId: track.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE_TRACK",
+          oldValue: track,
+          value: newData,
+        },
+      });
+
+      return input.status;
     }),
 
   getMaxSongFileSize: protectedProcedure
@@ -1037,6 +1254,14 @@ export const trackRouter = createTRPCRouter({
 
       if (!track || (track.project.status === "DRAFT" && access !== "ADMIN")) {
         throw new Error("Track not found.");
+      }
+
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
       }
 
       const manager = track.collaborators.find(c => c.role === "MANAGER");
@@ -1214,6 +1439,14 @@ export const trackRouter = createTRPCRouter({
         throw new Error("Track not found.");
       }
 
+      if (
+        access !== "ADMIN" &&
+        (track.submissionStatus === "SUBMITTED" ||
+          track.submissionStatus === "ACCEPTED")
+      ) {
+        throw new Error("Track is locked.");
+      }
+
       // Only managers or admins can delete tracks
       const manager = track.collaborators.find(c => c.role === "MANAGER");
 
@@ -1387,3 +1620,165 @@ export const trackRouter = createTRPCRouter({
       return { success: true };
     }),
 });
+
+async function validate(
+  ctx: inferProcedureBuilderResolverOptions<typeof protectedProcedure>["ctx"],
+  username: string
+) {
+  const access = await accessCheck(ctx);
+
+  const track = await ctx.db.track.findFirst({
+    where: {
+      username: {
+        equals: username,
+        mode: "insensitive",
+      },
+      project: {
+        deletedAt: null,
+      },
+      deletedAt: access === "ADMIN" ? undefined : null,
+    },
+    include: {
+      song: true,
+    },
+  });
+
+  if (!track) {
+    throw new Error("Track not found.");
+  }
+
+  const me = await ctx.db.trackCollaborator.findFirst({
+    where: {
+      trackId: track.id,
+      userId: ctx.session.user.id,
+      track: {
+        project: {
+          deletedAt: null,
+        },
+        deletedAt: access === "ADMIN" ? undefined : null,
+      },
+    },
+  });
+
+  if (access !== "ADMIN" && me?.role !== "MANAGER") {
+    throw new Error("Unauthorized.");
+  }
+
+  const credits = await ctx.db.trackCredit.findMany({
+    where: {
+      trackId: track.id,
+      track: {
+        project: {
+          deletedAt: null,
+        },
+        deletedAt: access === "ADMIN" ? undefined : null,
+      },
+    },
+    include: {
+      collaborator: {
+        include: {
+          user: {
+            include: {
+              profile: true,
+            },
+          },
+          discordUser: true,
+        },
+      },
+    },
+  });
+
+  const agreements = await ctx.db.agreement.findMany({
+    where: {
+      projectId: track.projectId,
+      project: {
+        deletedAt: null,
+      },
+    },
+  });
+
+  const seenCollaborators = new Set<string>();
+
+  const unsignedAgreements = (
+    await Promise.all(
+      credits.map(async credit => {
+        if (
+          credit.collaborator &&
+          !seenCollaborators.has(credit.collaborator.id)
+        ) {
+          seenCollaborators.add(credit.collaborator.id);
+
+          if (credit.collaborator.user) {
+            const documents = await ctx.db.agreementDocument.findMany({
+              where: {
+                OR: agreements.map(agreement => ({
+                  agreementId: agreement.id,
+                  userId: credit.collaborator?.userId ?? "",
+                  agreement: {
+                    project: {
+                      deletedAt: null,
+                    },
+                  },
+                })),
+              },
+              include: {
+                agreement: true,
+              },
+            });
+
+            const filteredDocuments = [] as typeof documents;
+
+            for (const document of documents) {
+              const { status } = await documenso.documents.get({
+                documentId: document.documentId,
+              });
+
+              if (status === "COMPLETED") {
+                filteredDocuments.push(document);
+              }
+            }
+
+            const missingAgreements = agreements.filter(agreement => {
+              return !filteredDocuments.find(
+                document => document.agreementId === agreement.id
+              );
+            });
+
+            return missingAgreements.map(agreement => ({
+              id: agreement.id,
+              title: agreement.title,
+              name: credit.collaborator?.user?.profile
+                ? `${credit.collaborator?.user?.profile.name} (@${credit.collaborator?.user?.profile.username})`
+                : "Unknown",
+            }));
+          }
+
+          return agreements.map(agreement => ({
+            id: agreement.id,
+            title: agreement.title,
+            name: credit.collaborator?.discordUser
+              ? `${credit.collaborator?.discordUser.username} (Discord)`
+              : "Unknown",
+          }));
+        }
+
+        return [];
+      })
+    )
+  ).flat();
+
+  return {
+    audioFileUploaded: !!track.song,
+    credits: credits.length,
+    lyricsSet: !!track.lyrics,
+    title: track.title,
+    explicit: track.explicit,
+    trackType: track.type,
+    unsignedAgreements,
+    ready:
+      !!track.song &&
+      credits.length > 0 &&
+      !!track.lyrics &&
+      unsignedAgreements.length === 0,
+  };
+}

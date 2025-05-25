@@ -73,7 +73,11 @@ export default async function CollaboratorPage({
                 )}
               </div>
             }
-            <Collaborators username={track.username} access={access} />
+            <Collaborators
+              username={track.username}
+              access={access}
+              status={track.status}
+            />
           </div>
         </div>
       </main>

@@ -10,9 +10,11 @@ import toast from "react-hot-toast";
 export function Collaborators({
   username,
   access,
+  status,
 }: {
   username: string;
   access?: "ADMIN" | null;
+  status: "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED";
 }) {
   const track = api.track.getTrack.useQuery({
     username: username,
@@ -47,7 +49,10 @@ export function Collaborators({
             <h2 className="bg-gradient-to-br from-purple-500 to-violet-500 bg-clip-text text-2xl font-bold text-transparent">
               Collaborators
             </h2>
-            {(track.data.me.role === "MANAGER" || access === "ADMIN") && (
+            {((track.data.me.role === "MANAGER" &&
+              status !== "SUBMITTED" &&
+              status !== "ACCEPTED") ||
+              access === "ADMIN") && (
               <CreateCollaborator
                 refetch={() => track.refetch()}
                 track={username}

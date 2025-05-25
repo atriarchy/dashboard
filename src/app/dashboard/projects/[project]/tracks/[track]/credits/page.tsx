@@ -77,6 +77,7 @@ export default async function CreditsPage({
               username={track.username}
               access={access}
               me={track.me.role}
+              status={track.status}
             />
           </div>
         </div>
