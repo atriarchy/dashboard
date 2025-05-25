@@ -1109,7 +1109,9 @@ export const trackRouter = createTRPCRouter({
         (access !== "ADMIN" && me?.role !== "MANAGER") ||
         ((input.status === "ACCEPTED" || input.status === "REJECTED") &&
           access !== "ADMIN") ||
-        (track.submissionStatus !== "SUBMITTED" && input.status === "DRAFT")
+        (track.submissionStatus !== "SUBMITTED" &&
+          input.status === "DRAFT" &&
+          access !== "ADMIN")
       ) {
         throw new Error("Unauthorized.");
       }

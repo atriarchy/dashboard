@@ -24,6 +24,7 @@ import SelectInput from "./primitives/select-input";
 import TextArea from "./primitives/text-area";
 import CheckboxItem from "./primitives/checkbox-item";
 import { humanize } from "@/utils/string";
+import { useRouter } from "next/navigation";
 
 type TrackType = "ORIGINAL" | "PARODY" | "COVER";
 
@@ -129,6 +130,7 @@ export function EditTrack({
   >(undefined);
   const [validationChecked, setValidationChecked] = useState<boolean>(false);
   const [notes, setNotes] = useState<string>("");
+  const router = useRouter();
 
   const initalFocusRef = useRef(null);
 
@@ -142,6 +144,7 @@ export function EditTrack({
       setOriginalType(currentType);
       toast.success("Track updated successfully");
       setIsOpen(false);
+      router.refresh();
     },
     onError: error => {
       toast.error(error.message);
@@ -154,6 +157,7 @@ export function EditTrack({
       setIsSubmittingOpen(false);
       setValidationChecked(false);
       setCurrentStatus("SUBMITTED");
+      router.refresh();
     },
     onError: error => {
       toast.error(error.message);
@@ -177,6 +181,7 @@ export function EditTrack({
       setIsRecallOpen(false);
       setCurrentStatus(data);
       setNotes("");
+      router.refresh();
     },
     onError: error => {
       toast.error(error.message);
@@ -234,22 +239,23 @@ export function EditTrack({
           </button>
         )}
 
-      {currentStatus === "SUBMITTED" &&
-        (role === "MANAGER" || access === "ADMIN") && (
-          <button
-            onClick={() => {
-              setIsRecallOpen(true);
-              setIsOpen(false);
-              setIsAcceptingOpen(false);
-              setIsSubmittingOpen(false);
-              setIsRejectingOpen(false);
-            }}
-            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
-          >
-            <FontAwesomeIcon icon={faXmark} />
-            Cancel Submission
-          </button>
-        )}
+      {((currentStatus === "SUBMITTED" &&
+        (role === "MANAGER" || access === "ADMIN")) ||
+        (currentStatus === "ACCEPTED" && access === "ADMIN")) && (
+        <button
+          onClick={() => {
+            setIsRecallOpen(true);
+            setIsOpen(false);
+            setIsAcceptingOpen(false);
+            setIsSubmittingOpen(false);
+            setIsRejectingOpen(false);
+          }}
+          className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+        >
+          <FontAwesomeIcon icon={faXmark} />
+          Cancel Submission
+        </button>
+      )}
 
       {currentStatus === "SUBMITTED" && access === "ADMIN" && (
         <button
