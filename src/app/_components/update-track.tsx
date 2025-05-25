@@ -194,22 +194,22 @@ export function EditTrack({
 
   return (
     <>
-      {access === "ADMIN" ||
-        (currentStatus !== "SUBMITTED" && currentStatus !== "ACCEPTED" && (
-          <button
-            onClick={() => {
-              setIsOpen(true);
-              setIsSubmittingOpen(false);
-              setIsAcceptingOpen(false);
-              setIsRejectingOpen(false);
-              setIsRecallOpen(false);
-            }}
-            className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
-          >
-            <FontAwesomeIcon icon={faPencil} />
-            Edit
-          </button>
-        ))}
+      {(access === "ADMIN" ||
+        (currentStatus !== "SUBMITTED" && currentStatus !== "ACCEPTED")) && (
+        <button
+          onClick={() => {
+            setIsOpen(true);
+            setIsSubmittingOpen(false);
+            setIsAcceptingOpen(false);
+            setIsRejectingOpen(false);
+            setIsRecallOpen(false);
+          }}
+          className="flex w-fit items-center justify-center gap-2 rounded-lg bg-violet-700 px-4 py-2 text-sm transition hover:bg-violet-500"
+        >
+          <FontAwesomeIcon icon={faPencil} />
+          Edit
+        </button>
+      )}
 
       {currentStatus !== "SUBMITTED" &&
         currentStatus !== "ACCEPTED" &&
